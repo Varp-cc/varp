@@ -1,0 +1,1232 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gilroy:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Gilroy', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Custom Scrollbar with Main Theme Colors */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5), 0 0 20px rgba(74, 144, 226, 0.3);
+            transition: all 0.3s ease;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+                box-shadow: 0 0 15px rgba(74, 144, 226, 0.8), 0 0 30px rgba(74, 144, 226, 0.5);
+            }
+
+        /* Firefox scrollbar */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #4a90e2 #1a1a1a;
+        }
+
+        /* Discord Floating Button - Enhanced Visibility */
+        .discord-float-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6), 0 0 20px rgba(74, 144, 226, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+
+            .discord-float-btn:hover {
+                transform: translateY(-8px) scale(1.15);
+                box-shadow: 0 15px 40px rgba(74, 144, 226, 0.8), 0 0 30px rgba(74, 144, 226, 0.9);
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .discord-float-btn::before {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background: linear-gradient(135deg, rgba(74, 144, 226, 0.3), rgba(107, 182, 255, 0.3));
+                animation: pulse-ring 2s infinite;
+                z-index: -1;
+            }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.8);
+                opacity: 0;
+            }
+        }
+
+        .discord-icon {
+            width: 35px;
+            height: 35px;
+            background-image: url('https://media.discordapp.net/attachments/1043595698328830023/1377386655614369812/icons8-discord-48_1.png?ex=6838c6c9&is=68377549&hm=b2d638615440c30ba02ccc360ef21beef74071f6a913b238b0c419ae11c673ce&=&format=webp&quality=lossless');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: brightness(0) invert(1);
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Grid background - full page */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(74, 144, 226, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(74, 144, 226, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating particles background */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #4a90e2;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
+        }
+
+            .particle:nth-child(2n) {
+                background: #6bb6ff;
+                animation-duration: 8s;
+                animation-delay: -2s;
+            }
+
+            .particle:nth-child(3n) {
+                background: #89c4ff;
+                animation-duration: 10s;
+                animation-delay: -4s;
+            }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px);
+                opacity: 0.6;
+            }
+
+            25% {
+                transform: translateY(-20px) translateX(10px);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translateY(-40px) translateX(-5px);
+                opacity: 1;
+            }
+
+            75% {
+                transform: translateY(-60px) translateX(15px);
+                opacity: 0.8;
+            }
+        }
+
+        /* Products Section */
+        .products-section {
+            padding: 100px 40px;
+            max-width: 1400px;
+            margin: 200px auto 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .products-title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 28px;
+            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .products-subtitle {
+            text-align: center;
+            color: #b3d9ff;
+            font-size: 1.1rem;
+            margin-bottom: 68px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+            align-items: stretch;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(2px);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+            .product-card:hover {
+                transform: translateY(-8px);
+                background: rgba(74, 144, 226, 0.03);
+                border-color: #4a90e2;
+                box-shadow: 0 20px 50px rgba(74, 144, 226, 0.3), 0 0 20px rgba(74, 144, 226, 0.5);
+            }
+
+            .product-card.popular {
+                border-color: rgba(255, 255, 255, 0.08);
+                box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
+            }
+
+                .product-card.popular:hover {
+                    border-color: #4a90e2;
+                    box-shadow: 0 20px 50px rgba(74, 144, 226, 0.3), 0 0 20px rgba(74, 144, 226, 0.5);
+                }
+
+        .product-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            z-index: 2;
+            text-transform: uppercase;
+            box-shadow: 0 0 12px rgba(74, 144, 226, 0.6);
+            letter-spacing: 0.5px;
+        }
+
+        .product-category {
+            background: rgba(74, 144, 226, 0.15);
+            color: #4a90e2;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .product-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            position: relative;
+        }
+
+            .product-icon::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 35px;
+                height: 35px;
+                background-image: url('https://media.discordapp.net/attachments/1043595698328830023/1377371423106138223/image_2.png?ex=6838b899&is=68376719&hm=45cda42ec708ae7fcb5df9175d2ff3e5ddecfe8189c8c6d1aca5ee24080c939b&=&format=webp&quality=lossless');
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                transform: translate(-50%, -50%);
+            }
+
+        .product-info h3 {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .product-info p {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+            .product-price span {
+                font-size: 1rem;
+                color: #999;
+            }
+
+        .feature-list {
+            list-style: none;
+            margin-bottom: 30px;
+            flex-grow: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+            .feature-list li {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 8px 0;
+                color: #999;
+                font-size: 0.9rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+                .feature-list li:last-child {
+                    border-bottom: none;
+                }
+
+                .feature-list li::before {
+                    content: '✓';
+                    color: white;
+                    background: #00d4aa;
+                    font-weight: bold;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.7rem;
+                    flex-shrink: 0;
+                }
+
+        .purchase-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            margin-top: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+            .purchase-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4);
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+            }
+
+        /* Responsive for products */
+        @media (max-width: 768px) {
+            .products-section {
+                padding: 60px 20px;
+            }
+
+            .products-title {
+                font-size: 2.5rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .discord-float-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+            }
+
+            .discord-icon {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            position: relative;
+            z-index: 10;
+            background: rgba(26, 26, 26, 0.9);
+            border-bottom: 1px solid #333;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-image: url('https://media.discordapp.net/attachments/1320478095249248307/1320497026944729128/gdgdgfg.png?ex=68397470&is=683822f0&hm=a0b2ce9712ad0ebdc6dce4c6a4307fa47fd882935129eb84430bff7b9703865b&');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 8px;
+            position: relative;
+            animation: glitch 2s infinite;
+        }
+
+            .logo-icon::before,
+            .logo-icon::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image: inherit;
+                background-size: inherit;
+                background-repeat: inherit;
+                background-position: inherit;
+                border-radius: inherit;
+            }
+
+            .logo-icon::before {
+                animation: glitch-1 2s infinite;
+                filter: hue-rotate(0deg) brightness(1.2);
+                mix-blend-mode: screen;
+            }
+
+            .logo-icon::after {
+                animation: glitch-2 2s infinite;
+                filter: hue-rotate(240deg) brightness(1.1);
+                mix-blend-mode: multiply;
+            }
+
+        @keyframes glitch {
+            0%, 100% {
+                transform: translate(0);
+            }
+
+            10% {
+                transform: translate(-2px, 1px);
+            }
+
+            20% {
+                transform: translate(2px, -1px);
+            }
+
+            30% {
+                transform: translate(-1px, 2px);
+            }
+
+            40% {
+                transform: translate(1px, -2px);
+            }
+
+            50% {
+                transform: translate(-2px, -1px);
+            }
+
+            60% {
+                transform: translate(2px, 1px);
+            }
+
+            70% {
+                transform: translate(-1px, -2px);
+            }
+
+            80% {
+                transform: translate(1px, 2px);
+            }
+
+            90% {
+                transform: translate(-2px, 1px);
+            }
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% {
+                transform: translate(0);
+                opacity: 1;
+            }
+
+            10% {
+                transform: translate(-1px, 0);
+                opacity: 0.8;
+            }
+
+            20% {
+                transform: translate(1px, 0);
+                opacity: 0.6;
+            }
+
+            30% {
+                transform: translate(0, -1px);
+                opacity: 0.8;
+            }
+
+            40% {
+                transform: translate(0, 1px);
+                opacity: 0.4;
+            }
+
+            50% {
+                transform: translate(-1px, -1px);
+                opacity: 0.7;
+            }
+
+            60% {
+                transform: translate(1px, 1px);
+                opacity: 0.5;
+            }
+
+            70% {
+                transform: translate(0, -1px);
+                opacity: 0.8;
+            }
+
+            80% {
+                transform: translate(0, 1px);
+                opacity: 0.6;
+            }
+
+            90% {
+                transform: translate(-1px, 0);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% {
+                transform: translate(0);
+                opacity: 1;
+            }
+
+            15% {
+                transform: translate(1px, 0);
+                opacity: 0.7;
+            }
+
+            25% {
+                transform: translate(-1px, 0);
+                opacity: 0.5;
+            }
+
+            35% {
+                transform: translate(0, 1px);
+                opacity: 0.8;
+            }
+
+            45% {
+                transform: translate(0, -1px);
+                opacity: 0.6;
+            }
+
+            55% {
+                transform: translate(1px, 1px);
+                opacity: 0.4;
+            }
+
+            65% {
+                transform: translate(-1px, -1px);
+                opacity: 0.7;
+            }
+
+            75% {
+                transform: translate(0, 1px);
+                opacity: 0.5;
+            }
+
+            85% {
+                transform: translate(0, -1px);
+                opacity: 0.8;
+            }
+
+            95% {
+                transform: translate(1px, 0);
+                opacity: 0.6;
+            }
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: #999;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 8px 0;
+            cursor: pointer;
+        }
+
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: #4a90e2;
+                transition: width 0.3s ease;
+            }
+
+            .nav-link:hover {
+                color: white;
+            }
+
+                .nav-link:hover::after {
+                    width: 100%;
+                }
+
+            .nav-link.active {
+                color: #4a90e2;
+            }
+
+                .nav-link.active::after {
+                    width: 100%;
+                }
+
+        .discord-btn {
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+            .discord-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(74, 144, 226, 0.5);
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+            }
+
+        /* Main content */
+        .main-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            min-height: calc(100vh - 160px);
+        }
+
+        .left-section {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .premium-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(74, 144, 226, 0.2);
+            border: 1px solid #4a90e2;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .flame-icon {
+            color: #4a90e2;
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: bold;
+            line-height: 1.1;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+            .main-title::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #4a90e2, #6bb6ff);
+                border-radius: 2px;
+                animation: line-expand 3s ease-in-out infinite;
+            }
+
+        @keyframes line-expand {
+            0%, 100% {
+                width: 0%;
+            }
+
+            50% {
+                width: 100%;
+            }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #b3d9ff;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+        }
+
+            .start-btn:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 35px rgba(74, 144, 226, 0.6);
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+            }
+
+        .discord-link {
+            color: #4a90e2;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            padding: 16px 32px;
+            border: 2px solid #4a90e2;
+            border-radius: 30px;
+            background: transparent;
+        }
+
+            .discord-link:hover {
+                color: white;
+                background: #4a90e2;
+                border-color: #4a90e2;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+            }
+
+        /* Right section - cards */
+        .right-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 600px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(2px);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .feature-card:hover {
+                transform: translateY(-8px);
+                background: rgba(74, 144, 226, 0.03);
+                border-color: #4a90e2;
+                box-shadow: 0 15px 40px rgba(74, 144, 226, 0.3), 0 0 15px rgba(74, 144, 226, 0.5);
+            }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 24px;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+            .card-icon::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, rgba(74, 144, 226, 0.3), rgba(107, 182, 255, 0.3));
+                border-radius: 12px;
+                transform: translate(-50%, -50%) scale(0);
+                animation: none;
+                z-index: -1;
+                transition: all 0.3s ease;
+            }
+
+        .feature-card:hover .card-icon::before {
+            transform: translate(-50%, -50%) scale(1.2);
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: translate(-50%, -50%) scale(1.2) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) scale(1.2) rotate(360deg);
+            }
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-description {
+            color: #b3d9ff;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+                gap: 60px;
+                text-align: center;
+            }
+
+            .main-title {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .main-content {
+                padding: 40px 20px;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .right-section {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles -->
+    <div class="particles">
+        <div class="particle" style="left: 10%; top: 20%;"></div>
+        <div class="particle" style="left: 20%; top: 60%;"></div>
+        <div class="particle" style="left: 30%; top: 10%;"></div>
+        <div class="particle" style="left: 40%; top: 70%;"></div>
+        <div class="particle" style="left: 50%; top: 30%;"></div>
+        <div class="particle" style="left: 60%; top: 80%;"></div>
+        <div class="particle" style="left: 70%; top: 15%;"></div>
+        <div class="particle" style="left: 80%; top: 45%;"></div>
+        <div class="particle" style="left: 90%; top: 25%;"></div>
+        <div class="particle" style="left: 15%; top: 85%;"></div>
+        <div class="particle" style="left: 85%; top: 75%;"></div>
+        <div class="particle" style="left: 45%; top: 5%;"></div>
+        <div class="particle" style="left: 75%; top: 55%;"></div>
+        <div class="particle" style="left: 25%; top: 40%;"></div>
+        <div class="particle" style="left: 65%; top: 90%;"></div>
+        <div class="particle" style="left: 5%; top: 35%;"></div>
+        <div class="particle" style="left: 35%; top: 65%;"></div>
+        <div class="particle" style="left: 55%; top: 12%;"></div>
+        <div class="particle" style="left: 8%; top: 50%;"></div>
+        <div class="particle" style="left: 78%; top: 28%;"></div>
+        <div class="particle" style="left: 12%; top: 72%;"></div>
+        <div class="particle" style="left: 42%; top: 88%;"></div>
+        <div class="particle" style="left: 62%; top: 18%;"></div>
+        <div class="particle" style="left: 82%; top: 62%;"></div>
+        <div class="particle" style="left: 22%; top: 8%;"></div>
+        <div class="particle" style="left: 72%; top: 82%;"></div>
+        <div class="particle" style="left: 32%; top: 48%;"></div>
+        <div class="particle" style="left: 52%; top: 68%;"></div>
+        <div class="particle" style="left: 92%; top: 38%;"></div>
+        <div class="particle" style="left: 18%; top: 58%;"></div>
+    </div>
+
+    <!-- Discord Floating Button -->
+    <a href="https://discord.gg/varp" target="_blank" class="discord-float-btn">
+        <div class="discord-icon"></div>
+    </a>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <span>Varp</span>
+        </div>
+        <nav class="nav">
+            <a href="#" class="nav-link active">Home</a>
+            <a href="#products" class="nav-link">Products</a>
+            <a href="/status" class="nav-link">Status</a>
+            <a href="https://myvouch.es/varp" class="nav-link" target="_blank">Reviews</a>
+        </nav>
+        <a href="#" class="discord-btn">Discord</a>
+    </header>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <div class="left-section">
+            <div class="premium-badge">
+                <span class="flame-icon">🔥</span>
+                Undetected & Premium
+            </div>
+            <h1 class="main-title">Enhance Your<br>Game Right Now!</h1>
+            <p class="subtitle">
+                Take your gaming to the next level with our premium cheats, designed to redefine how you play and dominate every match.
+            </p>
+            <div class="cta-buttons">
+                <a href="#products" class="start-btn">Start Dominating</a>
+                <a href="https://discord.gg/varp" target="_blank" class="discord-link">discord</a>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <div class="feature-card">
+                <div class="card-icon">🛡</div>
+                <h3 class="card-title">Undetectable</h3>
+                <p class="card-description">Advanced kernel-level protection with real-time signature updates</p>
+            </div>
+            <div class="feature-card">
+                <div class="card-icon">⚡</div>
+                <h3 class="card-title">Ultra Fast</h3>
+                <p class="card-description">Sub-millisecond response times with optimized memory access</p>
+            </div>
+            <div class="feature-card">
+                <div class="card-icon">🎯</div>
+                <h3 class="card-title">Precision Aim</h3>
+                <p class="card-description">AI-powered targeting with customizable smoothing algorithms</p>
+            </div>
+            <div class="feature-card">
+                <div class="card-icon">🔧</div>
+                <h3 class="card-title">Easy Setup</h3>
+                <p class="card-description">One-click installation with automated configuration system</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Products Section -->
+    <section id="products" class="products-section">
+        <h2 class="products-title">Choose Your Arsenal</h2>
+        <p class="products-subtitle">
+            Premium Applications tailored for every skill level. From beginners to elite competitors, find the perfect package to dominate your battlefield.
+        </p>
+
+        <div class="products-grid">
+            <!-- Varp Private -->
+            <div class="product-card">
+                <div class="product-category">Cheat Software</div>
+                <div class="product-header">
+                    <div class="product-icon"></div>
+                    <div class="product-info">
+                        <h3>Fortnite Private</h3>
+                        <p>Fully Undetected From EAC/BE</p>
+                    </div>
+                </div>
+                <div class="product-price">$7.99 <span>/ 1 Day</span></div>
+                <ul class="feature-list">
+                    <li>Kernel & Memory Aimbot</li>
+                    <li>Weapons Config & Triggerbot</li>
+                    <li>Visuals & Radar</li>
+                    <li>External Exploits</li>
+                    <li>Miscellaneous</li>
+                    <li>High-Work Streamproof</li>
+                    <li>Custom Resolution Supported</li>
+                </ul>
+                <button class="purchase-btn">Purchase</button>
+            </div>
+
+            <!-- Varp Temp -->
+            <div class="product-card popular">
+                <div class="product-badge">MOST POPULAR</div>
+                <div class="product-category">Temporary SOLUTION</div>
+                <div class="product-header">
+                    <div class="product-icon"></div>
+                    <div class="product-info">
+                        <h3>Temporary Spoofer</h3>
+                        <p>Every Game & Motherboards Supported</p>
+                    </div>
+                </div>
+                <div class="product-price">$3.99 <span>/ 1 Day</span></div>
+                <ul class="feature-list">
+                    <li>Network Adapters</li>
+                    <li>Registry Values</li>
+                    <li>Monitor Serials</li>
+                    <li>GPU/RAM/TPM Serials</li>
+                    <li>NIC & MAC Address</li>
+                    <li>Baseboard Serials</li>
+                    <li>Storage Drive Serials</li>
+                
+                </ul>
+                <button class="purchase-btn">Purchase</button>
+            </div>
+
+            <!-- Varp Perm -->
+            <div class="product-card">
+                <div class="product-badge">CHEAPEST PERM SOLUTION</div>
+                <div class="product-category">PERMANENT SOLUTION</div>
+                <div class="product-header">
+                    <div class="product-icon"></div>
+                    <div class="product-info">
+                        <h3>Permanent Spoofer</h3>
+                        <p>Permanently Solution for Legit Players</p>
+                    </div>
+                </div>
+                <div class="product-price">$9.99 <span>/ One-Time Usage</span></div>
+                <ul class="feature-list">
+                    <li>Legit Spoofing Serials</li>
+                    <li>ARP & Disk Ban Bypass</li>
+                    <li>Detailed Instructions [Photos &Videos]</li>
+                    <li>Fortnite Tournaments & Manufacturer Fixer</li>
+                    <li>TPM Bypass [Fortnite Tournaments & Valorant]</li>
+                    <li> Friendly & Helpful Support</li>
+                    <li>Free Account Unban Method</li>
+                </ul>
+                <button class="purchase-btn">Purchase</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Smooth scroll functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all navigation links
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // Check if the link has a href that starts with #
+                    const href = this.getAttribute('href');
+
+                    // Handle external links (Reviews)
+                    if (href && href.startsWith('http')) {
+                        // Let the browser handle external links normally
+                        return;
+                    }
+
+                    // Handle /status link
+                    if (href === '/status') {
+                        // Let the browser handle the page navigation
+                        return;
+                    }
+
+                    if (href && href.startsWith('#')) {
+                        e.preventDefault();
+
+                        // Remove active class from all links
+                        navLinks.forEach(l => l.classList.remove('active'));
+
+                        // Add active class to clicked link
+                        this.classList.add('active');
+
+                        // Get target element
+                        const targetId = href.substring(1);
+                        const targetElement = document.getElementById(targetId);
+
+                        if (targetElement) {
+                            // Smooth scroll to target
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        } else if (href === '#') {
+                            // If it's home, scroll to top
+                            window.scrollTo({
+                                top: 0,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Update active navigation based on scroll position
+            window.addEventListener('scroll', function () {
+                const sections = document.querySelectorAll('section[id], main');
+                const scrollPos = window.scrollY + 100;
+
+                sections.forEach(section => {
+                    const top = section.offsetTop;
+                    const bottom = top + section.offsetHeight;
+                    const id = section.getAttribute('id');
+
+                    if (scrollPos >= top && scrollPos <= bottom) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+
+                // Handle home section (when at top)
+                if (window.scrollY < 200) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' || link.textContent.trim() === 'Home') {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
