@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Varp</title>
+    <title>Varp Softwares</title>
     <link href="https://fonts.googleapis.com/css2?family=Gilroy:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * {
@@ -53,11 +53,19 @@
             scrollbar-color: #4a90e2 #1a1a1a;
         }
 
-        /* Discord Floating Button - Enhanced Visibility */
-        .discord-float-btn {
+        /* Floating Social Media Buttons */
+        .social-float-container {
             position: fixed;
             bottom: 30px;
             right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        /* YouTube Floating Button */
+        .youtube-float-btn {
             width: 70px;
             height: 70px;
             background: linear-gradient(135deg, #4a90e2, #6bb6ff);
@@ -66,21 +74,21 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 1000;
             transition: all 0.3s ease;
             box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6), 0 0 20px rgba(74, 144, 226, 0.4);
             border: 3px solid rgba(255, 255, 255, 0.1);
             text-decoration: none;
+            position: relative;
         }
 
-            .discord-float-btn:hover {
+            .youtube-float-btn:hover {
                 transform: translateY(-8px) scale(1.15);
                 box-shadow: 0 15px 40px rgba(74, 144, 226, 0.8), 0 0 30px rgba(74, 144, 226, 0.9);
                 background: linear-gradient(135deg, #6bb6ff, #89c4ff);
                 border-color: rgba(255, 255, 255, 0.2);
             }
 
-            .discord-float-btn::before {
+            .youtube-float-btn::before {
                 content: '';
                 position: absolute;
                 width: 100%;
@@ -102,6 +110,180 @@
                 opacity: 0;
             }
         }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 100px 40px;
+            max-width: 1000px;
+            margin: 100px auto 0 auto;
+            position: relative;
+            z-index: 10;
+            margin-bottom: 150px;
+        }
+
+        .faq-title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .faq-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+
+            .faq-item:hover {
+                background: rgba(74, 144, 226, 0.03);
+                border-color: rgba(74, 144, 226, 0.3);
+                box-shadow: 0 8px 25px rgba(74, 144, 226, 0.15);
+            }
+
+            .faq-item.active {
+                background: rgba(74, 144, 226, 0.05);
+                border-color: #4a90e2;
+                box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
+            }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .faq-question h3 {
+                font-size: 1.2rem;
+                font-weight: bold;
+                color: white;
+                margin: 0;
+                flex: 1;
+                transition: color 0.3s ease;
+            }
+
+        .faq-item.active .faq-question h3 {
+            color: #4a90e2;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4a90e2;
+            transition: all 0.3s ease;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+            color: #6bb6ff;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            background: rgba(74, 144, 226, 0.02);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding: 0 30px 25px 30px;
+        }
+
+        .faq-answer p {
+            color: #b3d9ff;
+            line-height: 1.6;
+            font-size: 1rem;
+            margin: 0;
+            padding-top: 10px;
+        }
+
+        /* FAQ Responsive */
+        @media (max-width: 768px) {
+            .faq-section {
+                padding: 60px 20px;
+            }
+
+            .faq-title {
+                font-size: 2.5rem;
+            }
+
+            .faq-question {
+                padding: 20px;
+            }
+
+                .faq-question h3 {
+                    font-size: 1.1rem;
+                }
+
+            .faq-item.active .faq-answer {
+                padding: 0 20px 20px 20px;
+            }
+        }
+
+        .youtube-icon {
+            width: 35px;
+            height: 35px;
+            background-image: url('https://imgur.com/wn17ZDb.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: brightness(0) invert(1);
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Discord Floating Button - Enhanced Visibility */
+        .discord-float-btn {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6), 0 0 20px rgba(74, 144, 226, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+            position: relative;
+        }
+
+            .discord-float-btn:hover {
+                transform: translateY(-8px) scale(1.15);
+                box-shadow: 0 15px 40px rgba(74, 144, 226, 0.8), 0 0 30px rgba(74, 144, 226, 0.9);
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .discord-float-btn::before {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background: linear-gradient(135deg, rgba(74, 144, 226, 0.3), rgba(107, 182, 255, 0.3));
+                animation: pulse-ring 2s infinite;
+                z-index: -1;
+            }
 
         .discord-icon {
             width: 35px;
@@ -208,11 +390,253 @@
             text-align: center;
             color: #b3d9ff;
             font-size: 1.1rem;
+            margin-bottom: 28px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* Explore All Products Button */
+        .explore-products-btn {
+            display: block;
+            width: fit-content;
+            margin: 30px auto 68px auto;
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+            .explore-products-btn:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 35px rgba(74, 144, 226, 0.6);
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+            }
+
+        /* All Products Section */
+        .all-products-section {
+            padding: 100px 40px;
+            max-width: 1400px;
+            margin: 100px auto 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .all-products-title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 28px;
+            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .all-products-subtitle {
+            text-align: center;
+            color: #b3d9ff;
+            font-size: 1.1rem;
             margin-bottom: 68px;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
             line-height: 1.6;
+        }
+
+        .all-products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-top: 60px;
+        }
+
+        .small-product-card {
+            background: rgba(255, 255, 255, 0.01);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(2px);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+            .small-product-card:hover {
+                transform: translateY(-5px);
+                background: rgba(74, 144, 226, 0.03);
+                border-color: #4a90e2;
+                box-shadow: 0 15px 35px rgba(74, 144, 226, 0.25), 0 0 15px rgba(74, 144, 226, 0.4);
+            }
+
+        .small-product-image {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 13px 13px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .small-product-image::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(107, 182, 255, 0.05));
+                pointer-events: none;
+                z-index: 1;
+                transition: all 0.3s ease;
+            }
+
+        .small-product-card:hover .small-product-image::before {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.2), rgba(107, 182, 255, 0.1));
+        }
+
+        .product-badges {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+            flex-direction: column;
+            align-items: flex-end;
+            z-index: 2;
+        }
+
+        .badge-popular {
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.6);
+        }
+
+        .badge-status {
+            background: #32cd32;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(50, 205, 50, 0.6);
+        }
+
+        .badge-updating {
+            background: #ff8c00;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(255, 140, 0, 0.6);
+        }
+
+        .small-product-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .small-product-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .small-product-description {
+            color: #999;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            height: 2.8rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .small-product-price {
+            color: #4a90e2;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            margin-top: auto;
+        }
+
+        .small-purchase-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            padding: 12px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+            .small-purchase-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+        /* Responsive for all products */
+        @media (max-width: 1200px) {
+            .all-products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .all-products-section {
+                padding: 60px 20px;
+            }
+
+            .all-products-title {
+                font-size: 2.5rem;
+            }
+
+            .all-products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .all-products-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .products-grid {
@@ -306,21 +730,11 @@
             color: white;
             font-size: 24px;
             position: relative;
+            background-image: url('https://imgur.com/6gueGBP.png');
+            background-size: 35px 35px;
+            background-repeat: no-repeat;
+            background-position: center;
         }
-
-            .product-icon::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 35px;
-                height: 35px;
-                background-image: url('https://media.discordapp.net/attachments/1043595698328830023/1377371423106138223/image_2.png?ex=6838b899&is=68376719&hm=45cda42ec708ae7fcb5df9175d2ff3e5ddecfe8189c8c6d1aca5ee24080c939b&=&format=webp&quality=lossless');
-                background-size: contain;
-                background-repeat: no-repeat;
-                background-position: center;
-                transform: translate(-50%, -50%);
-            }
 
         .product-info h3 {
             font-size: 1.4rem;
@@ -430,7 +844,13 @@
                 height: 60px;
             }
 
-            .discord-icon {
+            .youtube-float-btn {
+                width: 60px;
+                height: 60px;
+            }
+
+            .discord-icon,
+            .youtube-icon {
                 width: 30px;
                 height: 30px;
             }
@@ -460,186 +880,13 @@
         .logo-icon {
             width: 40px;
             height: 40px;
-            background-image: url('https://media.discordapp.net/attachments/1320478095249248307/1320497026944729128/gdgdgfg.png?ex=683ac5f0&is=68397470&hm=5454e51aa2d3a4de68a812adbe09abe8b492e761e8093ac0b0602dee0f92484d&=&format=webp&quality=lossless');
+            background-image: url('https://imgur.com/6gueGBP.png');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
             border-radius: 8px;
             position: relative;
-            animation: glitch 2s infinite;
-        }
-
-            .logo-icon::before,
-            .logo-icon::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-image: inherit;
-                background-size: inherit;
-                background-repeat: inherit;
-                background-position: inherit;
-                border-radius: inherit;
-            }
-
-            .logo-icon::before {
-                animation: glitch-1 2s infinite;
-                filter: hue-rotate(0deg) brightness(1.2);
-                mix-blend-mode: screen;
-            }
-
-            .logo-icon::after {
-                animation: glitch-2 2s infinite;
-                filter: hue-rotate(240deg) brightness(1.1);
-                mix-blend-mode: multiply;
-            }
-
-        @keyframes glitch {
-            0%, 100% {
-                transform: translate(0);
-            }
-
-            10% {
-                transform: translate(-2px, 1px);
-            }
-
-            20% {
-                transform: translate(2px, -1px);
-            }
-
-            30% {
-                transform: translate(-1px, 2px);
-            }
-
-            40% {
-                transform: translate(1px, -2px);
-            }
-
-            50% {
-                transform: translate(-2px, -1px);
-            }
-
-            60% {
-                transform: translate(2px, 1px);
-            }
-
-            70% {
-                transform: translate(-1px, -2px);
-            }
-
-            80% {
-                transform: translate(1px, 2px);
-            }
-
-            90% {
-                transform: translate(-2px, 1px);
-            }
-        }
-
-        @keyframes glitch-1 {
-            0%, 100% {
-                transform: translate(0);
-                opacity: 1;
-            }
-
-            10% {
-                transform: translate(-1px, 0);
-                opacity: 0.8;
-            }
-
-            20% {
-                transform: translate(1px, 0);
-                opacity: 0.6;
-            }
-
-            30% {
-                transform: translate(0, -1px);
-                opacity: 0.8;
-            }
-
-            40% {
-                transform: translate(0, 1px);
-                opacity: 0.4;
-            }
-
-            50% {
-                transform: translate(-1px, -1px);
-                opacity: 0.7;
-            }
-
-            60% {
-                transform: translate(1px, 1px);
-                opacity: 0.5;
-            }
-
-            70% {
-                transform: translate(0, -1px);
-                opacity: 0.8;
-            }
-
-            80% {
-                transform: translate(0, 1px);
-                opacity: 0.6;
-            }
-
-            90% {
-                transform: translate(-1px, 0);
-                opacity: 0.9;
-            }
-        }
-
-        @keyframes glitch-2 {
-            0%, 100% {
-                transform: translate(0);
-                opacity: 1;
-            }
-
-            15% {
-                transform: translate(1px, 0);
-                opacity: 0.7;
-            }
-
-            25% {
-                transform: translate(-1px, 0);
-                opacity: 0.5;
-            }
-
-            35% {
-                transform: translate(0, 1px);
-                opacity: 0.8;
-            }
-
-            45% {
-                transform: translate(0, -1px);
-                opacity: 0.6;
-            }
-
-            55% {
-                transform: translate(1px, 1px);
-                opacity: 0.4;
-            }
-
-            65% {
-                transform: translate(-1px, -1px);
-                opacity: 0.7;
-            }
-
-            75% {
-                transform: translate(0, 1px);
-                opacity: 0.5;
-            }
-
-            85% {
-                transform: translate(0, -1px);
-                opacity: 0.8;
-            }
-
-            95% {
-                transform: translate(1px, 0);
-                opacity: 0.6;
-            }
+            filter: drop-shadow(0 0 10px rgba(74, 144, 226, 0.8)) drop-shadow(0 0 20px rgba(74, 144, 226, 0.5));
         }
 
         .nav {
@@ -963,6 +1210,209 @@
                 gap: 15px;
             }
         }
+
+        /* Footer Styles */
+        .footer {
+            background: #1a1a1a;
+            border-top: 3px solid #4a90e2;
+            position: relative;
+            z-index: 10;
+            margin-top: -1px;
+            width: 100vw;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            box-shadow: 0 -3px 15px rgba(74, 144, 226, 0.4);
+            animation: glow-footer-line 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-footer-line {
+            0%, 100% {
+                border-top-color: #4a90e2;
+                box-shadow: 0 -3px 15px rgba(74, 144, 226, 0.4);
+            }
+
+            50% {
+                border-top-color: #6bb6ff;
+                box-shadow: 0 -3px 25px rgba(107, 182, 255, 1);
+            }
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px 40px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+            .footer-links li a {
+                color: #999;
+                text-decoration: none;
+                font-size: 0.9rem;
+                transition: color 0.3s ease;
+            }
+
+                .footer-links li a:hover {
+                    color: #4a90e2;
+                }
+
+        .newsletter p {
+            color: #999;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+            .newsletter-input:focus {
+                outline: none;
+                border-color: #4a90e2;
+                background: rgba(74, 144, 226, 0.05);
+            }
+
+            .newsletter-input::placeholder {
+                color: #666;
+            }
+
+        .newsletter-btn {
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+            .newsletter-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+            }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 40px;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-country {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+            .footer-country label {
+                color: #999;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+        .country-selector {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: white;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .country-selector:focus {
+                outline: none;
+                border-color: #4a90e2;
+            }
+
+        .payment-methods {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 24px;
+            border-radius: 4px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            object-fit: cover;
+        }
+
+            .payment-icon:hover {
+                opacity: 1;
+            }
+
+        .footer-copyright {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        /* Footer Responsive */
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 40px 20px 30px 20px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .payment-methods {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1000,10 +1450,15 @@
         <div class="particle" style="left: 18%; top: 58%;"></div>
     </div>
 
-    <!-- Discord Floating Button -->
-    <a href="https://discord.gg/varp" target="_blank" class="discord-float-btn">
-        <div class="discord-icon"></div>
-    </a>
+    <!-- Social Media Floating Buttons -->
+    <div class="social-float-container">
+        <a href="https://www.youtube.com/@varpspoofer" target="_blank" class="youtube-float-btn">
+            <div class="youtube-icon"></div>
+        </a>
+        <a href="https://discord.gg/varp" target="_blank" class="discord-float-btn">
+            <div class="discord-icon"></div>
+        </a>
+    </div>
 
     <!-- Header -->
     <header class="header">
@@ -1015,7 +1470,7 @@
             <a href="#" class="nav-link active">Home</a>
             <a href="#products" class="nav-link">Products</a>
             <a href="/status" class="nav-link">Status</a>
-            <a href="https://myvouch.es/varp" class="nav-link" target="_blank">Vouches</a>
+            <a href="https://myvouch.es/varp" class="nav-link" target="_blank">Reviews</a>
         </nav>
         <a href="#" class="discord-btn">Discord</a>
     </header>
@@ -1063,10 +1518,13 @@
 
     <!-- Products Section -->
     <section id="products" class="products-section">
-        <h2 class="products-title">Choose Your Arsenal</h2>
+        <h2 class="products-title">Featured Products</h2>
         <p class="products-subtitle">
-            Premium Applications tailored for every skill level. From beginners to elite competitors, find the perfect package to dominate your battlefield.
+            Products appreciated and most frequently chosen by our many customers!
         </p>
+
+        <!-- Explore All Products Button -->
+        <a href="#all-products" class="explore-products-btn">Explore all Products</a>
 
         <div class="products-grid">
             <!-- Varp Private -->
@@ -1112,7 +1570,7 @@
                     <li>NIC & MAC Address</li>
                     <li>Baseboard Serials</li>
                     <li>Storage Drive Serials</li>
-                
+
                 </ul>
                 <button class="purchase-btn">Purchase</button>
             </div>
@@ -1142,6 +1600,233 @@
             </div>
         </div>
     </section>
+
+    <!-- All Products Section -->
+    <section id="all-products" class="all-products-section">
+        <h2 class="all-products-title">All Products</h2>
+        <p class="all-products-subtitle">
+            Premium Applications tailored for every skill level. From beginners to elite competitors, find the perfect package to dominate your battlefield.
+        </p>
+
+        <div class="all-products-grid">
+            <!-- Fortnite Private -->
+            <div class="small-product-card">
+                <div class="small-product-image" style="background-image: url('https://i.imgur.com/gVE5Z2j.png');">
+                    <div class="product-badges">
+                        <div class="badge-popular">Most Popular</div>
+                        <div class="badge-updating">Updating</div>
+                    </div>
+                </div>
+                <div class="small-product-content">
+                    <h4 class="small-product-title">Fortnite Private</h4>
+                    <p class="small-product-description">External & Ready For Tournaments Software with Advanced Kernel Protection.</p>
+                    <div class="small-product-price">Price: $7.99</div>
+                    <button class="small-purchase-btn">Purchase</button>
+                </div>
+            </div>
+
+            <!-- Fortnite Public -->
+            <div class="small-product-card">
+                <div class="small-product-image" style="background-image: url('https://imgur.com/9rB54DA.png');">
+                    <div class="product-badges">
+                        <div class="badge-status">Undetected</div>
+                    </div>
+                </div>
+                <div class="small-product-content">
+                    <h4 class="small-product-title">Fortnite Public</h4>
+                    <p class="small-product-description">
+                        External & Undtected Public Software Version with many Features.
+                    </p>
+                    <div class="small-product-price">Price: $4.99</div>
+                    <button class="small-purchase-btn">Purchase</button>
+                </div>
+            </div>
+
+            <!-- Permanent Spoofer -->
+            <div class="small-product-card">
+                <div class="small-product-image" style="background-image: url('https://imgur.com/vnMC2yy.png');">
+                    <div class="product-badges">
+                        <div class="badge-status">Undetected</div>
+                    </div>
+                </div>
+                <div class="small-product-content">
+                    <h4 class="small-product-title">Permanent Spoofer</h4>
+                    <p class="small-product-description">One-time Permanent Hardware unban solution with Lifetime Protection</p>
+                    <div class="small-product-price">Price: $9.99</div>
+                    <button class="small-purchase-btn">Purchase</button>
+                </div>
+            </div>
+
+            <!-- Temporary Spoofer -->
+            <div class="small-product-card">
+                <div class="small-product-image" style="background-image: url('https://imgur.com/ZCSFtsg.png');">
+                    <div class="product-badges">
+                        <div class="badge-popular">Most Popular</div>
+                        <div class="badge-status">Undetected</div>
+                    </div>
+                </div>
+                <div class="small-product-content">
+                    <h4 class="small-product-title">Temporary Spoofer</h4>
+                    <p class="small-product-description">
+                        Reusable solution to Temporary unlock devices.
+                        Serials will Restore after each PC Restart.
+                    </p>
+                    <div class="small-product-price">Price: $3.99</div>
+                    <button class="small-purchase-btn">Purchase</button>
+                </div>
+            </div>
+
+            <!-- BO6 External -->
+            <div class="small-product-card">
+                <div class="small-product-image" style="background-image: url('https://imgur.com/XrobQO5.png');">
+                    <div class="product-badges">
+                        <div class="badge-status">Undetected</div>
+                    </div>
+                </div>
+                <div class="small-product-content">
+                    <h4 class="small-product-title">BO6 External</h4>
+                    <p class="small-product-description">
+                        External Software for Call of Duty Lovers with Beautiful Aim Prediction.
+                    </p>
+                    <div class="small-product-price">Price: $3.99</div>
+                    <button class="small-purchase-btn">Purchase</button>
+                </div>
+            </div>
+
+            <!-- Apex External -->
+            <div class="small-product-card">
+                <div class="small-product-image" style="background-image: url('https://imgur.com/qeTNJoH.png');">
+                    <div class="product-badges">
+                        <div class="badge-status">Undetected</div>
+                    </div>
+                </div>
+                <div class="small-product-content">
+                    <h4 class="small-product-title">Apex External</h4>
+                    <p class="small-product-description">
+                        Achieve Victory with The Best Apex External Software with over 80+ Features.
+                    </p>
+                    <div class="small-product-price">Price: $3.99</div>
+                    <button class="small-purchase-btn">Purchase</button>
+                </div>
+            </div>
+
+            <!-- Rust External -->
+            <div class="small-product-card">
+                <div class="small-product-image" style="background-image: url('https://imgur.com/6IYdr6G.png');">
+                    <div class="product-badges">
+                        <div class="badge-status">Undetected</div>
+                    </div>
+                </div>
+                <div class="small-product-content">
+                    <h4 class="small-product-title">Rust External</h4>
+                    <p class="small-product-description">
+                        External & Undetected Software with Temp Spoofer Included, unbeatable in Rust!
+                    </p>
+                    <div class="small-product-price">Price: $5.99</div>
+                    <button class="small-purchase-btn">Purchase</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section - Now moved below All Products -->
+    <section class="faq-section">
+        <h2 class="faq-title">Frequently Asked Questions</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>What is the return policy for purchases?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>If the product didn't work for you or you had other problems, contact us and we will definitely refund you 100% of your money. We value our customers' satisfaction! ;)</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>How do I make a purchase?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Making a purchase is easy. Simply browse the available products and add the ones you wish to purchase to your cart. When you are ready to checkout, you will be prompted to enter your payment information and complete the transaction.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>Is it safe to make payments?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, we take security very seriously. We use advanced fraud prevention measures to protect against fraudulent transactions and we do not store sensitive payment information.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>Can I make payments using my preferred method?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, we support a wide range of payment methods, including popular fiat options like Credit Cards as well as various crypto currencies. This enables you to make payments using the method that is most convenient for you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Varp Menu</h3>
+                <ul class="footer-links">
+                    <li><a href="https://varp.gay/">Home</a></li>
+                    <li><a href="#all-products">Products</a></li>
+                    <li><a href="https://discord.gg/varp" target="_blank">Contact</a></li>
+                    <li><a href="/status">Status</a></li>
+                    <li><a href="https://discord.gg/varp" target="_blank">Discord</a></li>
+                    <li><a href="https://discord.gg/varp" target="_blank">Features</a></li>
+                    <li><a href="https://discord.gg/varp" target="_blank">Terms</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section newsletter">
+                <h3>Subscribe to our emails</h3>
+                <p>Subscribe to our emails for the latest offers, news and promotions</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Email" class="newsletter-input">
+                    <button class="newsletter-btn">Sign up</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-country">
+                <label for="country-select">Country/region</label>
+                <select id="country-select" class="country-selector">
+                    <option value="pl">Poland (PLN zł)</option>
+                    <option value="us">United States (USD $)</option>
+                    <option value="eu">Europe (EUR €)</option>
+                    <option value="uk">United Kingdom (GBP £)</option>
+                </select>
+            </div>
+
+            <div class="payment-methods">
+                <img src="https://imgur.com/kxG4AUt.png" alt="Visa" class="payment-icon">
+                <img src="https://imgur.com/UZFJNzW.png" alt="Mastercard" class="payment-icon">
+                <img src="https://imgur.com/NUj4vtj.png" alt="PayPal" class="payment-icon">
+                <img src="https://imgur.com/pDACTZJ.png" alt="Bitcoin" class="payment-icon">
+                <img src="https://imgur.com/9FmcCx6.png" alt="Ethereum" class="payment-icon">
+                <img src="https://imgur.com/R0MYZ1u.png" alt="Litecoin" class="payment-icon">
+                <img src="https://imgur.com/S8vn0CR.png" alt="Google Pay" class="payment-icon">
+            </div>
+
+            <div class="footer-copyright">
+                <p>&copy; 2025, Varp Powered by VARP</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // Smooth scroll functionality
@@ -1224,6 +1909,24 @@
                             link.classList.add('active');
                         }
                     });
+                }
+            });
+        });
+
+        // FAQ functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                const isActive = faqItem.classList.contains('active');
+
+                // Close all FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Open clicked item if it wasn't active
+                if (!isActive) {
+                    faqItem.classList.add('active');
                 }
             });
         });
