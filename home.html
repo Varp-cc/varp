@@ -366,61 +366,6 @@
             }
         }
 
-        /* Products Section */
-        .products-section {
-            padding: 100px 40px;
-            max-width: 1400px;
-            margin: 200px auto 0 auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        .products-title {
-            font-size: 3rem;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 28px;
-            background: linear-gradient(135deg, #ffffff, #b3d9ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .products-subtitle {
-            text-align: center;
-            color: #b3d9ff;
-            font-size: 1.1rem;
-            margin-bottom: 28px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-        }
-
-        /* Explore All Products Button */
-        .explore-products-btn {
-            display: block;
-            width: fit-content;
-            margin: 30px auto 68px auto;
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
-            color: white;
-            padding: 16px 32px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-            .explore-products-btn:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 12px 35px rgba(74, 144, 226, 0.6);
-                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
-            }
-
         /* All Products Section */
         .all-products-section {
             padding: 100px 40px;
@@ -555,6 +500,19 @@
             box-shadow: 0 2px 8px rgba(255, 140, 0, 0.6);
         }
 
+        .badge-spoofer {
+            background: #666;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            box-shadow: 0 2px 8px rgba(102, 102, 102, 0.6), 0 0 12px rgba(102, 102, 102, 0.4);
+            margin-top: 4px;
+        }
+
         .small-product-content {
             padding: 20px;
             display: flex;
@@ -602,6 +560,9 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
         }
 
             .small-purchase-btn:hover {
@@ -639,223 +600,6 @@
             }
         }
 
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-            align-items: stretch;
-        }
-
-        .product-card {
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 30px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(2px);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-            .product-card:hover {
-                transform: translateY(-8px);
-                background: rgba(74, 144, 226, 0.03);
-                border-color: #4a90e2;
-                box-shadow: 0 20px 50px rgba(74, 144, 226, 0.3), 0 0 20px rgba(74, 144, 226, 0.5);
-            }
-
-            .product-card.popular {
-                border-color: rgba(255, 255, 255, 0.08);
-                box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
-            }
-
-                .product-card.popular:hover {
-                    border-color: #4a90e2;
-                    box-shadow: 0 20px 50px rgba(74, 144, 226, 0.3), 0 0 20px rgba(74, 144, 226, 0.5);
-                }
-
-        .product-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 15px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            z-index: 2;
-            text-transform: uppercase;
-            box-shadow: 0 0 12px rgba(74, 144, 226, 0.6);
-            letter-spacing: 0.5px;
-        }
-
-        .product-category {
-            background: rgba(74, 144, 226, 0.15);
-            color: #4a90e2;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(74, 144, 226, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-block;
-            width: fit-content;
-        }
-
-        .product-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .product-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            position: relative;
-            background-image: url('https://imgur.com/6gueGBP.png');
-            background-size: 35px 35px;
-            background-repeat: no-repeat;
-            background-position: center;
-        }
-
-        .product-info h3 {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 5px;
-        }
-
-        .product-info p {
-            color: #999;
-            font-size: 0.9rem;
-        }
-
-        .product-price {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #4a90e2;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-            .product-price span {
-                font-size: 1rem;
-                color: #999;
-            }
-
-        .feature-list {
-            list-style: none;
-            margin-bottom: 30px;
-            flex-grow: 1;
-            position: relative;
-            z-index: 2;
-        }
-
-            .feature-list li {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 8px 0;
-                color: #999;
-                font-size: 0.9rem;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            }
-
-                .feature-list li:last-child {
-                    border-bottom: none;
-                }
-
-                .feature-list li::before {
-                    content: '✓';
-                    color: white;
-                    background: #00d4aa;
-                    font-weight: bold;
-                    width: 18px;
-                    height: 18px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 0.7rem;
-                    flex-shrink: 0;
-                }
-
-        .purchase-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
-            color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            margin-top: auto;
-            position: relative;
-            z-index: 2;
-        }
-
-            .purchase-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4);
-                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
-            }
-
-        /* Responsive for products */
-        @media (max-width: 768px) {
-            .products-section {
-                padding: 60px 20px;
-            }
-
-            .products-title {
-                font-size: 2.5rem;
-            }
-
-            .products-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .discord-float-btn {
-                bottom: 20px;
-                right: 20px;
-                width: 60px;
-                height: 60px;
-            }
-
-            .youtube-float-btn {
-                width: 60px;
-                height: 60px;
-            }
-
-            .discord-icon,
-            .youtube-icon {
-                width: 30px;
-                height: 30px;
-            }
-        }
-
         /* Header */
         .header {
             display: flex;
@@ -875,6 +619,18 @@
             gap: 15px;
             font-size: 24px;
             font-weight: bold;
+            filter: drop-shadow(0 0 15px rgba(74, 144, 226, 0.6)) drop-shadow(0 0 30px rgba(74, 144, 226, 0.3));
+            animation: logo-glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes logo-glow {
+            0% {
+                filter: drop-shadow(0 0 15px rgba(74, 144, 226, 0.6)) drop-shadow(0 0 30px rgba(74, 144, 226, 0.3));
+            }
+
+            100% {
+                filter: drop-shadow(0 0 20px rgba(74, 144, 226, 0.8)) drop-shadow(0 0 40px rgba(74, 144, 226, 0.5));
+            }
         }
 
         .logo-icon {
@@ -886,8 +642,16 @@
             background-position: center;
             border-radius: 8px;
             position: relative;
-            filter: drop-shadow(0 0 10px rgba(74, 144, 226, 0.8)) drop-shadow(0 0 20px rgba(74, 144, 226, 0.5));
         }
+
+        .logo-text {
+            color: white;
+        }
+
+            .logo-text .software {
+                color: #4a90e2;
+                font-weight: 600;
+            }
 
         .nav {
             display: flex;
@@ -932,22 +696,151 @@
                     width: 100%;
                 }
 
-        .discord-btn {
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        /* Online Counter Styles */
+        .online-counter-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-            .discord-btn:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 8px 25px rgba(74, 144, 226, 0.5);
+        .online-counter {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 25px;
+            padding: 10px 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+            .online-counter:hover {
+                background: rgba(74, 144, 226, 0.05);
+                border-color: rgba(74, 144, 226, 0.3);
+                box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+            }
+
+        .discord-header-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+            position: relative;
+        }
+
+            .discord-header-btn:hover {
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6);
                 background: linear-gradient(135deg, #6bb6ff, #89c4ff);
             }
+
+            .discord-header-btn::before {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background: linear-gradient(135deg, rgba(74, 144, 226, 0.3), rgba(107, 182, 255, 0.3));
+                animation: pulse-ring-discord 2s infinite;
+                z-index: -1;
+            }
+
+        @keyframes pulse-ring-discord {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+        }
+
+        .discord-header-icon {
+            width: 22px;
+            height: 22px;
+            background-image: url('https://imgur.com/RYHz4YB.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: brightness(0) invert(1);
+        }
+
+        .online-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #32cd32;
+            box-shadow: 0 0 15px rgba(50, 205, 50, 0.8), 0 0 30px rgba(50, 205, 50, 0.4);
+            animation: pulse-dot 2s ease-in-out infinite;
+            position: relative;
+        }
+
+            .online-dot::before {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background: rgba(50, 205, 50, 0.3);
+                animation: pulse-ring-green 2s infinite;
+                z-index: -1;
+            }
+
+        @keyframes pulse-dot {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 15px rgba(50, 205, 50, 0.8), 0 0 30px rgba(50, 205, 50, 0.4);
+            }
+
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 20px rgba(50, 205, 50, 1), 0 0 40px rgba(50, 205, 50, 0.6);
+            }
+        }
+
+        @keyframes pulse-ring-green {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .online-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .online-count {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 1;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .online-label {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
 
         /* Main content */
         .main-content {
@@ -1081,12 +974,66 @@
                 box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
             }
 
-        /* Right section - cards */
+        /* Right section - YouTube video with interactive 3D */
         .right-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 1200px;
+            perspective: 1500px;
+        }
+
+        .youtube-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            aspect-ratio: 16/9;
+            transform: rotateY(-15deg) rotateX(5deg);
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            padding: 8px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(74, 144, 226, 0.8), 0 0 60px rgba(74, 144, 226, 0.4);
+            animation: neon-glow 3s ease-in-out infinite alternate;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+        }
+
+            .youtube-container:hover {
+                transform: rotateY(-15deg) rotateX(5deg) scale(1.05);
+                box-shadow: 0 0 30px rgba(74, 144, 226, 0.28), 0 0 60px rgba(74, 144, 226, 0.14);
+            }
+
+        @keyframes neon-glow {
+            0% {
+                box-shadow: 0 0 30px rgba(74, 144, 226, 0.8), 0 0 60px rgba(74, 144, 226, 0.4);
+            }
+
+            100% {
+                box-shadow: 0 0 40px rgba(74, 144, 226, 1), 0 0 80px rgba(74, 144, 226, 0.6), 0 0 120px rgba(107, 182, 255, 0.3);
+            }
+        }
+
+        .youtube-embed {
+            width: 630px;
+            height: 354px;
+            border-radius: 15px;
+            border: none;
+        }
+
+        /* Feature cards section - moved below main content */
+        .feature-cards-section {
+            padding: 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .feature-cards-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-            max-width: 600px;
         }
 
         .feature-card {
@@ -1181,6 +1128,26 @@
             .main-title {
                 font-size: 3rem;
             }
+
+            .right-section {
+                padding-left: 60px;
+            }
+
+            .youtube-container {
+                width: 480px;
+                height: 275px;
+                transform: rotateY(-10deg) rotateX(3deg) translateX(60px);
+                margin-left: 30px;
+            }
+
+            .youtube-embed {
+                width: 460px;
+                height: 259px;
+            }
+
+            .feature-cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 768px) {
@@ -1201,13 +1168,79 @@
             }
 
             .right-section {
+                padding-left: 30px;
+            }
+
+            .youtube-container {
+                width: 320px;
+                height: 185px;
+                transform: rotateY(-8deg) rotateX(2deg) translateX(40px);
+                padding: 6px;
+                margin-left: 20px;
+            }
+
+            .youtube-embed {
+                width: 300px;
+                height: 169px;
+            }
+
+            .feature-cards-section {
+                padding: 60px 20px;
+            }
+
+            .feature-cards-grid {
                 grid-template-columns: 1fr;
-                max-width: 400px;
+                gap: 15px;
             }
 
             .cta-buttons {
                 flex-direction: column;
                 gap: 15px;
+            }
+
+            .discord-float-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+            }
+
+            .youtube-float-btn {
+                width: 60px;
+                height: 60px;
+            }
+
+            .discord-icon,
+            .youtube-icon {
+                width: 30px;
+                height: 30px;
+            }
+
+            .online-counter-container {
+                gap: 10px;
+            }
+
+            .online-counter {
+                padding: 8px 16px;
+                gap: 10px;
+            }
+
+            .online-text {
+                display: none;
+            }
+
+            .online-count {
+                font-size: 14px;
+            }
+
+            .discord-header-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .discord-header-icon {
+                width: 18px;
+                height: 18px;
             }
         }
 
@@ -1464,15 +1497,25 @@
     <header class="header">
         <div class="logo">
             <div class="logo-icon"></div>
-            <span>Varp</span>
+            <span class="logo-text">Varp<span class="software">.Software</span></span>
         </div>
         <nav class="nav">
-            <a href="#" class="nav-link active">Home</a>
-            <a href="#products" class="nav-link">Products</a>
-            <a href="/status" class="nav-link">Status</a>
-            <a href="https://myvouch.es/varp" class="nav-link" target="_blank">Reviews</a>
+            <a href="#" class="nav-link active">HOME</a>
+            <a href="#all-products" class="nav-link">PRODUCTS</a>
+            <a href="https://myvouch.es/varp" class="nav-link" target="_blank">REVIEWS</a>
         </nav>
-        <a href="#" class="discord-btn">Discord</a>
+        <div class="online-counter-container">
+            <div class="online-counter">
+                <div class="online-dot"></div>
+                <div class="online-text">
+                    <span class="online-count" id="online-count">Loading...</span>
+                    <span class="online-label">ONLINE</span>
+                </div>
+            </div>
+            <a href="https://discord.gg/varp" target="_blank" class="discord-header-btn">
+                <div class="discord-header-icon"></div>
+            </a>
+        </div>
     </header>
 
     <!-- Main content -->
@@ -1487,12 +1530,27 @@
                 Take your gaming to the next level with our premium cheats, designed to redefine how you play and dominate every match.
             </p>
             <div class="cta-buttons">
-                <a href="#products" class="start-btn">Start Dominating</a>
+                <a href="#all-products" class="start-btn">Start Dominating</a>
                 <a href="https://discord.gg/varp" target="_blank" class="discord-link">discord</a>
             </div>
         </div>
 
         <div class="right-section">
+            <div class="youtube-container" id="youtubeContainer">
+                <iframe class="youtube-embed" id="youtubeEmbed"
+                        src="https://www.youtube.com/embed/OTKqKAG8ARA"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </main>
+
+    <!-- Feature Cards Section - moved below main content -->
+    <section class="feature-cards-section">
+        <div class="feature-cards-grid">
             <div class="feature-card">
                 <div class="card-icon">🛡</div>
                 <h3 class="card-title">Undetectable</h3>
@@ -1512,91 +1570,6 @@
                 <div class="card-icon">🔧</div>
                 <h3 class="card-title">Easy Setup</h3>
                 <p class="card-description">One-click installation with automated configuration system</p>
-            </div>
-        </div>
-    </main>
-
-    <!-- Products Section -->
-    <section id="products" class="products-section">
-        <h2 class="products-title">Featured Products</h2>
-        <p class="products-subtitle">
-            Products appreciated and most frequently chosen by our many customers!
-        </p>
-
-        <!-- Explore All Products Button -->
-        <a href="#all-products" class="explore-products-btn">Explore all Products</a>
-
-        <div class="products-grid">
-            <!-- Varp Private -->
-            <div class="product-card">
-                <div class="product-category">Cheat Software</div>
-                <div class="product-header">
-                    <div class="product-icon"></div>
-                    <div class="product-info">
-                        <h3>Fortnite Private</h3>
-                        <p>Fully Undetected From EAC/BE</p>
-                    </div>
-                </div>
-                <div class="product-price">$7.99 <span>/ 1 Day</span></div>
-                <ul class="feature-list">
-                    <li>Kernel & Memory Aimbot</li>
-                    <li>Weapons Config & Triggerbot</li>
-                    <li>Visuals & Radar</li>
-                    <li>External Exploits</li>
-                    <li>Miscellaneous</li>
-                    <li>High-Work Streamproof</li>
-                    <li>Custom Resolution Supported</li>
-                </ul>
-                <button class="purchase-btn">Purchase</button>
-            </div>
-
-            <!-- Varp Temp -->
-            <div class="product-card popular">
-                <div class="product-badge">MOST POPULAR</div>
-                <div class="product-category">Temporary SOLUTION</div>
-                <div class="product-header">
-                    <div class="product-icon"></div>
-                    <div class="product-info">
-                        <h3>Temporary Spoofer</h3>
-                        <p>Every Game & Motherboards Supported</p>
-                    </div>
-                </div>
-                <div class="product-price">$3.99 <span>/ 1 Day</span></div>
-                <ul class="feature-list">
-                    <li>Network Adapters</li>
-                    <li>Registry Values</li>
-                    <li>Monitor Serials</li>
-                    <li>GPU/RAM/TPM Serials</li>
-                    <li>NIC & MAC Address</li>
-                    <li>Baseboard Serials</li>
-                    <li>Storage Drive Serials</li>
-
-                </ul>
-                <button class="purchase-btn">Purchase</button>
-            </div>
-
-            <!-- Varp Perm -->
-            <div class="product-card">
-                <div class="product-badge">CHEAPEST PERM SOLUTION</div>
-                <div class="product-category">PERMANENT SOLUTION</div>
-                <div class="product-header">
-                    <div class="product-icon"></div>
-                    <div class="product-info">
-                        <h3>Permanent Spoofer</h3>
-                        <p>Permanently Solution for Legit Players</p>
-                    </div>
-                </div>
-                <div class="product-price">$9.99 <span>/ One-Time Usage</span></div>
-                <ul class="feature-list">
-                    <li>Legit Spoofing Serials</li>
-                    <li>ARP & Disk Ban Bypass</li>
-                    <li>Detailed Instructions [Photos &Videos]</li>
-                    <li>Fortnite Tournaments & Manufacturer Fixer</li>
-                    <li>TPM Bypass [Fortnite Tournaments & Valorant]</li>
-                    <li> Friendly & Helpful Support</li>
-                    <li>Free Account Unban Method</li>
-                </ul>
-                <button class="purchase-btn">Purchase</button>
             </div>
         </div>
     </section>
@@ -1621,7 +1594,7 @@
                     <h4 class="small-product-title">Fortnite Private</h4>
                     <p class="small-product-description">External & Ready For Tournaments Software with Advanced Kernel Protection.</p>
                     <div class="small-product-price">Price: $7.99</div>
-                    <button class="small-purchase-btn">Purchase</button>
+                    <a href="https://varp.mysellauth.com/product/fortnite-private" class="small-purchase-btn">Purchase</a>
                 </div>
             </div>
 
@@ -1638,7 +1611,7 @@
                         External & Undtected Public Software Version with many Features.
                     </p>
                     <div class="small-product-price">Price: $4.99</div>
-                    <button class="small-purchase-btn">Purchase</button>
+                    <a href="https://varp.mysellauth.com/product/fortnite-public" class="small-purchase-btn">Purchase</a>
                 </div>
             </div>
 
@@ -1653,7 +1626,7 @@
                     <h4 class="small-product-title">Permanent Spoofer</h4>
                     <p class="small-product-description">One-time Permanent Hardware unban solution with Lifetime Protection</p>
                     <div class="small-product-price">Price: $9.99</div>
-                    <button class="small-purchase-btn">Purchase</button>
+                    <a href="https://varp.mysellauth.com/product/permanently-spoofer" class="small-purchase-btn">Purchase</a>
                 </div>
             </div>
 
@@ -1672,7 +1645,7 @@
                         Serials will Restore after each PC Restart.
                     </p>
                     <div class="small-product-price">Price: $3.99</div>
-                    <button class="small-purchase-btn">Purchase</button>
+                    <a href="https://varp.mysellauth.com/product/temporary-spoofer" class="small-purchase-btn">Purchase</a>
                 </div>
             </div>
 
@@ -1681,6 +1654,7 @@
                 <div class="small-product-image" style="background-image: url('https://imgur.com/XrobQO5.png');">
                     <div class="product-badges">
                         <div class="badge-status">Undetected</div>
+                        <div class="badge-spoofer">In-Build Spoofer</div>
                     </div>
                 </div>
                 <div class="small-product-content">
@@ -1689,7 +1663,7 @@
                         External Software for Call of Duty Lovers with Beautiful Aim Prediction.
                     </p>
                     <div class="small-product-price">Price: $3.99</div>
-                    <button class="small-purchase-btn">Purchase</button>
+                    <a href="https://varp.mysellauth.com/product/bo6" class="small-purchase-btn">Purchase</a>
                 </div>
             </div>
 
@@ -1698,6 +1672,7 @@
                 <div class="small-product-image" style="background-image: url('https://imgur.com/qeTNJoH.png');">
                     <div class="product-badges">
                         <div class="badge-status">Undetected</div>
+                        <div class="badge-spoofer">In-Build Spoofer</div>
                     </div>
                 </div>
                 <div class="small-product-content">
@@ -1706,7 +1681,7 @@
                         Achieve Victory with The Best Apex External Software with over 80+ Features.
                     </p>
                     <div class="small-product-price">Price: $3.99</div>
-                    <button class="small-purchase-btn">Purchase</button>
+                    <a href="https://varp.mysellauth.com/product/apex" class="small-purchase-btn">Purchase</a>
                 </div>
             </div>
 
@@ -1715,6 +1690,7 @@
                 <div class="small-product-image" style="background-image: url('https://imgur.com/6IYdr6G.png');">
                     <div class="product-badges">
                         <div class="badge-status">Undetected</div>
+                        <div class="badge-spoofer">In-Build Spoofer</div>
                     </div>
                 </div>
                 <div class="small-product-content">
@@ -1723,7 +1699,7 @@
                         External & Undetected Software with Temp Spoofer Included, unbeatable in Rust!
                     </p>
                     <div class="small-product-price">Price: $5.99</div>
-                    <button class="small-purchase-btn">Purchase</button>
+                    <a href="https://varp.mysellauth.com/product/rust" class="small-purchase-btn">Purchase</a>
                 </div>
             </div>
         </div>
@@ -1781,7 +1757,7 @@
             <div class="footer-section">
                 <h3>Varp Menu</h3>
                 <ul class="footer-links">
-                    <li><a href="https://varp.gay/">Home</a></li>
+                    <li><a href="https://varp.gay/home">Home</a></li>
                     <li><a href="#all-products">Products</a></li>
                     <li><a href="https://discord.gg/varp" target="_blank">Contact</a></li>
                     <li><a href="/status">Status</a></li>
@@ -1805,7 +1781,6 @@
             <div class="footer-country">
                 <label for="country-select">Country/region</label>
                 <select id="country-select" class="country-selector">
-                    <option value="pl">Poland (PLN zł)</option>
                     <option value="us">United States (USD $)</option>
                     <option value="eu">Europe (EUR €)</option>
                     <option value="uk">United Kingdom (GBP £)</option>
@@ -1829,8 +1804,87 @@
     </footer>
 
     <script>
-        // Smooth scroll functionality
+        // Zmienne globalne dla licznika online
+        let currentOnlineCount = 0;
+        let nextUpdateTime = 0;
+
+        // Funkcja generująca losową liczbę między min a max
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Funkcja animująca zmianę liczby z płynnym przejściem
+        function animateCounterChange(targetValue) {
+            const counterElement = document.getElementById('online-count');
+            const startValue = currentOnlineCount;
+            const difference = targetValue - startValue;
+            const duration = 1400; // Wolniejsza animacja - 1400ms
+            const startTime = Date.now();
+
+            function updateCounter() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Użyj easing function dla płynniejszego przejścia
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+
+                const currentValue = Math.round(startValue + (difference * easeProgress));
+                counterElement.textContent = currentValue;
+
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    currentOnlineCount = targetValue;
+                }
+            }
+
+            requestAnimationFrame(updateCounter);
+        }
+
+        // Funkcja inicjalizująca losową liczbę przy starcie
+        function initializeOnlineCounter() {
+            currentOnlineCount = getRandomNumber(490, 510);
+            document.getElementById('online-count').textContent = currentOnlineCount;
+
+            // Ustaw pierwszy update za 5-20 sekund
+            nextUpdateTime = Date.now() + getRandomNumber(5000, 20000);
+
+            console.log(`Początkowa liczba online: ${currentOnlineCount}`);
+        }
+
+        // Funkcja aktualizująca liczbę co 5-20 sekund
+        function updateOnlineCounter() {
+            const now = Date.now();
+
+            if (now >= nextUpdateTime) {
+                // Oblicz nową liczbę (zmiana o 1-3 w górę lub w dół)
+                const change = getRandomNumber(-3, 3);
+                let newCount = currentOnlineCount + change;
+
+                // Upewnij się, że liczba mieści się w zakresie 490-510
+                newCount = Math.max(490, Math.min(510, newCount));
+
+                // Animuj zmianę tylko jeśli liczba się rzeczywiście zmieniła
+                if (newCount !== currentOnlineCount) {
+                    animateCounterChange(newCount);
+                    console.log(`Zmiana liczby online: ${currentOnlineCount} → ${newCount} (${change > 0 ? '+' : ''}${change})`);
+                }
+
+                // Ustaw następny update za 5-20 sekund
+                nextUpdateTime = now + getRandomNumber(5000, 20000);
+            }
+        }
+
+        // Główna funkcja inicjalizacyjna
         document.addEventListener('DOMContentLoaded', function () {
+            // Inicjalizuj licznik online
+            initializeOnlineCounter();
+
+            // Uruchom interwał do sprawdzania aktualizacji (sprawdzaj co 300ms dla płynności)
+            setInterval(updateOnlineCounter, 300);
+
+            // Reszta oryginalnego kodu...
+
             // Get all navigation links
             const navLinks = document.querySelectorAll('.nav-link');
 
