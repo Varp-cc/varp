@@ -3,57 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Varp Softwares</title>
+    <title>Varp Softwares1</title>
     <link href="https://fonts.googleapis.com/css2?family=Gilroy:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box
         }
 
         html {
-            scroll-behavior: smooth;
+            scroll-behavior: smooth
         }
 
         body {
-            font-family: 'Gilroy', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Gilroy','Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
             background: #1a1a1a;
             color: white;
             min-height: 100vh;
             overflow-x: hidden;
-            position: relative;
+            position: relative
         }
 
-        /* Custom Scrollbar with Main Theme Colors */
         ::-webkit-scrollbar {
-            width: 12px;
+            width: 12px
         }
 
         ::-webkit-scrollbar-track {
             background: #1a1a1a;
-            border-radius: 10px;
+            border-radius: 10px
         }
 
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            background: linear-gradient(135deg,#4a90e2,#6bb6ff);
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5), 0 0 20px rgba(74, 144, 226, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(74,144,226,0.5),0 0 20px rgba(74,144,226,0.3);
+            transition: all 0.3s ease
         }
 
             ::-webkit-scrollbar-thumb:hover {
-                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
-                box-shadow: 0 0 15px rgba(74, 144, 226, 0.8), 0 0 30px rgba(74, 144, 226, 0.5);
+                background: linear-gradient(135deg,#6bb6ff,#89c4ff);
+                box-shadow: 0 0 15px rgba(74,144,226,0.8),0 0 30px rgba(74,144,226,0.5)
             }
 
-        /* Firefox scrollbar */
         html {
             scrollbar-width: thin;
-            scrollbar-color: #4a90e2 #1a1a1a;
+            scrollbar-color: #4a90e2#1a1a1a
         }
 
-        /* Floating Social Media Buttons */
         .social-float-container {
             position: fixed;
             bottom: 30px;
@@ -61,31 +58,30 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            z-index: 1000;
+            z-index: 1000
         }
 
-        /* YouTube Floating Button */
         .youtube-float-btn {
             width: 70px;
             height: 70px;
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            background: linear-gradient(135deg,#4a90e2,#6bb6ff);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6), 0 0 20px rgba(74, 144, 226, 0.4);
-            border: 3px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 25px rgba(74,144,226,0.6),0 0 20px rgba(74,144,226,0.4);
+            border: 3px solid rgba(255,255,255,0.1);
             text-decoration: none;
-            position: relative;
+            position: relative
         }
 
             .youtube-float-btn:hover {
-                transform: translateY(-8px) scale(1.15);
-                box-shadow: 0 15px 40px rgba(74, 144, 226, 0.8), 0 0 30px rgba(74, 144, 226, 0.9);
-                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
-                border-color: rgba(255, 255, 255, 0.2);
+                transform: translateY(-8px)scale(1.15);
+                box-shadow: 0 15px 40px rgba(74,144,226,0.8),0 0 30px rgba(74,144,226,0.9);
+                background: linear-gradient(135deg,#6bb6ff,#89c4ff);
+                border-color: rgba(255,255,255,0.2)
             }
 
             .youtube-float-btn::before {
@@ -94,31 +90,30 @@
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
-                background: linear-gradient(135deg, rgba(74, 144, 226, 0.3), rgba(107, 182, 255, 0.3));
+                background: linear-gradient(135deg,rgba(74,144,226,0.3),rgba(107,182,255,0.3));
                 animation: pulse-ring 2s infinite;
-                z-index: -1;
+                z-index: -1
             }
 
         @keyframes pulse-ring {
             0% {
                 transform: scale(1);
-                opacity: 1;
+                opacity: 1
             }
 
             100% {
                 transform: scale(1.8);
-                opacity: 0;
+                opacity: 0
             }
         }
 
-        /* FAQ Section */
         .faq-section {
             padding: 100px 40px;
             max-width: 1000px;
             margin: 100px auto 0 auto;
             position: relative;
             z-index: 10;
-            margin-bottom: 150px;
+            margin-bottom: 150px
         }
 
         .faq-title {
@@ -126,37 +121,37 @@
             font-weight: bold;
             text-align: center;
             margin-bottom: 60px;
-            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            background: linear-gradient(135deg,#ffffff,#b3d9ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+            background-clip: text
         }
 
         .faq-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 20px
         }
 
         .faq-item {
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255,255,255,0.01);
+            border: 1px solid rgba(255,255,255,0.06);
             border-radius: 15px;
             overflow: hidden;
             transition: all 0.3s ease;
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(2px)
         }
 
             .faq-item:hover {
-                background: rgba(74, 144, 226, 0.03);
-                border-color: rgba(74, 144, 226, 0.3);
-                box-shadow: 0 8px 25px rgba(74, 144, 226, 0.15);
+                background: rgba(74,144,226,0.03);
+                border-color: rgba(74,144,226,0.3);
+                box-shadow: 0 8px 25px rgba(74,144,226,0.15)
             }
 
             .faq-item.active {
-                background: rgba(74, 144, 226, 0.05);
+                background: rgba(74,144,226,0.05);
                 border-color: #4a90e2;
-                box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
+                box-shadow: 0 10px 30px rgba(74,144,226,0.2)
             }
 
         .faq-question {
@@ -165,7 +160,7 @@
             align-items: center;
             padding: 25px 30px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease
         }
 
             .faq-question h3 {
@@ -174,11 +169,11 @@
                 color: white;
                 margin: 0;
                 flex: 1;
-                transition: color 0.3s ease;
+                transition: color 0.3s ease
             }
 
-        .faq-item.active .faq-question h3 {
-            color: #4a90e2;
+        .faq-item.active.faq-question h3 {
+            color: #4a90e2
         }
 
         .faq-toggle {
@@ -187,24 +182,24 @@
             color: #4a90e2;
             transition: all 0.3s ease;
             min-width: 30px;
-            text-align: center;
+            text-align: center
         }
 
-        .faq-item.active .faq-toggle {
+        .faq-item.active.faq-toggle {
             transform: rotate(45deg);
-            color: #6bb6ff;
+            color: #6bb6ff
         }
 
         .faq-answer {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-            background: rgba(74, 144, 226, 0.02);
+            transition: max-height 0.3s ease,padding 0.3s ease;
+            background: rgba(74,144,226,0.02)
         }
 
-        .faq-item.active .faq-answer {
+        .faq-item.active.faq-answer {
             max-height: 200px;
-            padding: 0 30px 25px 30px;
+            padding: 0 30px 25px 30px
         }
 
         .faq-answer p {
@@ -212,29 +207,28 @@
             line-height: 1.6;
             font-size: 1rem;
             margin: 0;
-            padding-top: 10px;
+            padding-top: 10px
         }
 
-        /* FAQ Responsive */
-        @media (max-width: 768px) {
+        @media(max-width:768px) {
             .faq-section {
-                padding: 60px 20px;
+                padding: 60px 20px
             }
 
             .faq-title {
-                font-size: 2.5rem;
+                font-size: 2.5rem
             }
 
             .faq-question {
-                padding: 20px;
+                padding: 20px
             }
 
                 .faq-question h3 {
-                    font-size: 1.1rem;
+                    font-size: 1.1rem
                 }
 
-            .faq-item.active .faq-answer {
-                padding: 0 20px 20px 20px;
+            .faq-item.active.faq-answer {
+                padding: 0 20px 20px 20px
             }
         }
 
@@ -245,33 +239,32 @@
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
-            filter: brightness(0) invert(1);
+            filter: brightness(0)invert(1);
             z-index: 2;
-            position: relative;
+            position: relative
         }
 
-        /* Discord Floating Button - Enhanced Visibility */
         .discord-float-btn {
             width: 70px;
             height: 70px;
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            background: linear-gradient(135deg,#4a90e2,#6bb6ff);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6), 0 0 20px rgba(74, 144, 226, 0.4);
-            border: 3px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 25px rgba(74,144,226,0.6),0 0 20px rgba(74,144,226,0.4);
+            border: 3px solid rgba(255,255,255,0.1);
             text-decoration: none;
-            position: relative;
+            position: relative
         }
 
             .discord-float-btn:hover {
-                transform: translateY(-8px) scale(1.15);
-                box-shadow: 0 15px 40px rgba(74, 144, 226, 0.8), 0 0 30px rgba(74, 144, 226, 0.9);
-                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
-                border-color: rgba(255, 255, 255, 0.2);
+                transform: translateY(-8px)scale(1.15);
+                box-shadow: 0 15px 40px rgba(74,144,226,0.8),0 0 30px rgba(74,144,226,0.9);
+                background: linear-gradient(135deg,#6bb6ff,#89c4ff);
+                border-color: rgba(255,255,255,0.2)
             }
 
             .discord-float-btn::before {
@@ -280,9 +273,9 @@
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
-                background: linear-gradient(135deg, rgba(74, 144, 226, 0.3), rgba(107, 182, 255, 0.3));
+                background: linear-gradient(135deg,rgba(74,144,226,0.3),rgba(107,182,255,0.3));
                 animation: pulse-ring 2s infinite;
-                z-index: -1;
+                z-index: -1
             }
 
         .discord-icon {
@@ -292,12 +285,11 @@
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
-            filter: brightness(0) invert(1);
+            filter: brightness(0)invert(1);
             z-index: 2;
-            position: relative;
+            position: relative
         }
 
-        /* Grid background - full page */
         body::before {
             content: '';
             position: fixed;
@@ -305,13 +297,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: linear-gradient(rgba(74, 144, 226, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(74, 144, 226, 0.1) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(74,144,226,0.1)1px,transparent 1px),linear-gradient(90deg,rgba(74,144,226,0.1)1px,transparent 1px);
             background-size: 50px 50px;
             pointer-events: none;
-            z-index: 0;
+            z-index: 0
         }
 
-        /* Floating particles background */
         .particles {
             position: absolute;
             top: 0;
@@ -319,7 +310,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 1;
+            z-index: 1
         }
 
         .particle {
@@ -329,50 +320,49 @@
             background: #4a90e2;
             border-radius: 50%;
             opacity: 0.6;
-            animation: float 6s ease-in-out infinite;
+            animation: float 6s ease-in-out infinite
         }
 
             .particle:nth-child(2n) {
                 background: #6bb6ff;
                 animation-duration: 8s;
-                animation-delay: -2s;
+                animation-delay: -2s
             }
 
             .particle:nth-child(3n) {
                 background: #89c4ff;
                 animation-duration: 10s;
-                animation-delay: -4s;
+                animation-delay: -4s
             }
 
         @keyframes float {
-            0%, 100% {
-                transform: translateY(0px) translateX(0px);
-                opacity: 0.6;
+            0%,100% {
+                transform: translateY(0px)translateX(0px);
+                opacity: 0.6
             }
 
             25% {
-                transform: translateY(-20px) translateX(10px);
-                opacity: 0.8;
+                transform: translateY(-20px)translateX(10px);
+                opacity: 0.8
             }
 
             50% {
-                transform: translateY(-40px) translateX(-5px);
-                opacity: 1;
+                transform: translateY(-40px)translateX(-5px);
+                opacity: 1
             }
 
             75% {
-                transform: translateY(-60px) translateX(15px);
-                opacity: 0.8;
+                transform: translateY(-60px)translateX(15px);
+                opacity: 0.8
             }
         }
 
-        /* All Products Section */
         .all-products-section {
             padding: 100px 40px;
             max-width: 1400px;
             margin: 100px auto 0 auto;
             position: relative;
-            z-index: 10;
+            z-index: 10
         }
 
         .all-products-title {
@@ -380,10 +370,10 @@
             font-weight: bold;
             text-align: center;
             margin-bottom: 28px;
-            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            background: linear-gradient(135deg,#ffffff,#b3d9ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+            background-clip: text
         }
 
         .all-products-subtitle {
@@ -394,19 +384,19 @@
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-            line-height: 1.6;
+            line-height: 1.6
         }
 
         .all-products-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(4,1fr);
             gap: 25px;
-            margin-top: 60px;
+            margin-top: 60px
         }
 
         .small-product-card {
-            background: rgba(255, 255, 255, 0.01);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.01);
+            border: 2px solid rgba(255,255,255,0.1);
             border-radius: 15px;
             padding: 0;
             transition: all 0.3s ease;
@@ -415,14 +405,14 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 100%;
+            height: 100%
         }
 
             .small-product-card:hover {
                 transform: translateY(-5px);
-                background: rgba(74, 144, 226, 0.03);
+                background: rgba(74,144,226,0.03);
                 border-color: #4a90e2;
-                box-shadow: 0 15px 35px rgba(74, 144, 226, 0.25), 0 0 15px rgba(74, 144, 226, 0.4);
+                box-shadow: 0 15px 35px rgba(74,144,226,0.25),0 0 15px rgba(74,144,226,0.4)
             }
 
         .small-product-image {
@@ -433,7 +423,7 @@
             background-repeat: no-repeat;
             border-radius: 13px 13px 0 0;
             position: relative;
-            overflow: hidden;
+            overflow: hidden
         }
 
             .small-product-image::before {
@@ -443,14 +433,14 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(107, 182, 255, 0.05));
+                background: linear-gradient(135deg,rgba(74,144,226,0.1),rgba(107,182,255,0.05));
                 pointer-events: none;
                 z-index: 1;
-                transition: all 0.3s ease;
+                transition: all 0.3s ease
             }
 
-        .small-product-card:hover .small-product-image::before {
-            background: linear-gradient(135deg, rgba(74, 144, 226, 0.2), rgba(107, 182, 255, 0.1));
+        .small-product-card:hover.small-product-image::before {
+            background: linear-gradient(135deg,rgba(74,144,226,0.2),rgba(107,182,255,0.1))
         }
 
         .product-badges {
@@ -461,11 +451,11 @@
             gap: 8px;
             flex-direction: column;
             align-items: flex-end;
-            z-index: 2;
+            z-index: 2
         }
 
         .badge-popular {
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            background: linear-gradient(135deg,#4a90e2,#6bb6ff);
             color: white;
             padding: 4px 10px;
             border-radius: 12px;
@@ -473,7 +463,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.6);
+            box-shadow: 0 2px 8px rgba(74,144,226,0.6)
         }
 
         .badge-status {
@@ -485,7 +475,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(50, 205, 50, 0.6);
+            box-shadow: 0 2px 8px rgba(50,205,50,0.6)
         }
 
         .badge-updating {
@@ -497,7 +487,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(255, 140, 0, 0.6);
+            box-shadow: 0 2px 8px rgba(255,140,0,0.6)
         }
 
         .badge-spoofer {
@@ -509,22 +499,22 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.4px;
-            box-shadow: 0 2px 8px rgba(102, 102, 102, 0.6), 0 0 12px rgba(102, 102, 102, 0.4);
-            margin-top: 4px;
+            box-shadow: 0 2px 8px rgba(102,102,102,0.6),0 0 12px rgba(102,102,102,0.4);
+            margin-top: 4px
         }
 
         .small-product-content {
             padding: 20px;
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
+            flex-grow: 1
         }
 
         .small-product-title {
             font-size: 1.2rem;
             font-weight: bold;
             color: white;
-            margin-bottom: 8px;
+            margin-bottom: 8px
         }
 
         .small-product-description {
@@ -536,7 +526,7 @@
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+            -webkit-box-orient: vertical
         }
 
         .small-product-price {
@@ -544,12 +534,12 @@
             font-size: 1rem;
             font-weight: 700;
             margin-bottom: 15px;
-            margin-top: auto;
+            margin-top: auto
         }
 
         .small-purchase-btn {
             width: 100%;
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            background: linear-gradient(135deg,#4a90e2,#6bb6ff);
             color: white;
             padding: 12px;
             border: 2px solid transparent;
@@ -562,45 +552,43 @@
             letter-spacing: 0.5px;
             text-decoration: none;
             display: block;
-            text-align: center;
+            text-align: center
         }
 
             .small-purchase-btn:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
-                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
-                border-color: rgba(255, 255, 255, 0.2);
+                box-shadow: 0 8px 20px rgba(74,144,226,0.4);
+                background: linear-gradient(135deg,#6bb6ff,#89c4ff);
+                border-color: rgba(255,255,255,0.2)
             }
 
-        /* Responsive for all products */
-        @media (max-width: 1200px) {
+        @media(max-width:1200px) {
             .all-products-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(3,1fr)
             }
         }
 
-        @media (max-width: 768px) {
+        @media(max-width:768px) {
             .all-products-section {
-                padding: 60px 20px;
+                padding: 60px 20px
             }
 
             .all-products-title {
-                font-size: 2.5rem;
+                font-size: 2.5rem
             }
 
             .all-products-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
+                grid-template-columns: repeat(2,1fr);
+                gap: 15px
             }
         }
 
-        @media (max-width: 480px) {
+        @media(max-width:480px) {
             .all-products-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr
             }
         }
 
-        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
@@ -608,9 +596,9 @@
             padding: 20px 40px;
             position: relative;
             z-index: 10;
-            background: rgba(26, 26, 26, 0.9);
-            border-bottom: 1px solid #333;
-            backdrop-filter: blur(10px);
+            background: rgba(26,26,26,0.9);
+            border-bottom: 1px solid#333;
+            backdrop-filter: blur(10px)
         }
 
         .logo {
@@ -619,17 +607,17 @@
             gap: 15px;
             font-size: 24px;
             font-weight: bold;
-            filter: drop-shadow(0 0 15px rgba(74, 144, 226, 0.6)) drop-shadow(0 0 30px rgba(74, 144, 226, 0.3));
-            animation: logo-glow 3s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 15px rgba(74,144,226,0.6))drop-shadow(0 0 30px rgba(74,144,226,0.3));
+            animation: logo-glow 3s ease-in-out infinite alternate
         }
 
         @keyframes logo-glow {
             0% {
-                filter: drop-shadow(0 0 15px rgba(74, 144, 226, 0.6)) drop-shadow(0 0 30px rgba(74, 144, 226, 0.3));
+                filter: drop-shadow(0 0 15px rgba(74,144,226,0.6))drop-shadow(0 0 30px rgba(74,144,226,0.3))
             }
 
             100% {
-                filter: drop-shadow(0 0 20px rgba(74, 144, 226, 0.8)) drop-shadow(0 0 40px rgba(74, 144, 226, 0.5));
+                filter: drop-shadow(0 0 20px rgba(74,144,226,0.8))drop-shadow(0 0 40px rgba(74,144,226,0.5))
             }
         }
 
@@ -641,21 +629,21 @@
             background-repeat: no-repeat;
             background-position: center;
             border-radius: 8px;
-            position: relative;
+            position: relative
         }
 
         .logo-text {
-            color: white;
+            color: white
         }
 
-            .logo-text .software {
+            .logo-text.software {
                 color: #4a90e2;
-                font-weight: 600;
+                font-weight: 600
             }
 
         .nav {
             display: flex;
-            gap: 30px;
+            gap: 30px
         }
 
         .nav-link {
@@ -666,7 +654,7 @@
             transition: all 0.3s ease;
             position: relative;
             padding: 8px 0;
-            cursor: pointer;
+            cursor: pointer
         }
 
             .nav-link::after {
@@ -677,48 +665,47 @@
                 width: 0;
                 height: 2px;
                 background: #4a90e2;
-                transition: width 0.3s ease;
+                transition: width 0.3s ease
             }
 
             .nav-link:hover {
-                color: white;
+                color: white
             }
 
                 .nav-link:hover::after {
-                    width: 100%;
+                    width: 100%
                 }
 
             .nav-link.active {
-                color: #4a90e2;
+                color: #4a90e2
             }
 
                 .nav-link.active::after {
-                    width: 100%;
+                    width: 100%
                 }
 
-        /* Online Counter Styles */
         .online-counter-container {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 15px
         }
 
         .online-counter {
             display: flex;
             align-items: center;
             gap: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 25px;
             padding: 10px 20px;
             backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            transition: all 0.3s ease
         }
 
             .online-counter:hover {
-                background: rgba(74, 144, 226, 0.05);
-                border-color: rgba(74, 144, 226, 0.3);
-                box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+                background: rgba(74,144,226,0.05);
+                border-color: rgba(74,144,226,0.3);
+                box-shadow: 0 4px 15px rgba(74,144,226,0.2)
             }
 
         .discord-header-btn {
@@ -727,18 +714,18 @@
             justify-content: center;
             width: 45px;
             height: 45px;
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            background: linear-gradient(135deg,#4a90e2,#6bb6ff);
             border-radius: 50%;
             text-decoration: none;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
-            position: relative;
+            box-shadow: 0 4px 15px rgba(74,144,226,0.4);
+            position: relative
         }
 
             .discord-header-btn:hover {
-                transform: translateY(-2px) scale(1.05);
-                box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6);
-                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+                transform: translateY(-2px)scale(1.05);
+                box-shadow: 0 8px 25px rgba(74,144,226,0.6);
+                background: linear-gradient(135deg,#6bb6ff,#89c4ff)
             }
 
             .discord-header-btn::before {
@@ -747,20 +734,20 @@
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
-                background: linear-gradient(135deg, rgba(74, 144, 226, 0.3), rgba(107, 182, 255, 0.3));
+                background: linear-gradient(135deg,rgba(74,144,226,0.3),rgba(107,182,255,0.3));
                 animation: pulse-ring-discord 2s infinite;
-                z-index: -1;
+                z-index: -1
             }
 
         @keyframes pulse-ring-discord {
             0% {
                 transform: scale(1);
-                opacity: 1;
+                opacity: 1
             }
 
             100% {
                 transform: scale(1.6);
-                opacity: 0;
+                opacity: 0
             }
         }
 
@@ -771,7 +758,7 @@
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
-            filter: brightness(0) invert(1);
+            filter: brightness(0)invert(1)
         }
 
         .online-dot {
@@ -779,9 +766,9 @@
             height: 12px;
             border-radius: 50%;
             background: #32cd32;
-            box-shadow: 0 0 15px rgba(50, 205, 50, 0.8), 0 0 30px rgba(50, 205, 50, 0.4);
+            box-shadow: 0 0 15px rgba(50,205,50,0.8),0 0 30px rgba(50,205,50,0.4);
             animation: pulse-dot 2s ease-in-out infinite;
-            position: relative;
+            position: relative
         }
 
             .online-dot::before {
@@ -790,39 +777,39 @@
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
-                background: rgba(50, 205, 50, 0.3);
+                background: rgba(50,205,50,0.3);
                 animation: pulse-ring-green 2s infinite;
-                z-index: -1;
+                z-index: -1
             }
 
         @keyframes pulse-dot {
-            0%, 100% {
+            0%,100% {
                 transform: scale(1);
-                box-shadow: 0 0 15px rgba(50, 205, 50, 0.8), 0 0 30px rgba(50, 205, 50, 0.4);
+                box-shadow: 0 0 15px rgba(50,205,50,0.8),0 0 30px rgba(50,205,50,0.4)
             }
 
             50% {
                 transform: scale(1.1);
-                box-shadow: 0 0 20px rgba(50, 205, 50, 1), 0 0 40px rgba(50, 205, 50, 0.6);
+                box-shadow: 0 0 20px rgba(50,205,50,1),0 0 40px rgba(50,205,50,0.6)
             }
         }
 
         @keyframes pulse-ring-green {
             0% {
                 transform: scale(1);
-                opacity: 1;
+                opacity: 1
             }
 
             100% {
                 transform: scale(2);
-                opacity: 0;
+                opacity: 0
             }
         }
 
         .online-text {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: flex-start
         }
 
         .online-count {
@@ -831,7 +818,7 @@
             font-size: 16px;
             line-height: 1;
             transition: all 0.3s ease;
-            position: relative;
+            position: relative
         }
 
         .online-label {
@@ -839,10 +826,9 @@
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            line-height: 1;
+            line-height: 1
         }
 
-        /* Main content */
         .main-content {
             display: flex;
             align-items: center;
@@ -852,41 +838,41 @@
             margin: 0 auto;
             position: relative;
             z-index: 10;
-            min-height: calc(100vh - 160px);
+            min-height: calc(100vh-160px)
         }
 
         .left-section {
             flex: 1;
-            max-width: 600px;
+            max-width: 600px
         }
 
         .premium-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(74, 144, 226, 0.2);
-            border: 1px solid #4a90e2;
+            background: rgba(74,144,226,0.2);
+            border: 1px solid#4a90e2;
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: bold;
             color: #4a90e2;
             margin-bottom: 30px;
-            animation: pulse 2s ease-in-out infinite;
+            animation: pulse 2s ease-in-out infinite
         }
 
         @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
+            0%,100% {
+                transform: scale(1)
             }
 
             50% {
-                transform: scale(1.05);
+                transform: scale(1.05)
             }
         }
 
         .flame-icon {
-            color: #4a90e2;
+            color: #4a90e2
         }
 
         .main-title {
@@ -894,12 +880,12 @@
             font-weight: bold;
             line-height: 1.1;
             margin-bottom: 50px;
-            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            background: linear-gradient(135deg,#ffffff,#b3d9ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             position: relative;
-            padding-bottom: 20px;
+            padding-bottom: 20px
         }
 
             .main-title::after {
@@ -908,18 +894,18 @@
                 bottom: 0;
                 left: 0;
                 height: 4px;
-                background: linear-gradient(90deg, #4a90e2, #6bb6ff);
+                background: linear-gradient(90deg,#4a90e2,#6bb6ff);
                 border-radius: 2px;
-                animation: line-expand 3s ease-in-out infinite;
+                animation: line-expand 3s ease-in-out infinite
             }
 
         @keyframes line-expand {
-            0%, 100% {
-                width: 0%;
+            0%,100% {
+                width: 0%
             }
 
             50% {
-                width: 100%;
+                width: 100%
             }
         }
 
@@ -927,17 +913,17 @@
             font-size: 1.2rem;
             color: #b3d9ff;
             margin-bottom: 40px;
-            line-height: 1.6;
+            line-height: 1.6
         }
 
         .cta-buttons {
             display: flex;
             gap: 20px;
-            align-items: center;
+            align-items: center
         }
 
         .start-btn {
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            background: linear-gradient(135deg,#4a90e2,#6bb6ff);
             color: white;
             padding: 16px 32px;
             border-radius: 30px;
@@ -945,13 +931,13 @@
             font-weight: bold;
             font-size: 1.1rem;
             transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+            box-shadow: 0 6px 20px rgba(74,144,226,0.4)
         }
 
             .start-btn:hover {
                 transform: translateY(-4px);
-                box-shadow: 0 12px 35px rgba(74, 144, 226, 0.6);
-                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+                box-shadow: 0 12px 35px rgba(74,144,226,0.6);
+                background: linear-gradient(135deg,#6bb6ff,#89c4ff)
             }
 
         .discord-link {
@@ -961,9 +947,9 @@
             font-weight: bold;
             transition: all 0.3s ease;
             padding: 16px 32px;
-            border: 2px solid #4a90e2;
+            border: 2px solid#4a90e2;
             border-radius: 30px;
-            background: transparent;
+            background: transparent
         }
 
             .discord-link:hover {
@@ -971,16 +957,15 @@
                 background: #4a90e2;
                 border-color: #4a90e2;
                 transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+                box-shadow: 0 8px 25px rgba(74,144,226,0.4)
             }
 
-        /* Right section - YouTube video with interactive 3D */
         .right-section {
             display: flex;
             align-items: center;
             justify-content: center;
             max-width: 1200px;
-            perspective: 1500px;
+            perspective: 1500px
         }
 
         .youtube-container {
@@ -988,29 +973,29 @@
             width: 100%;
             max-width: 1000px;
             aspect-ratio: 16/9;
-            transform: rotateY(-15deg) rotateX(5deg);
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            transform: rotateY(-15deg)rotateX(5deg);
+            background: linear-gradient(135deg,#4a90e2,#6bb6ff);
             padding: 8px;
             border-radius: 20px;
-            box-shadow: 0 0 30px rgba(74, 144, 226, 0.8), 0 0 60px rgba(74, 144, 226, 0.4);
+            box-shadow: 0 0 30px rgba(74,144,226,0.8),0 0 60px rgba(74,144,226,0.4);
             animation: neon-glow 3s ease-in-out infinite alternate;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            transform-style: preserve-3d;
+            transition: transform 0.3s ease,box-shadow 0.3s ease;
+            transform-style: preserve-3d
         }
 
             .youtube-container:hover {
-                transform: rotateY(-15deg) rotateX(5deg) scale(1.05);
-                box-shadow: 0 0 30px rgba(74, 144, 226, 0.28), 0 0 60px rgba(74, 144, 226, 0.14);
+                transform: rotateY(-15deg)rotateX(5deg)scale(1.05);
+                box-shadow: 0 0 30px rgba(74,144,226,0.28),0 0 60px rgba(74,144,226,0.14)
             }
 
         @keyframes neon-glow {
             0% {
-                box-shadow: 0 0 30px rgba(74, 144, 226, 0.8), 0 0 60px rgba(74, 144, 226, 0.4);
+                box-shadow: 0 0 30px rgba(74,144,226,0.8),0 0 60px rgba(74,144,226,0.4)
             }
 
             100% {
-                box-shadow: 0 0 40px rgba(74, 144, 226, 1), 0 0 80px rgba(74, 144, 226, 0.6), 0 0 120px rgba(107, 182, 255, 0.3);
+                box-shadow: 0 0 40px rgba(74,144,226,1),0 0 80px rgba(74,144,226,0.6),0 0 120px rgba(107,182,255,0.3)
             }
         }
 
@@ -1018,46 +1003,45 @@
             width: 630px;
             height: 354px;
             border-radius: 15px;
-            border: none;
+            border: none
         }
 
-        /* Feature cards section - moved below main content */
         .feature-cards-section {
             padding: 80px 40px;
             max-width: 1400px;
             margin: 0 auto;
             position: relative;
-            z-index: 10;
+            z-index: 10
         }
 
         .feature-cards-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(4,1fr);
+            gap: 20px
         }
 
         .feature-card {
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255,255,255,0.01);
+            border: 1px solid rgba(255,255,255,0.06);
             border-radius: 15px;
             padding: 30px;
             transition: all 0.3s ease;
             backdrop-filter: blur(2px);
             position: relative;
-            overflow: hidden;
+            overflow: hidden
         }
 
             .feature-card:hover {
                 transform: translateY(-8px);
-                background: rgba(74, 144, 226, 0.03);
+                background: rgba(74,144,226,0.03);
                 border-color: #4a90e2;
-                box-shadow: 0 15px 40px rgba(74, 144, 226, 0.3), 0 0 15px rgba(74, 144, 226, 0.5);
+                box-shadow: 0 15px 40px rgba(74,144,226,0.3),0 0 15px rgba(74,144,226,0.5)
             }
 
         .card-icon {
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            background: linear-gradient(135deg,#4a90e2,#6bb6ff);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -1067,7 +1051,7 @@
             font-size: 24px;
             position: relative;
             z-index: 2;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease
         }
 
             .card-icon::before {
@@ -1077,26 +1061,26 @@
                 left: 50%;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(135deg, rgba(74, 144, 226, 0.3), rgba(107, 182, 255, 0.3));
+                background: linear-gradient(135deg,rgba(74,144,226,0.3),rgba(107,182,255,0.3));
                 border-radius: 12px;
-                transform: translate(-50%, -50%) scale(0);
+                transform: translate(-50%,-50%)scale(0);
                 animation: none;
                 z-index: -1;
-                transition: all 0.3s ease;
+                transition: all 0.3s ease
             }
 
-        .feature-card:hover .card-icon::before {
-            transform: translate(-50%, -50%) scale(1.2);
-            animation: rotate 3s linear infinite;
+        .feature-card:hover.card-icon::before {
+            transform: translate(-50%,-50%)scale(1.2);
+            animation: rotate 3s linear infinite
         }
 
         @keyframes rotate {
             from {
-                transform: translate(-50%, -50%) scale(1.2) rotate(0deg);
+                transform: translate(-50%,-50%)scale(1.2)rotate(0deg)
             }
 
             to {
-                transform: translate(-50%, -50%) scale(1.2) rotate(360deg);
+                transform: translate(-50%,-50%)scale(1.2)rotate(360deg)
             }
         }
 
@@ -1106,7 +1090,7 @@
             margin-bottom: 15px;
             color: white;
             position: relative;
-            z-index: 2;
+            z-index: 2
         }
 
         .card-description {
@@ -1114,140 +1098,137 @@
             line-height: 1.5;
             font-size: 0.95rem;
             position: relative;
-            z-index: 2;
+            z-index: 2
         }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
+        @media(max-width:1024px) {
             .main-content {
                 flex-direction: column;
                 gap: 60px;
-                text-align: center;
+                text-align: center
             }
 
             .main-title {
-                font-size: 3rem;
+                font-size: 3rem
             }
 
             .right-section {
-                padding-left: 60px;
+                padding-left: 60px
             }
 
             .youtube-container {
                 width: 480px;
                 height: 275px;
-                transform: rotateY(-10deg) rotateX(3deg) translateX(60px);
-                margin-left: 30px;
+                transform: rotateY(-10deg)rotateX(3deg)translateX(60px);
+                margin-left: 30px
             }
 
             .youtube-embed {
                 width: 460px;
-                height: 259px;
+                height: 259px
             }
 
             .feature-cards-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2,1fr)
             }
         }
 
-        @media (max-width: 768px) {
+        @media(max-width:768px) {
             .header {
-                padding: 15px 20px;
+                padding: 15px 20px
             }
 
             .nav {
-                display: none;
+                display: none
             }
 
             .main-content {
-                padding: 40px 20px;
+                padding: 40px 20px
             }
 
             .main-title {
-                font-size: 2.5rem;
+                font-size: 2.5rem
             }
 
             .right-section {
-                padding-left: 30px;
+                padding-left: 30px
             }
 
             .youtube-container {
                 width: 320px;
                 height: 185px;
-                transform: rotateY(-8deg) rotateX(2deg) translateX(40px);
+                transform: rotateY(-8deg)rotateX(2deg)translateX(40px);
                 padding: 6px;
-                margin-left: 20px;
+                margin-left: 20px
             }
 
             .youtube-embed {
                 width: 300px;
-                height: 169px;
+                height: 169px
             }
 
             .feature-cards-section {
-                padding: 60px 20px;
+                padding: 60px 20px
             }
 
             .feature-cards-grid {
                 grid-template-columns: 1fr;
-                gap: 15px;
+                gap: 15px
             }
 
             .cta-buttons {
                 flex-direction: column;
-                gap: 15px;
+                gap: 15px
             }
 
             .discord-float-btn {
                 bottom: 20px;
                 right: 20px;
                 width: 60px;
-                height: 60px;
+                height: 60px
             }
 
             .youtube-float-btn {
                 width: 60px;
-                height: 60px;
+                height: 60px
             }
 
-            .discord-icon,
-            .youtube-icon {
+            .discord-icon, .youtube-icon {
                 width: 30px;
-                height: 30px;
+                height: 30px
             }
 
             .online-counter-container {
-                gap: 10px;
+                gap: 10px
             }
 
             .online-counter {
                 padding: 8px 16px;
-                gap: 10px;
+                gap: 10px
             }
 
             .online-text {
-                display: none;
+                display: none
             }
 
             .online-count {
-                font-size: 14px;
+                font-size: 14px
             }
 
             .discord-header-btn {
                 width: 40px;
-                height: 40px;
+                height: 40px
             }
 
             .discord-header-icon {
                 width: 18px;
-                height: 18px;
+                height: 18px
             }
         }
 
-        /* Footer Styles */
         .footer {
             background: #1a1a1a;
-            border-top: 3px solid #4a90e2;
+            border-top: 3px solid#4a90e2;
             position: relative;
             z-index: 10;
             margin-top: -1px;
@@ -1256,19 +1237,19 @@
             right: 50%;
             margin-left: -50vw;
             margin-right: -50vw;
-            box-shadow: 0 -3px 15px rgba(74, 144, 226, 0.4);
-            animation: glow-footer-line 3s ease-in-out infinite;
+            box-shadow: 0-3px 15px rgba(74,144,226,0.4);
+            animation: glow-footer-line 3s ease-in-out infinite
         }
 
         @keyframes glow-footer-line {
-            0%, 100% {
+            0%,100% {
                 border-top-color: #4a90e2;
-                box-shadow: 0 -3px 15px rgba(74, 144, 226, 0.4);
+                box-shadow: 0-3px 15px rgba(74,144,226,0.4)
             }
 
             50% {
                 border-top-color: #6bb6ff;
-                box-shadow: 0 -3px 25px rgba(107, 182, 255, 1);
+                box-shadow: 0-3px 25px rgba(107,182,255,1)
             }
         }
 
@@ -1278,69 +1259,69 @@
             padding: 60px 40px 40px 40px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 60px;
+            gap: 60px
         }
 
         .footer-section h3 {
             font-size: 1.3rem;
             font-weight: bold;
             color: white;
-            margin-bottom: 20px;
+            margin-bottom: 20px
         }
 
         .footer-links {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 12px
         }
 
             .footer-links li a {
                 color: #999;
                 text-decoration: none;
                 font-size: 0.9rem;
-                transition: color 0.3s ease;
+                transition: color 0.3s ease
             }
 
                 .footer-links li a:hover {
-                    color: #4a90e2;
+                    color: #4a90e2
                 }
 
         .newsletter p {
             color: #999;
             margin-bottom: 20px;
-            line-height: 1.5;
+            line-height: 1.5
         }
 
         .newsletter-form {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 15px
         }
 
         .newsletter-input {
             flex: 1;
             padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 8px;
             color: white;
             font-size: 0.9rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease
         }
 
             .newsletter-input:focus {
                 outline: none;
                 border-color: #4a90e2;
-                background: rgba(74, 144, 226, 0.05);
+                background: rgba(74,144,226,0.05)
             }
 
             .newsletter-input::placeholder {
-                color: #666;
+                color: #666
             }
 
         .newsletter-btn {
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            background: linear-gradient(135deg,#4a90e2,#6bb6ff);
             color: white;
             border: none;
             padding: 12px 24px;
@@ -1348,60 +1329,60 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            white-space: nowrap;
+            white-space: nowrap
         }
 
             .newsletter-btn:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
-                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+                box-shadow: 0 8px 20px rgba(74,144,226,0.4);
+                background: linear-gradient(135deg,#6bb6ff,#89c4ff)
             }
 
         .footer-bottom {
             max-width: 1400px;
             margin: 0 auto;
             padding: 30px 40px;
-            border-top: 1px solid #333;
+            border-top: 1px solid#333;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 20px
         }
 
         .footer-country {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 8px
         }
 
             .footer-country label {
                 color: #999;
                 font-size: 0.8rem;
                 text-transform: uppercase;
-                letter-spacing: 0.5px;
+                letter-spacing: 0.5px
             }
 
         .country-selector {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 6px;
             color: white;
             padding: 8px 12px;
             font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease
         }
 
             .country-selector:focus {
                 outline: none;
-                border-color: #4a90e2;
+                border-color: #4a90e2
             }
 
         .payment-methods {
             display: flex;
             gap: 8px;
-            align-items: center;
+            align-items: center
         }
 
         .payment-icon {
@@ -1410,580 +1391,45 @@
             border-radius: 4px;
             opacity: 0.8;
             transition: opacity 0.3s ease;
-            object-fit: cover;
+            object-fit: cover
         }
 
             .payment-icon:hover {
-                opacity: 1;
+                opacity: 1
             }
 
         .footer-copyright {
             color: #666;
-            font-size: 0.8rem;
+            font-size: 0.8rem
         }
 
-        /* Footer Responsive */
-        @media (max-width: 768px) {
+        @media(max-width:768px) {
             .footer-content {
                 grid-template-columns: 1fr;
                 gap: 40px;
-                padding: 40px 20px 30px 20px;
+                padding: 40px 20px 30px 20px
             }
 
             .footer-bottom {
                 flex-direction: column;
                 gap: 20px;
                 padding: 20px;
-                text-align: center;
+                text-align: center
             }
 
             .newsletter-form {
-                flex-direction: column;
+                flex-direction: column
             }
 
             .payment-methods {
                 flex-wrap: wrap;
-                justify-content: center;
+                justify-content: center
             }
         }
     </style>
 </head>
 <body>
-    <!-- Floating particles -->
-    <div class="particles">
-        <div class="particle" style="left: 10%; top: 20%;"></div>
-        <div class="particle" style="left: 20%; top: 60%;"></div>
-        <div class="particle" style="left: 30%; top: 10%;"></div>
-        <div class="particle" style="left: 40%; top: 70%;"></div>
-        <div class="particle" style="left: 50%; top: 30%;"></div>
-        <div class="particle" style="left: 60%; top: 80%;"></div>
-        <div class="particle" style="left: 70%; top: 15%;"></div>
-        <div class="particle" style="left: 80%; top: 45%;"></div>
-        <div class="particle" style="left: 90%; top: 25%;"></div>
-        <div class="particle" style="left: 15%; top: 85%;"></div>
-        <div class="particle" style="left: 85%; top: 75%;"></div>
-        <div class="particle" style="left: 45%; top: 5%;"></div>
-        <div class="particle" style="left: 75%; top: 55%;"></div>
-        <div class="particle" style="left: 25%; top: 40%;"></div>
-        <div class="particle" style="left: 65%; top: 90%;"></div>
-        <div class="particle" style="left: 5%; top: 35%;"></div>
-        <div class="particle" style="left: 35%; top: 65%;"></div>
-        <div class="particle" style="left: 55%; top: 12%;"></div>
-        <div class="particle" style="left: 8%; top: 50%;"></div>
-        <div class="particle" style="left: 78%; top: 28%;"></div>
-        <div class="particle" style="left: 12%; top: 72%;"></div>
-        <div class="particle" style="left: 42%; top: 88%;"></div>
-        <div class="particle" style="left: 62%; top: 18%;"></div>
-        <div class="particle" style="left: 82%; top: 62%;"></div>
-        <div class="particle" style="left: 22%; top: 8%;"></div>
-        <div class="particle" style="left: 72%; top: 82%;"></div>
-        <div class="particle" style="left: 32%; top: 48%;"></div>
-        <div class="particle" style="left: 52%; top: 68%;"></div>
-        <div class="particle" style="left: 92%; top: 38%;"></div>
-        <div class="particle" style="left: 18%; top: 58%;"></div>
-    </div>
-
-    <!-- Social Media Floating Buttons -->
-    <div class="social-float-container">
-        <a href="https://www.youtube.com/@varpspoofer" target="_blank" class="youtube-float-btn">
-            <div class="youtube-icon"></div>
-        </a>
-        <a href="https://discord.gg/varp" target="_blank" class="discord-float-btn">
-            <div class="discord-icon"></div>
-        </a>
-    </div>
-
-    <!-- Header -->
-    <header class="header">
-        <div class="logo">
-            <div class="logo-icon"></div>
-            <span class="logo-text">Varp<span class="software">.Software</span></span>
-        </div>
-        <nav class="nav">
-            <a href="#" class="nav-link active">HOME</a>
-            <a href="#all-products" class="nav-link">PRODUCTS</a>
-            <a href="https://myvouch.es/varp" class="nav-link" target="_blank">REVIEWS</a>
-        </nav>
-        <div class="online-counter-container">
-            <div class="online-counter">
-                <div class="online-dot"></div>
-                <div class="online-text">
-                    <span class="online-count" id="online-count">Loading...</span>
-                    <span class="online-label">ONLINE</span>
-                </div>
-            </div>
-            <a href="https://discord.gg/varp" target="_blank" class="discord-header-btn">
-                <div class="discord-header-icon"></div>
-            </a>
-        </div>
-    </header>
-
-    <!-- Main content -->
-    <main class="main-content">
-        <div class="left-section">
-            <div class="premium-badge">
-                <span class="flame-icon">🔥</span>
-                Undetected & Premium
-            </div>
-            <h1 class="main-title">Enhance Your<br>Game Right Now!</h1>
-            <p class="subtitle">
-                Take your gaming to the next level with our premium cheats, designed to redefine how you play and dominate every match.
-            </p>
-            <div class="cta-buttons">
-                <a href="#all-products" class="start-btn">Start Dominating</a>
-                <a href="https://discord.gg/varp" target="_blank" class="discord-link">discord</a>
-            </div>
-        </div>
-
-        <div class="right-section">
-            <div class="youtube-container" id="youtubeContainer">
-                <iframe class="youtube-embed" id="youtubeEmbed"
-                        src="https://www.youtube.com/embed/OTKqKAG8ARA"
-                        title="YouTube video player"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-    </main>
-
-    <!-- Feature Cards Section - moved below main content -->
-    <section class="feature-cards-section">
-        <div class="feature-cards-grid">
-            <div class="feature-card">
-                <div class="card-icon">🛡</div>
-                <h3 class="card-title">Undetectable</h3>
-                <p class="card-description">Advanced kernel-level protection with real-time signature updates</p>
-            </div>
-            <div class="feature-card">
-                <div class="card-icon">⚡</div>
-                <h3 class="card-title">Ultra Fast</h3>
-                <p class="card-description">Sub-millisecond response times with optimized memory access</p>
-            </div>
-            <div class="feature-card">
-                <div class="card-icon">🎯</div>
-                <h3 class="card-title">Precision Aim</h3>
-                <p class="card-description">AI-powered targeting with customizable smoothing algorithms</p>
-            </div>
-            <div class="feature-card">
-                <div class="card-icon">🔧</div>
-                <h3 class="card-title">Easy Setup</h3>
-                <p class="card-description">One-click installation with automated configuration system</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- All Products Section -->
-    <section id="all-products" class="all-products-section">
-        <h2 class="all-products-title">All Products</h2>
-        <p class="all-products-subtitle">
-            Premium Applications tailored for every skill level. From beginners to elite competitors, find the perfect package to dominate your battlefield.
-        </p>
-
-        <div class="all-products-grid">
-            <!-- Fortnite Private -->
-            <div class="small-product-card">
-                <div class="small-product-image" style="background-image: url('https://i.imgur.com/gVE5Z2j.png');">
-                    <div class="product-badges">
-                        <div class="badge-popular">Most Popular</div>
-                        <div class="badge-updating">Updating</div>
-                    </div>
-                </div>
-                <div class="small-product-content">
-                    <h4 class="small-product-title">Fortnite Private</h4>
-                    <p class="small-product-description">External & Ready For Tournaments Software with Advanced Kernel Protection.</p>
-                    <div class="small-product-price">Price: $7.99</div>
-                    <a href="https://varp.mysellauth.com/product/fortnite-private" class="small-purchase-btn">Purchase</a>
-                </div>
-            </div>
-
-            <!-- Fortnite Public -->
-            <div class="small-product-card">
-                <div class="small-product-image" style="background-image: url('https://imgur.com/9rB54DA.png');">
-                    <div class="product-badges">
-                        <div class="badge-status">Undetected</div>
-                    </div>
-                </div>
-                <div class="small-product-content">
-                    <h4 class="small-product-title">Fortnite Public</h4>
-                    <p class="small-product-description">
-                        External & Undtected Public Software Version with many Features.
-                    </p>
-                    <div class="small-product-price">Price: $4.99</div>
-                    <a href="https://varp.mysellauth.com/product/fortnite-public" class="small-purchase-btn">Purchase</a>
-                </div>
-            </div>
-
-            <!-- Permanent Spoofer -->
-            <div class="small-product-card">
-                <div class="small-product-image" style="background-image: url('https://imgur.com/vnMC2yy.png');">
-                    <div class="product-badges">
-                        <div class="badge-status">Undetected</div>
-                    </div>
-                </div>
-                <div class="small-product-content">
-                    <h4 class="small-product-title">Permanent Spoofer</h4>
-                    <p class="small-product-description">One-time Permanent Hardware unban solution with Lifetime Protection</p>
-                    <div class="small-product-price">Price: $9.99</div>
-                    <a href="https://varp.mysellauth.com/product/permanently-spoofer" class="small-purchase-btn">Purchase</a>
-                </div>
-            </div>
-
-            <!-- Temporary Spoofer -->
-            <div class="small-product-card">
-                <div class="small-product-image" style="background-image: url('https://imgur.com/ZCSFtsg.png');">
-                    <div class="product-badges">
-                        <div class="badge-popular">Most Popular</div>
-                        <div class="badge-status">Undetected</div>
-                    </div>
-                </div>
-                <div class="small-product-content">
-                    <h4 class="small-product-title">Temporary Spoofer</h4>
-                    <p class="small-product-description">
-                        Reusable solution to Temporary unlock devices.
-                        Serials will Restore after each PC Restart.
-                    </p>
-                    <div class="small-product-price">Price: $3.99</div>
-                    <a href="https://varp.mysellauth.com/product/temporary-spoofer" class="small-purchase-btn">Purchase</a>
-                </div>
-            </div>
-
-            <!-- BO6 External -->
-            <div class="small-product-card">
-                <div class="small-product-image" style="background-image: url('https://imgur.com/XrobQO5.png');">
-                    <div class="product-badges">
-                        <div class="badge-status">Undetected</div>
-                        <div class="badge-spoofer">In-Build Spoofer</div>
-                    </div>
-                </div>
-                <div class="small-product-content">
-                    <h4 class="small-product-title">BO6 External</h4>
-                    <p class="small-product-description">
-                        External Software for Call of Duty Lovers with Beautiful Aim Prediction.
-                    </p>
-                    <div class="small-product-price">Price: $3.99</div>
-                    <a href="https://varp.mysellauth.com/product/bo6" class="small-purchase-btn">Purchase</a>
-                </div>
-            </div>
-
-            <!-- Apex External -->
-            <div class="small-product-card">
-                <div class="small-product-image" style="background-image: url('https://imgur.com/qeTNJoH.png');">
-                    <div class="product-badges">
-                        <div class="badge-status">Undetected</div>
-                        <div class="badge-spoofer">In-Build Spoofer</div>
-                    </div>
-                </div>
-                <div class="small-product-content">
-                    <h4 class="small-product-title">Apex External</h4>
-                    <p class="small-product-description">
-                        Achieve Victory with The Best Apex External Software with over 80+ Features.
-                    </p>
-                    <div class="small-product-price">Price: $3.99</div>
-                    <a href="https://varp.mysellauth.com/product/apex" class="small-purchase-btn">Purchase</a>
-                </div>
-            </div>
-
-            <!-- Rust External -->
-            <div class="small-product-card">
-                <div class="small-product-image" style="background-image: url('https://imgur.com/6IYdr6G.png');">
-                    <div class="product-badges">
-                        <div class="badge-status">Undetected</div>
-                        <div class="badge-spoofer">In-Build Spoofer</div>
-                    </div>
-                </div>
-                <div class="small-product-content">
-                    <h4 class="small-product-title">Rust External</h4>
-                    <p class="small-product-description">
-                        External & Undetected Software with Temp Spoofer Included, unbeatable in Rust!
-                    </p>
-                    <div class="small-product-price">Price: $5.99</div>
-                    <a href="https://varp.mysellauth.com/product/rust" class="small-purchase-btn">Purchase</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section - Now moved below All Products -->
-    <section class="faq-section">
-        <h2 class="faq-title">Frequently Asked Questions</h2>
-        <div class="faq-container">
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>What is the return policy for purchases?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>If the product didn't work for you or you had other problems, contact us and we will definitely refund you 100% of your money. We value our customers' satisfaction! ;)</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>How do I make a purchase?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Making a purchase is easy. Simply browse the available products and add the ones you wish to purchase to your cart. When you are ready to checkout, you will be prompted to enter your payment information and complete the transaction.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>Is it safe to make payments?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Yes, we take security very seriously. We use advanced fraud prevention measures to protect against fraudulent transactions and we do not store sensitive payment information.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>Can I make payments using my preferred method?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Yes, we support a wide range of payment methods, including popular fiat options like Credit Cards as well as various crypto currencies. This enables you to make payments using the method that is most convenient for you.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Varp Menu</h3>
-                <ul class="footer-links">
-                    <li><a href="https://varp.gay/home">Home</a></li>
-                    <li><a href="#all-products">Products</a></li>
-                    <li><a href="https://discord.gg/varp" target="_blank">Contact</a></li>
-                    <li><a href="/status">Status</a></li>
-                    <li><a href="https://discord.gg/varp" target="_blank">Discord</a></li>
-                    <li><a href="https://discord.gg/varp" target="_blank">Features</a></li>
-                    <li><a href="https://discord.gg/varp" target="_blank">Terms</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section newsletter">
-                <h3>Subscribe to our emails</h3>
-                <p>Subscribe to our emails for the latest offers, news and promotions</p>
-                <div class="newsletter-form">
-                    <input type="email" placeholder="Email" class="newsletter-input">
-                    <button class="newsletter-btn">Sign up</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <div class="footer-country">
-                <label for="country-select">Country/region</label>
-                <select id="country-select" class="country-selector">
-                    <option value="us">United States (USD $)</option>
-                    <option value="eu">Europe (EUR €)</option>
-                    <option value="uk">United Kingdom (GBP £)</option>
-                </select>
-            </div>
-
-            <div class="payment-methods">
-                <img src="https://imgur.com/kxG4AUt.png" alt="Visa" class="payment-icon">
-                <img src="https://imgur.com/UZFJNzW.png" alt="Mastercard" class="payment-icon">
-                <img src="https://imgur.com/NUj4vtj.png" alt="PayPal" class="payment-icon">
-                <img src="https://imgur.com/pDACTZJ.png" alt="Bitcoin" class="payment-icon">
-                <img src="https://imgur.com/9FmcCx6.png" alt="Ethereum" class="payment-icon">
-                <img src="https://imgur.com/R0MYZ1u.png" alt="Litecoin" class="payment-icon">
-                <img src="https://imgur.com/S8vn0CR.png" alt="Google Pay" class="payment-icon">
-            </div>
-
-            <div class="footer-copyright">
-                <p>&copy; 2025, Varp Powered by VARP</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Zmienne globalne dla licznika online
-        let currentOnlineCount = 0;
-        let nextUpdateTime = 0;
-
-        // Funkcja generująca losową liczbę między min a max
-        function getRandomNumber(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        // Funkcja animująca zmianę liczby z płynnym przejściem
-        function animateCounterChange(targetValue) {
-            const counterElement = document.getElementById('online-count');
-            const startValue = currentOnlineCount;
-            const difference = targetValue - startValue;
-            const duration = 1400; // Wolniejsza animacja - 1400ms
-            const startTime = Date.now();
-
-            function updateCounter() {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-
-                // Użyj easing function dla płynniejszego przejścia
-                const easeProgress = 1 - Math.pow(1 - progress, 4);
-
-                const currentValue = Math.round(startValue + (difference * easeProgress));
-                counterElement.textContent = currentValue;
-
-                if (progress < 1) {
-                    requestAnimationFrame(updateCounter);
-                } else {
-                    currentOnlineCount = targetValue;
-                }
-            }
-
-            requestAnimationFrame(updateCounter);
-        }
-
-        // Funkcja inicjalizująca losową liczbę przy starcie
-        function initializeOnlineCounter() {
-            currentOnlineCount = getRandomNumber(490, 510);
-            document.getElementById('online-count').textContent = currentOnlineCount;
-
-            // Ustaw pierwszy update za 5-20 sekund
-            nextUpdateTime = Date.now() + getRandomNumber(5000, 20000);
-
-            console.log(`Początkowa liczba online: ${currentOnlineCount}`);
-        }
-
-        // Funkcja aktualizująca liczbę co 5-20 sekund
-        function updateOnlineCounter() {
-            const now = Date.now();
-
-            if (now >= nextUpdateTime) {
-                // Oblicz nową liczbę (zmiana o 1-3 w górę lub w dół)
-                const change = getRandomNumber(-3, 3);
-                let newCount = currentOnlineCount + change;
-
-                // Upewnij się, że liczba mieści się w zakresie 490-510
-                newCount = Math.max(490, Math.min(510, newCount));
-
-                // Animuj zmianę tylko jeśli liczba się rzeczywiście zmieniła
-                if (newCount !== currentOnlineCount) {
-                    animateCounterChange(newCount);
-                    console.log(`Zmiana liczby online: ${currentOnlineCount} → ${newCount} (${change > 0 ? '+' : ''}${change})`);
-                }
-
-                // Ustaw następny update za 5-20 sekund
-                nextUpdateTime = now + getRandomNumber(5000, 20000);
-            }
-        }
-
-        // Główna funkcja inicjalizacyjna
-        document.addEventListener('DOMContentLoaded', function () {
-            // Inicjalizuj licznik online
-            initializeOnlineCounter();
-
-            // Uruchom interwał do sprawdzania aktualizacji (sprawdzaj co 300ms dla płynności)
-            setInterval(updateOnlineCounter, 300);
-
-            // Reszta oryginalnego kodu...
-
-            // Get all navigation links
-            const navLinks = document.querySelectorAll('.nav-link');
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', function (e) {
-                    // Check if the link has a href that starts with #
-                    const href = this.getAttribute('href');
-
-                    // Handle external links (Reviews)
-                    if (href && href.startsWith('http')) {
-                        // Let the browser handle external links normally
-                        return;
-                    }
-
-                    // Handle /status link
-                    if (href === '/status') {
-                        // Let the browser handle the page navigation
-                        return;
-                    }
-
-                    if (href && href.startsWith('#')) {
-                        e.preventDefault();
-
-                        // Remove active class from all links
-                        navLinks.forEach(l => l.classList.remove('active'));
-
-                        // Add active class to clicked link
-                        this.classList.add('active');
-
-                        // Get target element
-                        const targetId = href.substring(1);
-                        const targetElement = document.getElementById(targetId);
-
-                        if (targetElement) {
-                            // Smooth scroll to target
-                            targetElement.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        } else if (href === '#') {
-                            // If it's home, scroll to top
-                            window.scrollTo({
-                                top: 0,
-                                behavior: 'smooth'
-                            });
-                        }
-                    }
-                });
-            });
-
-            // Update active navigation based on scroll position
-            window.addEventListener('scroll', function () {
-                const sections = document.querySelectorAll('section[id], main');
-                const scrollPos = window.scrollY + 100;
-
-                sections.forEach(section => {
-                    const top = section.offsetTop;
-                    const bottom = top + section.offsetHeight;
-                    const id = section.getAttribute('id');
-
-                    if (scrollPos >= top && scrollPos <= bottom) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href') === `#${id}`) {
-                                link.classList.add('active');
-                            }
-                        });
-                    }
-                });
-
-                // Handle home section (when at top)
-                if (window.scrollY < 200) {
-                    navLinks.forEach(link => {
-                        link.classList.remove('active');
-                        if (link.getAttribute('href') === '#' || link.textContent.trim() === 'Home') {
-                            link.classList.add('active');
-                        }
-                    });
-                }
-            });
-        });
-
-        // FAQ functionality
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const faqItem = question.parentElement;
-                const isActive = faqItem.classList.contains('active');
-
-                // Close all FAQ items
-                document.querySelectorAll('.faq-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-
-                // Open clicked item if it wasn't active
-                if (!isActive) {
-                    faqItem.classList.add('active');
-                }
-            });
-        });
-    </script>
+    <!--Floating particles--><div class="particles"><div class="particle" style="left: 10%; top: 20%;"></div><div class="particle" style="left: 20%; top: 60%;"></div><div class="particle" style="left: 30%; top: 10%;"></div><div class="particle" style="left: 40%; top: 70%;"></div><div class="particle" style="left: 50%; top: 30%;"></div><div class="particle" style="left: 60%; top: 80%;"></div><div class="particle" style="left: 70%; top: 15%;"></div><div class="particle" style="left: 80%; top: 45%;"></div><div class="particle" style="left: 90%; top: 25%;"></div><div class="particle" style="left: 15%; top: 85%;"></div><div class="particle" style="left: 85%; top: 75%;"></div><div class="particle" style="left: 45%; top: 5%;"></div><div class="particle" style="left: 75%; top: 55%;"></div><div class="particle" style="left: 25%; top: 40%;"></div><div class="particle" style="left: 65%; top: 90%;"></div><div class="particle" style="left: 5%; top: 35%;"></div><div class="particle" style="left: 35%; top: 65%;"></div><div class="particle" style="left: 55%; top: 12%;"></div><div class="particle" style="left: 8%; top: 50%;"></div><div class="particle" style="left: 78%; top: 28%;"></div><div class="particle" style="left: 12%; top: 72%;"></div><div class="particle" style="left: 42%; top: 88%;"></div><div class="particle" style="left: 62%; top: 18%;"></div><div class="particle" style="left: 82%; top: 62%;"></div><div class="particle" style="left: 22%; top: 8%;"></div><div class="particle" style="left: 72%; top: 82%;"></div><div class="particle" style="left: 32%; top: 48%;"></div><div class="particle" style="left: 52%; top: 68%;"></div><div class="particle" style="left: 92%; top: 38%;"></div><div class="particle" style="left: 18%; top: 58%;"></div></div><!--Social Media Floating Buttons--><div class="social-float-container"><a href="https://www.youtube.com/@varpspoofer" target="_0" class="youtube-float-btn"><div class="youtube-icon"></div></a><a href="https://discord.gg/varp" target="_0" class="discord-float-btn"><div class="discord-icon"></div></a></div><!--Header--><header class="header"><div class="logo"><div class="logo-icon"></div><span class="logo-text">Varp<span class="software">.Software</span></span></div><nav class="nav"><a href="#" class="nav-link active">HOME</a><a href="#all-products" class="nav-link">PRODUCTS</a><a href="https://myvouch.es/varp" class="nav-link" target="_0">REVIEWS</a></nav><div class="online-counter-container"><div class="online-counter"><div class="online-dot"></div><div class="online-text"><span class="online-count" id="online-count">Loading...</span><span class="online-label">ONLINE</span></div></div><a href="https://discord.gg/varp" target="_0" class="discord-header-btn"><div class="discord-header-icon"></div></a></div></header><!--Main content--><main class="main-content"><div class="left-section"><div class="premium-badge"><span class="flame-icon">🔥</span>Undetected&Premium</div><h1 class="main-title">Enhance Your<br>Game Right Now!</h1><p class="subtitle">Take your gaming to the next level with our premium cheats,designed to redefine how you play and dominate every match.</p><div class="cta-buttons"><a href="#all-products" class="start-btn">Start Dominating</a><a href="https://discord.gg/varp" target="_0" class="discord-link">discord</a></div></div><div class="right-section"><div class="youtube-container" id="youtubeContainer"><iframe class="youtube-embed" id="youtubeEmbed" src="https://www.youtube.com/embed/OTKqKAG8ARA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div></div></main><!--Feature Cards Section-moved below main content--><section class="feature-cards-section"><div class="feature-cards-grid"><div class="feature-card"><div class="card-icon">🛡</div><h3 class="card-title">Undetectable</h3><p class="card-description">Advanced kernel-level protection with real-time signature updates</p></div><div class="feature-card"><div class="card-icon">⚡</div><h3 class="card-title">Ultra Fast</h3><p class="card-description">Sub-millisecond response times with optimized memory access</p></div><div class="feature-card"><div class="card-icon">🎯</div><h3 class="card-title">Precision Aim</h3><p class="card-description">AI-powered targeting with customizable smoothing algorithms</p></div><div class="feature-card"><div class="card-icon">🔧</div><h3 class="card-title">Easy Setup</h3><p class="card-description">One-click installation with automated configuration system</p></div></div></section><!--All Products Section--><section id="all-products" class="all-products-section"><h2 class="all-products-title">All Products</h2><p class="all-products-subtitle">Premium Applications tailored for every skill level.From beginners to elite competitors,find the perfect package to dominate your battlefield.</p><div class="all-products-grid"><!--Fortnite Private--><div class="small-product-card"><div class="small-product-image" style="background-image: url('https://i.imgur.com/gVE5Z2j.png');"><div class="product-badges"><div class="badge-popular">Most Popular</div><div class="badge-updating">Updating</div></div></div><div class="small-product-content"><h4 class="small-product-title">Fortnite Private</h4><p class="small-product-description">External&Ready For Tournaments Software with Advanced Kernel Protection.</p><div class="small-product-price">Price:$7.99</div><a href="https://varp.mysellauth.com/product/fortnite-private" class="small-purchase-btn">Purchase</a></div></div><!--Fortnite Public--><div class="small-product-card"><div class="small-product-image" style="background-image: url('https://imgur.com/9rB54DA.png');"><div class="product-badges"><div class="badge-status">Undetected</div></div></div><div class="small-product-content"><h4 class="small-product-title">Fortnite Public</h4><p class="small-product-description">External&Undtected Public Software Version with many Features.</p><div class="small-product-price">Price:$4.99</div><a href="https://varp.mysellauth.com/product/fortnite-public" class="small-purchase-btn">Purchase</a></div></div><!--Permanent Spoofer--><div class="small-product-card"><div class="small-product-image" style="background-image: url('https://imgur.com/vnMC2yy.png');"><div class="product-badges"><div class="badge-status">Undetected</div></div></div><div class="small-product-content"><h4 class="small-product-title">Permanent Spoofer</h4><p class="small-product-description">One-time Permanent Hardware unban solution with Lifetime Protection</p><div class="small-product-price">Price:$9.99</div><a href="https://varp.mysellauth.com/product/permanently-spoofer" class="small-purchase-btn">Purchase</a></div></div><!--Temporary Spoofer--><div class="small-product-card"><div class="small-product-image" style="background-image: url('https://imgur.com/ZCSFtsg.png');"><div class="product-badges"><div class="badge-popular">Most Popular</div><div class="badge-status">Undetected</div></div></div><div class="small-product-content"><h4 class="small-product-title">Temporary Spoofer</h4><p class="small-product-description">Reusable solution to Temporary unlock devices.Serials will Restore after each PC Restart.</p><div class="small-product-price">Price:$3.99</div><a href="https://varp.mysellauth.com/product/temporary-spoofer" class="small-purchase-btn">Purchase</a></div></div><!--BO6 External--><div class="small-product-card"><div class="small-product-image" style="background-image: url('https://imgur.com/XrobQO5.png');"><div class="product-badges"><div class="badge-status">Undetected</div><div class="badge-spoofer">In-Build Spoofer</div></div></div><div class="small-product-content"><h4 class="small-product-title">BO6 External</h4><p class="small-product-description">External Software for Call of Duty Lovers with Beautiful Aim Prediction.</p><div class="small-product-price">Price:$3.99</div><a href="https://varp.mysellauth.com/product/bo6" class="small-purchase-btn">Purchase</a></div></div><!--Apex External--><div class="small-product-card"><div class="small-product-image" style="background-image: url('https://imgur.com/qeTNJoH.png');"><div class="product-badges"><div class="badge-status">Undetected</div><div class="badge-spoofer">In-Build Spoofer</div></div></div><div class="small-product-content"><h4 class="small-product-title">Apex External</h4><p class="small-product-description">Achieve Victory with The Best Apex External Software with over 80+Features.</p><div class="small-product-price">Price:$3.99</div><a href="https://varp.mysellauth.com/product/apex" class="small-purchase-btn">Purchase</a></div></div><!--Rust External--><div class="small-product-card"><div class="small-product-image" style="background-image: url('https://imgur.com/6IYdr6G.png');"><div class="product-badges"><div class="badge-status">Undetected</div><div class="badge-spoofer">In-Build Spoofer</div></div></div><div class="small-product-content"><h4 class="small-product-title">Rust External</h4><p class="small-product-description">External&Undetected Software with Temp Spoofer Included,unbeatable in Rust!</p><div class="small-product-price">Price:$5.99</div><a href="https://varp.mysellauth.com/product/rust" class="small-purchase-btn">Purchase</a></div></div></div></section><!--FAQ Section-Now moved below All Products--><section class="faq-section"><h2 class="faq-title">Frequently Asked Questions</h2><div class="faq-container"><div class="faq-item"><div class="faq-question"><h3>What is the return policy for purchases?</h3><span class="faq-toggle">+</span></div><div class="faq-answer"><p>If the product didn't work for you or you had other problems, contact us and we will definitely refund you 100% of your money. We value our customers'satisfaction!;)</p></div></div><div class="faq-item"><div class="faq-question"><h3>How do I make a purchase?</h3><span class="faq-toggle">+</span></div><div class="faq-answer"><p>Making a purchase is easy.Simply browse the available products and add the ones you wish to purchase to your cart.When you are ready to checkout,you will be prompted to enter your payment information and complete the transaction.</p></div></div><div class="faq-item"><div class="faq-question"><h3>Is it safe to make payments?</h3><span class="faq-toggle">+</span></div><div class="faq-answer"><p>Yes,we take security very seriously.We use advanced fraud prevention measures to protect against fraudulent transactions and we do not store sensitive payment information.</p></div></div><div class="faq-item"><div class="faq-question"><h3>Can I make payments using my preferred method?</h3><span class="faq-toggle">+</span></div><div class="faq-answer"><p>Yes,we support a wide range of payment methods,including popular fiat options like Credit Cards as well as various crypto currencies.This enables you to make payments using the method that is most convenient for you.</p></div></div></div></section><!--Footer--><footer class="footer"><div class="footer-content"><div class="footer-section"><h3>Varp Menu</h3><ul class="footer-links"><li><a href="https://varp.gay/home">Home</a></li><li><a href="#all-products">Products</a></li><li><a href="https://discord.gg/varp" target="_0">Contact</a></li><li><a href="/status">Status</a></li><li><a href="https://discord.gg/varp" target="_0">Discord</a></li><li><a href="https://discord.gg/varp" target="_0">Features</a></li><li><a href="https://discord.gg/varp" target="_0">Terms</a></li></ul></div><div class="footer-section newsletter"><h3>Subscribe to our emails</h3><p>Subscribe to our emails for the latest offers,news and promotions</p><div class="newsletter-form"><input type="email" placeholder="Email" class="newsletter-input"><button class="newsletter-btn">Sign up</button></div></div></div><div class="footer-bottom"><div class="footer-country"><label for="country-select">Country/region</label><select id="country-select" class="country-selector"><option value="us">United States(USD $)</option><option value="eu">Europe(EUR€)</option><option value="uk">United Kingdom(GBP£)</option></select></div><div class="payment-methods"><img src="https://imgur.com/kxG4AUt.png" alt="Visa" class="payment-icon"><img src="https://imgur.com/UZFJNzW.png" alt="Mastercard" class="payment-icon"><img src="https://imgur.com/NUj4vtj.png" alt="PayPal" class="payment-icon"><img src="https://imgur.com/pDACTZJ.png" alt="Bitcoin" class="payment-icon"><img src="https://imgur.com/9FmcCx6.png" alt="Ethereum" class="payment-icon"><img src="https://imgur.com/R0MYZ1u.png" alt="Litecoin" class="payment-icon"><img src="https://imgur.com/S8vn0CR.png" alt="Google Pay" class="payment-icon"></div><div class="footer-copyright"><p>&copy;2025,Varp Powered by VARP</p></div></div></footer>
+    <script>let currentOnlineCount = 0; let nextUpdateTime = 0; function getRandomNumber(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min } function animateCounterChange(targetValue) { const counterElement = document.getElementById('online-count'); const startValue = currentOnlineCount; const difference = targetValue - startValue; const duration = 1400; const startTime = Date.now(); function updateCounter() { const elapsed = Date.now() - startTime; const progress = Math.min(elapsed / duration, 1); const easeProgress = 1 - Math.pow(1 - progress, 4); const currentValue = Math.round(startValue + (difference * easeProgress)); counterElement.textContent = currentValue; if (progress < 1) { requestAnimationFrame(updateCounter) } else { currentOnlineCount = targetValue } } requestAnimationFrame(updateCounter) } function initializeOnlineCounter() { currentOnlineCount = getRandomNumber(490, 510); document.getElementById('online-count').textContent = currentOnlineCount; nextUpdateTime = Date.now() + getRandomNumber(5000, 20000); console.log(`Początkowa liczba online:${currentOnlineCount}`) } function updateOnlineCounter() { const now = Date.now(); if (now >= nextUpdateTime) { const change = getRandomNumber(-3, 3); let newCount = currentOnlineCount + change; newCount = Math.max(490, Math.min(510, newCount)); if (newCount !== currentOnlineCount) { animateCounterChange(newCount); console.log(`Zmiana liczby online:${currentOnlineCount}→${newCount}(${change > 0 ? '+' : ''}${change})`) } nextUpdateTime = now + getRandomNumber(5000, 20000) } } document.addEventListener('DOMContentLoaded', function () { initializeOnlineCounter(); setInterval(updateOnlineCounter, 300); const navLinks = document.querySelectorAll('.nav-link'); navLinks.forEach(link => { link.addEventListener('click', function (e) { const href = this.getAttribute('href'); if (href && href.startsWith('http')) { return } if (href === '/status') { return } if (href && href.startsWith('#')) { e.preventDefault(); navLinks.forEach(l => l.classList.remove('active')); this.classList.add('active'); const targetId = href.substring(1); const targetElement = document.getElementById(targetId); if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' }) } else if (href === '#') { window.scrollTo({ top: 0, behavior: 'smooth' }) } } }) }); window.addEventListener('scroll', function () { const sections = document.querySelectorAll('section[id], main'); const scrollPos = window.scrollY + 100; sections.forEach(section => { const top = section.offsetTop; const bottom = top + section.offsetHeight; const id = section.getAttribute('id'); if (scrollPos >= top && scrollPos <= bottom) { navLinks.forEach(link => { link.classList.remove('active'); if (link.getAttribute('href') === `#${id}`) { link.classList.add('active') } }) } }); if (window.scrollY < 200) { navLinks.forEach(link => { link.classList.remove('active'); if (link.getAttribute('href') === '#' || link.textContent.trim() === 'Home') { link.classList.add('active') } }) } }) }); document.querySelectorAll('.faq-question').forEach(question => { question.addEventListener('click', () => { const faqItem = question.parentElement; const isActive = faqItem.classList.contains('active'); document.querySelectorAll('.faq-item').forEach(item => { item.classList.remove('active') }); if (!isActive) { faqItem.classList.add('active') } }) });</script>
 </body>
 </html>
