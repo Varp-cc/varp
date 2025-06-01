@@ -5,11 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Varp Softwares</title>
     <link href="https://fonts.googleapis.com/css2?family=Gilroy:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Anti-copy meta tags -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+
     <style>
+        /* Podstawowe reset i zabezpieczenia */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         html {
@@ -25,7 +36,23 @@
             position: relative;
         }
 
-        /* Custom Scrollbar with Main Theme Colors */
+        /* Anti-copy protection */
+        ::selection {
+            background: transparent;
+        }
+
+        ::-moz-selection {
+            background: transparent;
+        }
+
+        /* Hide on print */
+        @media print {
+            * {
+                display: none !important;
+            }
+        }
+
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 12px;
         }
@@ -47,7 +74,6 @@
                 box-shadow: 0 0 15px rgba(74, 144, 226, 0.8), 0 0 30px rgba(74, 144, 226, 0.5);
             }
 
-        /* Firefox scrollbar */
         html {
             scrollbar-width: thin;
             scrollbar-color: #4a90e2 #1a1a1a;
@@ -64,8 +90,7 @@
             z-index: 1000;
         }
 
-        /* YouTube Floating Button */
-        .youtube-float-btn {
+        .youtube-float-btn, .discord-float-btn {
             width: 70px;
             height: 70px;
             background: linear-gradient(135deg, #4a90e2, #6bb6ff);
@@ -81,14 +106,14 @@
             position: relative;
         }
 
-            .youtube-float-btn:hover {
+            .youtube-float-btn:hover, .discord-float-btn:hover {
                 transform: translateY(-8px) scale(1.15);
                 box-shadow: 0 15px 40px rgba(74, 144, 226, 0.8), 0 0 30px rgba(74, 144, 226, 0.9);
                 background: linear-gradient(135deg, #6bb6ff, #89c4ff);
                 border-color: rgba(255, 255, 255, 0.2);
             }
 
-            .youtube-float-btn::before {
+            .youtube-float-btn::before, .discord-float-btn::before {
                 content: '';
                 position: absolute;
                 width: 100%;
@@ -215,29 +240,6 @@
             padding-top: 10px;
         }
 
-        /* FAQ Responsive */
-        @media (max-width: 768px) {
-            .faq-section {
-                padding: 60px 20px;
-            }
-
-            .faq-title {
-                font-size: 2.5rem;
-            }
-
-            .faq-question {
-                padding: 20px;
-            }
-
-                .faq-question h3 {
-                    font-size: 1.1rem;
-                }
-
-            .faq-item.active .faq-answer {
-                padding: 0 20px 20px 20px;
-            }
-        }
-
         .youtube-icon {
             width: 35px;
             height: 35px;
@@ -249,41 +251,6 @@
             z-index: 2;
             position: relative;
         }
-
-        /* Discord Floating Button - Enhanced Visibility */
-        .discord-float-btn {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6), 0 0 20px rgba(74, 144, 226, 0.4);
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            text-decoration: none;
-            position: relative;
-        }
-
-            .discord-float-btn:hover {
-                transform: translateY(-8px) scale(1.15);
-                box-shadow: 0 15px 40px rgba(74, 144, 226, 0.8), 0 0 30px rgba(74, 144, 226, 0.9);
-                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
-                border-color: rgba(255, 255, 255, 0.2);
-            }
-
-            .discord-float-btn::before {
-                content: '';
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                border-radius: 50%;
-                background: linear-gradient(135deg, rgba(74, 144, 226, 0.3), rgba(107, 182, 255, 0.3));
-                animation: pulse-ring 2s infinite;
-                z-index: -1;
-            }
 
         .discord-icon {
             width: 35px;
@@ -297,7 +264,7 @@
             position: relative;
         }
 
-        /* Grid background - full page */
+        /* Grid background */
         body::before {
             content: '';
             position: fixed;
@@ -572,34 +539,6 @@
                 border-color: rgba(255, 255, 255, 0.2);
             }
 
-        /* Responsive for all products */
-        @media (max-width: 1200px) {
-            .all-products-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .all-products-section {
-                padding: 60px 20px;
-            }
-
-            .all-products-title {
-                font-size: 2.5rem;
-            }
-
-            .all-products-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .all-products-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         /* Header */
         .header {
             display: flex;
@@ -696,7 +635,7 @@
                     width: 100%;
                 }
 
-        /* Online Counter Styles */
+        /* Online Counter */
         .online-counter-container {
             display: flex;
             align-items: center;
@@ -974,7 +913,7 @@
                 box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
             }
 
-        /* Right section - YouTube video with interactive 3D */
+        /* Right section */
         .right-section {
             display: flex;
             align-items: center;
@@ -1021,7 +960,7 @@
             border: none;
         }
 
-        /* Feature cards section - moved below main content */
+        /* Feature cards section */
         .feature-cards-section {
             padding: 80px 40px;
             max-width: 1400px;
@@ -1117,134 +1056,7 @@
             z-index: 2;
         }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .main-content {
-                flex-direction: column;
-                gap: 60px;
-                text-align: center;
-            }
-
-            .main-title {
-                font-size: 3rem;
-            }
-
-            .right-section {
-                padding-left: 60px;
-            }
-
-            .youtube-container {
-                width: 480px;
-                height: 275px;
-                transform: rotateY(-10deg) rotateX(3deg) translateX(60px);
-                margin-left: 30px;
-            }
-
-            .youtube-embed {
-                width: 460px;
-                height: 259px;
-            }
-
-            .feature-cards-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                padding: 15px 20px;
-            }
-
-            .nav {
-                display: none;
-            }
-
-            .main-content {
-                padding: 40px 20px;
-            }
-
-            .main-title {
-                font-size: 2.5rem;
-            }
-
-            .right-section {
-                padding-left: 30px;
-            }
-
-            .youtube-container {
-                width: 320px;
-                height: 185px;
-                transform: rotateY(-8deg) rotateX(2deg) translateX(40px);
-                padding: 6px;
-                margin-left: 20px;
-            }
-
-            .youtube-embed {
-                width: 300px;
-                height: 169px;
-            }
-
-            .feature-cards-section {
-                padding: 60px 20px;
-            }
-
-            .feature-cards-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .discord-float-btn {
-                bottom: 20px;
-                right: 20px;
-                width: 60px;
-                height: 60px;
-            }
-
-            .youtube-float-btn {
-                width: 60px;
-                height: 60px;
-            }
-
-            .discord-icon,
-            .youtube-icon {
-                width: 30px;
-                height: 30px;
-            }
-
-            .online-counter-container {
-                gap: 10px;
-            }
-
-            .online-counter {
-                padding: 8px 16px;
-                gap: 10px;
-            }
-
-            .online-text {
-                display: none;
-            }
-
-            .online-count {
-                font-size: 14px;
-            }
-
-            .discord-header-btn {
-                width: 40px;
-                height: 40px;
-            }
-
-            .discord-header-icon {
-                width: 18px;
-                height: 18px;
-            }
-        }
-
-        /* Footer Styles */
+        /* Footer */
         .footer {
             background: #1a1a1a;
             border-top: 3px solid #4a90e2;
@@ -1422,8 +1234,193 @@
             font-size: 0.8rem;
         }
 
-        /* Footer Responsive */
+        /* Anti-debug alert */
+        .debug-alert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #ff0000;
+            font-size: 2rem;
+            text-align: center;
+            padding-top: 20%;
+            z-index: 999999;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .all-products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+                gap: 60px;
+                text-align: center;
+            }
+
+            .main-title {
+                font-size: 3rem;
+            }
+
+            .right-section {
+                padding-left: 60px;
+            }
+
+            .youtube-container {
+                width: 480px;
+                height: 275px;
+                transform: rotateY(-10deg) rotateX(3deg) translateX(60px);
+                margin-left: 30px;
+            }
+
+            .youtube-embed {
+                width: 460px;
+                height: 259px;
+            }
+
+            .feature-cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .main-content {
+                padding: 40px 20px;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .right-section {
+                padding-left: 30px;
+            }
+
+            .youtube-container {
+                width: 320px;
+                height: 185px;
+                transform: rotateY(-8deg) rotateX(2deg) translateX(40px);
+                padding: 6px;
+                margin-left: 20px;
+            }
+
+            .youtube-embed {
+                width: 300px;
+                height: 169px;
+            }
+
+            .feature-cards-section {
+                padding: 60px 20px;
+            }
+
+            .feature-cards-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .social-float-container {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .youtube-float-btn, .discord-float-btn {
+                width: 60px;
+                height: 60px;
+            }
+
+            .discord-icon, .youtube-icon {
+                width: 30px;
+                height: 30px;
+            }
+
+            .online-counter-container {
+                gap: 10px;
+            }
+
+            .online-counter {
+                padding: 8px 16px;
+                gap: 10px;
+            }
+
+            .online-text {
+                display: none;
+            }
+
+            .online-count {
+                font-size: 14px;
+            }
+
+            .discord-header-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .discord-header-icon {
+                width: 18px;
+                height: 18px;
+            }
+
+            .faq-section {
+                padding: 60px 20px;
+            }
+
+            .faq-title {
+                font-size: 2.5rem;
+            }
+
+            .faq-question {
+                padding: 20px;
+            }
+
+                .faq-question h3 {
+                    font-size: 1.1rem;
+                }
+
+            .faq-item.active .faq-answer {
+                padding: 0 20px 20px 20px;
+            }
+
+            .all-products-section {
+                padding: 60px 20px;
+            }
+
+            .all-products-title {
+                font-size: 2.5rem;
+            }
+
+            .all-products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .all-products-grid {
+                grid-template-columns: 1fr;
+            }
+
             .footer-content {
                 grid-template-columns: 1fr;
                 gap: 40px;
@@ -1449,6 +1446,13 @@
     </style>
 </head>
 <body>
+    <!-- Anti-debug alert -->
+    <div class="debug-alert" id="debugAlert">
+        ⚠️ DOSTĘP ZABRONIONY ⚠️<br>
+        WYKRYTO NARZĘDZIA DEWELOPERSKIE!<br>
+        <small>Strona zostanie odświeżona za 3 sekundy...</small>
+    </div>
+
     <!-- Floating particles -->
     <div class="particles">
         <div class="particle" style="left: 10%; top: 20%;"></div>
@@ -1548,7 +1552,7 @@
         </div>
     </main>
 
-    <!-- Feature Cards Section - moved below main content -->
+    <!-- Feature Cards Section -->
     <section class="feature-cards-section">
         <div class="feature-cards-grid">
             <div class="feature-card">
@@ -1705,7 +1709,7 @@
         </div>
     </section>
 
-    <!-- FAQ Section - Now moved below All Products -->
+    <!-- FAQ Section -->
     <section class="faq-section">
         <h2 class="faq-title">Frequently Asked Questions</h2>
         <div class="faq-container">
@@ -1804,186 +1808,255 @@
     </footer>
 
     <script>
-        // Zmienne globalne dla licznika online
-        let currentOnlineCount = 0;
-        let nextUpdateTime = 0;
+        // 🛡️ PROTECTION SYSTEM - Zoptymalizowany
+        (function () {
+            'use strict';
 
-        // Funkcja generująca losową liczbę między min a max
-        function getRandomNumber(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+            let devtoolsOpen = false;
+            let alertShown = false;
 
-        // Funkcja animująca zmianę liczby z płynnym przejściem
-        function animateCounterChange(targetValue) {
-            const counterElement = document.getElementById('online-count');
-            const startValue = currentOnlineCount;
-            const difference = targetValue - startValue;
-            const duration = 1400; // Wolniejsza animacja - 1400ms
-            const startTime = Date.now();
+            // 🚨 Show alert function
+            function showAlert(message) {
+                const alertDiv = document.createElement('div');
+                alertDiv.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+                        color: white;
+                        padding: 15px 25px;
+                        border-radius: 10px;
+                        box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
+                        z-index: 999999;
+                        font-family: Arial, sans-serif;
+                        font-weight: bold;
+                        font-size: 14px;
+                    `;
+                alertDiv.innerHTML = '⚠️ ' + message;
 
-            function updateCounter() {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / duration, 1);
+                document.body.appendChild(alertDiv);
 
-                // Użyj easing function dla płynniejszego przejścia
-                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 3000);
+            }
 
-                const currentValue = Math.round(startValue + (difference * easeProgress));
-                counterElement.textContent = currentValue;
-
-                if (progress < 1) {
-                    requestAnimationFrame(updateCounter);
+            // 🚨 DevTools detection
+            function detectDevTools() {
+                const threshold = 160;
+                if ((window.outerHeight - window.innerHeight > threshold) ||
+                    (window.outerWidth - window.innerWidth > threshold)) {
+                    if (!devtoolsOpen && !alertShown) {
+                        devtoolsOpen = true;
+                        alertShown = true;
+                        document.getElementById('debugAlert').style.display = 'flex';
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 3000);
+                    }
                 } else {
-                    currentOnlineCount = targetValue;
+                    devtoolsOpen = false;
                 }
             }
 
-            requestAnimationFrame(updateCounter);
-        }
-
-        // Funkcja inicjalizująca losową liczbę przy starcie
-        function initializeOnlineCounter() {
-            currentOnlineCount = getRandomNumber(490, 510);
-            document.getElementById('online-count').textContent = currentOnlineCount;
-
-            // Ustaw pierwszy update za 5-20 sekund
-            nextUpdateTime = Date.now() + getRandomNumber(5000, 20000);
-
-            console.log(`Początkowa liczba online: ${currentOnlineCount}`);
-        }
-
-        // Funkcja aktualizująca liczbę co 5-20 sekund
-        function updateOnlineCounter() {
-            const now = Date.now();
-
-            if (now >= nextUpdateTime) {
-                // Oblicz nową liczbę (zmiana o 1-3 w górę lub w dół)
-                const change = getRandomNumber(-3, 3);
-                let newCount = currentOnlineCount + change;
-
-                // Upewnij się, że liczba mieści się w zakresie 490-510
-                newCount = Math.max(490, Math.min(510, newCount));
-
-                // Animuj zmianę tylko jeśli liczba się rzeczywiście zmieniła
-                if (newCount !== currentOnlineCount) {
-                    animateCounterChange(newCount);
-                    console.log(`Zmiana liczby online: ${currentOnlineCount} → ${newCount} (${change > 0 ? '+' : ''}${change})`);
-                }
-
-                // Ustaw następny update za 5-20 sekund
-                nextUpdateTime = now + getRandomNumber(5000, 20000);
-            }
-        }
-
-        // Główna funkcja inicjalizacyjna
-        document.addEventListener('DOMContentLoaded', function () {
-            // Inicjalizuj licznik online
-            initializeOnlineCounter();
-
-            // Uruchom interwał do sprawdzania aktualizacji (sprawdzaj co 300ms dla płynności)
-            setInterval(updateOnlineCounter, 300);
-
-            // Reszta oryginalnego kodu...
-
-            // Get all navigation links
-            const navLinks = document.querySelectorAll('.nav-link');
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', function (e) {
-                    // Check if the link has a href that starts with #
-                    const href = this.getAttribute('href');
-
-                    // Handle external links (Reviews)
-                    if (href && href.startsWith('http')) {
-                        // Let the browser handle external links normally
-                        return;
-                    }
-
-                    // Handle /status link
-                    if (href === '/status') {
-                        // Let the browser handle the page navigation
-                        return;
-                    }
-
-                    if (href && href.startsWith('#')) {
-                        e.preventDefault();
-
-                        // Remove active class from all links
-                        navLinks.forEach(l => l.classList.remove('active'));
-
-                        // Add active class to clicked link
-                        this.classList.add('active');
-
-                        // Get target element
-                        const targetId = href.substring(1);
-                        const targetElement = document.getElementById(targetId);
-
-                        if (targetElement) {
-                            // Smooth scroll to target
-                            targetElement.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        } else if (href === '#') {
-                            // If it's home, scroll to top
-                            window.scrollTo({
-                                top: 0,
-                                behavior: 'smooth'
-                            });
-                        }
-                    }
-                });
+            // 🚫 Anti-right-click
+            document.addEventListener('contextmenu', function (e) {
+                e.preventDefault();
+                showAlert('Prawy przycisk myszy został zablokowany!');
+                return false;
             });
 
-            // Update active navigation based on scroll position
-            window.addEventListener('scroll', function () {
-                const sections = document.querySelectorAll('section[id], main');
-                const scrollPos = window.scrollY + 100;
+            // 🚫 Anti-shortcuts
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'F12' ||
+                    (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                    (e.ctrlKey && e.key === 'u') ||
+                    (e.ctrlKey && e.key === 's') ||
+                    (e.ctrlKey && e.key === 'c') ||
+                    (e.ctrlKey && e.key === 'a') ||
+                    (e.ctrlKey && e.key === 'p')) {
 
-                sections.forEach(section => {
-                    const top = section.offsetTop;
-                    const bottom = top + section.offsetHeight;
-                    const id = section.getAttribute('id');
+                    e.preventDefault();
+                    showAlert('Ta kombinacja klawiszy została zablokowana!');
+                    return false;
+                }
+            });
 
-                    if (scrollPos >= top && scrollPos <= bottom) {
+            // 🚫 Anti-copy
+            document.addEventListener('copy', function (e) {
+                e.clipboardData.setData('text/plain', '🚫 KOPIOWANIE ZABRONIONE! 🚫');
+                e.preventDefault();
+                showAlert('Kopiowanie treści jest zabronione!');
+                return false;
+            });
+
+            // 🚫 Anti-select, Anti-drag
+            document.addEventListener('selectstart', e => e.preventDefault());
+            document.addEventListener('dragstart', e => e.preventDefault());
+
+            // 🔄 Monitoring
+            setInterval(detectDevTools, 1000);
+
+            // 🔒 Console warning
+            console.clear();
+            console.log('%c🛡️ SECURITY WARNING 🛡️', 'color: red; font-size: 30px; font-weight: bold;');
+            console.log('%cTa strona jest chroniona. Kopiowanie kodu jest zabronione!', 'color: #ffa500; font-size: 16px;');
+
+            // 🎯 ORIGINAL FUNCTIONALITY
+
+            // Online counter
+            let currentOnlineCount = 0;
+            let nextUpdateTime = 0;
+
+            function getRandomNumber(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            function animateCounterChange(targetValue) {
+                const counterElement = document.getElementById('online-count');
+                if (!counterElement) return;
+
+                const startValue = currentOnlineCount;
+                const difference = targetValue - startValue;
+                const duration = 1400;
+                const startTime = Date.now();
+
+                function updateCounter() {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeProgress = 1 - Math.pow(1 - progress, 4);
+                    const currentValue = Math.round(startValue + (difference * easeProgress));
+
+                    counterElement.textContent = currentValue;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        currentOnlineCount = targetValue;
+                    }
+                }
+
+                requestAnimationFrame(updateCounter);
+            }
+
+            function initializeOnlineCounter() {
+                currentOnlineCount = getRandomNumber(490, 510);
+                const counterElement = document.getElementById('online-count');
+                if (counterElement) {
+                    counterElement.textContent = currentOnlineCount;
+                }
+                nextUpdateTime = Date.now() + getRandomNumber(5000, 20000);
+            }
+
+            function updateOnlineCounter() {
+                const now = Date.now();
+                if (now >= nextUpdateTime) {
+                    const change = getRandomNumber(-3, 3);
+                    let newCount = currentOnlineCount + change;
+                    newCount = Math.max(490, Math.min(510, newCount));
+
+                    if (newCount !== currentOnlineCount) {
+                        animateCounterChange(newCount);
+                    }
+
+                    nextUpdateTime = now + getRandomNumber(5000, 20000);
+                }
+            }
+
+            // Navigation
+            document.addEventListener('DOMContentLoaded', function () {
+                initializeOnlineCounter();
+                setInterval(updateOnlineCounter, 300);
+
+                const navLinks = document.querySelectorAll('.nav-link');
+
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        const href = this.getAttribute('href');
+
+                        if (href && href.startsWith('http')) return;
+                        if (href === '/status') return;
+
+                        if (href && href.startsWith('#')) {
+                            e.preventDefault();
+
+                            navLinks.forEach(l => l.classList.remove('active'));
+                            this.classList.add('active');
+
+                            const targetId = href.substring(1);
+                            const targetElement = document.getElementById(targetId);
+
+                            if (targetElement) {
+                                targetElement.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
+                            } else if (href === '#') {
+                                window.scrollTo({
+                                    top: 0,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }
+                    });
+                });
+
+                // FAQ functionality
+                document.querySelectorAll('.faq-question').forEach(question => {
+                    question.addEventListener('click', () => {
+                        const faqItem = question.parentElement;
+                        const isActive = faqItem.classList.contains('active');
+
+                        document.querySelectorAll('.faq-item').forEach(item => {
+                            item.classList.remove('active');
+                        });
+
+                        if (!isActive) {
+                            faqItem.classList.add('active');
+                        }
+                    });
+                });
+
+                // Scroll navigation
+                window.addEventListener('scroll', function () {
+                    const sections = document.querySelectorAll('section[id], main');
+                    const scrollPos = window.scrollY + 100;
+
+                    sections.forEach(section => {
+                        const top = section.offsetTop;
+                        const bottom = top + section.offsetHeight;
+                        const id = section.getAttribute('id');
+
+                        if (scrollPos >= top && scrollPos <= bottom) {
+                            navLinks.forEach(link => {
+                                link.classList.remove('active');
+                                if (link.getAttribute('href') === `#${id}`) {
+                                    link.classList.add('active');
+                                }
+                            });
+                        }
+                    });
+
+                    if (window.scrollY < 200) {
                         navLinks.forEach(link => {
                             link.classList.remove('active');
-                            if (link.getAttribute('href') === `#${id}`) {
+                            if (link.getAttribute('href') === '#' || link.textContent.trim() === 'HOME') {
                                 link.classList.add('active');
                             }
                         });
                     }
                 });
-
-                // Handle home section (when at top)
-                if (window.scrollY < 200) {
-                    navLinks.forEach(link => {
-                        link.classList.remove('active');
-                        if (link.getAttribute('href') === '#' || link.textContent.trim() === 'Home') {
-                            link.classList.add('active');
-                        }
-                    });
-                }
             });
-        });
 
-        // FAQ functionality
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const faqItem = question.parentElement;
-                const isActive = faqItem.classList.contains('active');
-
-                // Close all FAQ items
-                document.querySelectorAll('.faq-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-
-                // Open clicked item if it wasn't active
-                if (!isActive) {
-                    faqItem.classList.add('active');
-                }
-            });
-        });
+        })();
     </script>
+
+    <noscript>
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #ff0000; font-size: 2rem; text-align: center; padding-top: 20%; z-index: 999999;">
+            ⚠️ JavaScript jest wymagany! ⚠️
+        </div>
+    </noscript>
 </body>
 </html>
