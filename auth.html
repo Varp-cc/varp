@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Licencyjny - Panel Autoryzacyjny (Firebase)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            min-height: 500px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .auth-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #e1e5e9;
+                border-radius: 8px;
+                font-size: 16px;
+                transition: border-color 0.3s;
+            }
+
+                .form-group input:focus {
+                    outline: none;
+                    border-color: #667eea;
+                }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+            }
+
+            .btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 15px;
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .apps-section {
+            margin-top: 30px;
+        }
+
+        .app-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+            .app-card:hover {
+                border-color: #667eea;
+            }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .app-id {
+            font-family: 'Courier New', monospace;
+            background: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .license-generator {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .generated-key {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .success {
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .info {
+            color: #17a2b8;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .warning {
+            color: #856404;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .firebase-status {
+            background: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .config-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+            .config-section h3 {
+                color: #856404;
+                margin-bottom: 15px;
+            }
+
+            .config-section textarea {
+                width: 100%;
+                height: 120px;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-family: monospace;
+                font-size: 12px;
+            }
+
+        .online-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #28a745;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .offline-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #dc3545;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 System Licencyjny</h1>
+            <p>Panel zarządzania aplikacjami i licencjami (Firebase Cloud)</p>
+            <div id="connectionStatus" class="info"></div>
+        </div>
+
+        <div class="content">
+            <!-- Sekcja konfiguracji Firebase -->
+            <div id="configSection" class="config-section">
+                <h3>⚙️ Konfiguracja Firebase</h3>
+                <p><strong>Instrukcja konfiguracji:</strong></p>
+                <ol style="margin: 10px 0 15px 20px; line-height: 1.6;">
+                    <li>Przejdź na <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a></li>
+                    <li>Utwórz nowy projekt</li>
+                    <li>Włącz Authentication (Email/Password)</li>
+                    <li>Utwórz Firestore Database</li>
+                    <li>Przejdź do Project Settings → General → Your apps</li>
+                    <li>Dodaj Web app i skopiuj config</li>
+                </ol>
+
+                <label for="firebaseConfig"><strong>Wklej Firebase Config JSON:</strong></label>
+                <textarea id="firebaseConfig" placeholder='Wklej tutaj swój Firebase config, np:
+{
+  "apiKey": "AIzaSyD...",
+  "authDomain": "your-project.firebaseapp.com",
+  "projectId": "your-project",
+  "storageBucket": "your-project.appspot.com",
+  "messagingSenderId": "123456789",
+  "appId": "1:123456789:web:abc123"
+}'></textarea>
+
+                <button id="saveConfigBtn" class="btn" style="margin-top: 10px;">💾 Zapisz konfigurację</button>
+                <div id="configMessage"></div>
+            </div>
+
+            <!-- Status Firebase -->
+            <div id="firebaseStatus" class="firebase-status hidden">
+                <span id="statusIndicator"></span>
+                <span id="statusText">Łączenie z Firebase...</span>
+            </div>
+
+            <!-- Loading -->
+            <div id="loadingSection" class="loading hidden">
+                <div class="spinner"></div>
+                <span>Ładowanie...</span>
+            </div>
+
+            <!-- Formularz logowania/rejestracji -->
+            <div id="authSection" class="auth-section hidden">
+                <div class="auth-form">
+                    <h2 id="authTitle">Zaloguj się</h2>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" placeholder="Wprowadź adres email">
+                        <div id="emailError" class="error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Hasło:</label>
+                        <input type="password" id="password" placeholder="Wprowadź hasło">
+                        <div id="passwordError" class="error"></div>
+                    </div>
+
+                    <div id="confirmPasswordGroup" class="form-group hidden">
+                        <label for="confirmPassword">Potwierdź hasło:</label>
+                        <input type="password" id="confirmPassword" placeholder="Potwierdź hasło">
+                        <div id="confirmPasswordError" class="error"></div>
+                    </div>
+
+                    <button id="authBtn" class="btn">Zaloguj się</button>
+
+                    <div class="toggle-link" id="toggleAuth">
+                        Nie masz konta? Zarejestruj się
+                    </div>
+
+                    <div id="authMessage" class="error"></div>
+                </div>
+            </div>
+
+            <!-- Dashboard po zalogowaniu -->
+            <div id="dashboardSection" class="dashboard">
+                <div class="user-info">
+                    <div>
+                        <strong>Zalogowany jako: <span id="currentUser"></span></strong>
+                        <div class="info">UID: <span id="userUID"></span></div>
+                        <div class="info">Konto utworzone: <span id="accountCreated"></span></div>
+                    </div>
+                    <button id="logoutBtn" class="btn btn-danger" style="width: auto;">Wyloguj</button>
+                </div>
+
+                <!-- Sekcja tworzenia nowej aplikacji -->
+                <div class="app-creation">
+                    <h3>➕ Dodaj nową aplikację</h3>
+                    <div class="form-group">
+                        <label for="appName">Nazwa aplikacji:</label>
+                        <input type="text" id="appName" placeholder="Wprowadź nazwę aplikacji">
+                        <div id="appNameError" class="error"></div>
+                    </div>
+                    <button id="createAppBtn" class="btn btn-success">Utwórz aplikację</button>
+                </div>
+
+                <!-- Lista aplikacji -->
+                <div class="apps-section">
+                    <h3>📱 Twoje aplikacje</h3>
+                    <div id="appsList"></div>
+                    <div id="noApps" class="hidden" style="text-align: center; color: #6c757d; padding: 20px;">
+                        Nie masz jeszcze żadnych aplikacji. Utwórz pierwszą!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Zmienne globalne
+        let app = null;
+        let auth = null;
+        let db = null;
+        let currentUser = null;
+        let isLoginMode = true;
+
+        // Elementy DOM
+        const configSection = document.getElementById('configSection');
+        const authSection = document.getElementById('authSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const loadingSection = document.getElementById('loadingSection');
+        const firebaseStatus = document.getElementById('firebaseStatus');
+        const authTitle = document.getElementById('authTitle');
+        const authBtn = document.getElementById('authBtn');
+        const toggleAuth = document.getElementById('toggleAuth');
+        const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+
+        // FUNKCJE POMOCNICZE
+        function generateAppId() {
+            return 'APP-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+        }
+
+        function generateLicenseKey() {
+            const chars = 'abcdefghijklmnopqrstuvwxyz';
+            let result = '';
+            for (let i = 0; i < 14; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+            document.querySelectorAll('.success').forEach(el => el.textContent = '');
+        }
+
+        function showError(elementId, message) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                el.textContent = message;
+                el.className = 'error';
+            }
+        }
+
+        function showSuccess(elementId, message) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                el.textContent = message;
+                el.className = 'success';
+            }
+        }
+
+        function showLoading(show = true) {
+            if (show) {
+                loadingSection.classList.remove('hidden');
+            } else {
+                loadingSection.classList.add('hidden');
+            }
+        }
+
+        function updateConnectionStatus(connected, message) {
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            const connectionStatus = document.getElementById('connectionStatus');
+
+            if (connected) {
+                statusIndicator.className = 'online-indicator';
+                connectionStatus.innerHTML = '<span class="online-indicator"></span>Połączono z Firebase Cloud';
+                firebaseStatus.classList.remove('hidden');
+            } else {
+                statusIndicator.className = 'offline-indicator';
+                connectionStatus.innerHTML = '<span class="offline-indicator"></span>Brak połączenia';
+            }
+
+            if (statusText && message) {
+                statusText.textContent = message;
+            }
+        }
+
+        // KONFIGURACJA FIREBASE
+        function loadSavedConfig() {
+            const savedConfig = localStorage.getItem('firebaseConfig');
+            if (savedConfig) {
+                document.getElementById('firebaseConfig').value = savedConfig;
+                try {
+                    const config = JSON.parse(savedConfig);
+                    initializeFirebase(config);
+                    return true;
+                } catch (e) {
+                    console.error('Błąd konfiguracji:', e);
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        function initializeFirebase(config) {
+            try {
+                showLoading(true);
+                updateConnectionStatus(false, 'Łączenie z Firebase...');
+
+                app = initializeApp(config);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Test połączenia
+                onAuthStateChanged(auth, (user) => {
+                    showLoading(false);
+                    updateConnectionStatus(true, 'Połączono z Firebase');
+                    configSection.classList.add('hidden');
+                    authSection.classList.remove('hidden');
+
+                    if (user) {
+                        currentUser = user;
+                        showDashboard();
+                    } else {
+                        showAuthForm();
+                    }
+                });
+
+                setupEventListeners();
+
+            } catch (error) {
+                showLoading(false);
+                updateConnectionStatus(false, 'Błąd połączenia');
+                showError('configMessage', 'Błąd inicjalizacji Firebase: ' + error.message);
+            }
+        }
+
+        // OBSŁUGA KONFIGURACJI
+        document.getElementById('saveConfigBtn').addEventListener('click', () => {
+            const configText = document.getElementById('firebaseConfig').value.trim();
+
+            if (!configText) {
+                showError('configMessage', 'Wprowadź konfigurację Firebase');
+                return;
+            }
+
+            try {
+                const config = JSON.parse(configText);
+
+                if (!config.apiKey || !config.authDomain || !config.projectId) {
+                    throw new Error('Niepełna konfiguracja');
+                }
+
+                localStorage.setItem('firebaseConfig', configText);
+                showSuccess('configMessage', 'Konfiguracja zapisana! Inicjalizacja...');
+
+                setTimeout(() => {
+                    initializeFirebase(config);
+                }, 1000);
+
+            } catch (error) {
+                showError('configMessage', 'Błędna konfiguracja JSON: ' + error.message);
+            }
+        });
+
+        // FUNKCJE AUTORYZACJI
+        function setupEventListeners() {
+            // Przełączanie między logowaniem a rejestracją
+            toggleAuth.addEventListener('click', () => {
+                isLoginMode = !isLoginMode;
+                clearErrors();
+
+                if (isLoginMode) {
+                    authTitle.textContent = 'Zaloguj się';
+                    authBtn.textContent = 'Zaloguj się';
+                    toggleAuth.textContent = 'Nie masz konta? Zarejestruj się';
+                    confirmPasswordGroup.classList.add('hidden');
+                } else {
+                    authTitle.textContent = 'Zarejestruj się';
+                    authBtn.textContent = 'Zarejestruj się';
+                    toggleAuth.textContent = 'Masz już konto? Zaloguj się';
+                    confirmPasswordGroup.classList.remove('hidden');
+                }
+            });
+
+            // Obsługa autoryzacji
+            authBtn.addEventListener('click', async () => {
+                if (!auth) return;
+
+                clearErrors();
+                authBtn.disabled = true;
+                authBtn.textContent = 'Ładowanie...';
+
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Walidacja
+                if (!email) {
+                    showError('emailError', 'Email jest wymagany');
+                    authBtn.disabled = false;
+                    authBtn.textContent = isLoginMode ? 'Zaloguj się' : 'Zarejestruj się';
+                    return;
+                }
+
+                if (!password) {
+                    showError('passwordError', 'Hasło jest wymagane');
+                    authBtn.disabled = false;
+                    authBtn.textContent = isLoginMode ? 'Zaloguj się' : 'Zarejestruj się';
+                    return;
+                }
+
+                try {
+                    if (isLoginMode) {
+                        // Logowanie
+                        await signInWithEmailAndPassword(auth, email, password);
+                    } else {
+                        // Rejestracja
+                        if (password !== confirmPassword) {
+                            showError('confirmPasswordError', 'Hasła nie są identyczne');
+                            return;
+                        }
+
+                        if (password.length < 6) {
+                            showError('passwordError', 'Hasło musi mieć co najmniej 6 znaków');
+                            return;
+                        }
+
+                        await createUserWithEmailAndPassword(auth, email, password);
+                    }
+                } catch (error) {
+                    console.error('Błąd autoryzacji:', error);
+                    let errorMessage = 'Wystąpił błąd';
+
+                    switch (error.code) {
+                        case 'auth/user-not-found':
+                        case 'auth/wrong-password':
+                            errorMessage = 'Nieprawidłowy email lub hasło';
+                            break;
+                        case 'auth/email-already-in-use':
+                            errorMessage = 'Ten email jest już używany';
+                            break;
+                        case 'auth/weak-password':
+                            errorMessage = 'Hasło jest za słabe';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage = 'Nieprawidłowy format email';
+                            break;
+                        default:
+                            errorMessage = error.message;
+                    }
+
+                    showError('authMessage', errorMessage);
+                }
+
+                authBtn.disabled = false;
+                authBtn.textContent = isLoginMode ? 'Zaloguj się' : 'Zarejestruj się';
+            });
+
+            // Wylogowanie
+            document.getElementById('logoutBtn').addEventListener('click', async () => {
+                try {
+                    await signOut(auth);
+                    showAuthForm();
+                } catch (error) {
+                    console.error('Błąd wylogowania:', error);
+                }
+            });
+
+            // Tworzenie aplikacji
+            document.getElementById('createAppBtn').addEventListener('click', async () => {
+                if (!currentUser || !db) return;
+
+                const appName = document.getElementById('appName').value.trim();
+
+                if (!appName) {
+                    showError('appNameError', 'Nazwa aplikacji jest wymagana');
+                    return;
+                }
+
+                try {
+                    const appId = generateAppId();
+                    await addDoc(collection(db, 'apps'), {
+                        id: appId,
+                        name: appName,
+                        userId: currentUser.uid,
+                        createdAt: serverTimestamp()
+                    });
+
+                    document.getElementById('appName').value = '';
+                    clearErrors();
+                    showSuccess('appNameError', 'Aplikacja została utworzona!');
+                    loadApps();
+                } catch (error) {
+                    console.error('Błąd tworzenia aplikacji:', error);
+                    showError('appNameError', 'Błąd tworzenia aplikacji');
+                }
+            });
+        }
+
+        // DASHBOARD
+        function showAuthForm() {
+            authSection.classList.remove('hidden');
+            dashboardSection.classList.add('hidden');
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('confirmPassword').value = '';
+            clearErrors();
+        }
+
+        function showDashboard() {
+            authSection.classList.add('hidden');
+            dashboardSection.classList.remove('hidden');
+
+            if (currentUser) {
+                document.getElementById('currentUser').textContent = currentUser.email;
+                document.getElementById('userUID').textContent = currentUser.uid;
+
+                const createdDate = new Date(currentUser.metadata.creationTime).toLocaleDateString('pl-PL');
+                document.getElementById('accountCreated').textContent = createdDate;
+
+                loadApps();
+            }
+        }
+
+        // APLIKACJE
+        async function loadApps() {
+            if (!currentUser || !db) return;
+
+            try {
+                const appsQuery = query(
+                    collection(db, 'apps'),
+                    where('userId', '==', currentUser.uid),
+                    orderBy('createdAt', 'desc')
+                );
+
+                const querySnapshot = await getDocs(appsQuery);
+                const apps = [];
+
+                for (const doc of querySnapshot.docs) {
+                    const appData = doc.data();
+
+                    // Pobierz licencje dla każdej aplikacji
+                    const licensesQuery = query(
+                        collection(db, 'licenses'),
+                        where('appId', '==', appData.id),
+                        orderBy('createdAt', 'desc')
+                    );
+
+                    const licensesSnapshot = await getDocs(licensesQuery);
+                    const licenses = licensesSnapshot.docs.map(licenseDoc => licenseDoc.data());
+
+                    apps.push({
+                        ...appData,
+                        docId: doc.id,
+                        licenses: licenses
+                    });
+                }
+
+                displayApps(apps);
+            } catch (error) {
+                console.error('Błąd ładowania aplikacji:', error);
+            }
+        }
+
+        function displayApps(apps) {
+            const appsList = document.getElementById('appsList');
+            const noApps = document.getElementById('noApps');
+
+            if (!apps || apps.length === 0) {
+                appsList.innerHTML = '';
+                noApps.classList.remove('hidden');
+                return;
+            }
+
+            noApps.classList.add('hidden');
+            appsList.innerHTML = apps.map(app => `
+                    <div class="app-card">
+                        <div class="app-header">
+                            <div>
+                                <h4>${app.name}</h4>
+                                <small>Utworzono: ${app.createdAt ? new Date(app.createdAt.toDate()).toLocaleDateString('pl-PL') : 'Nieznana data'}</small>
+                            </div>
+                            <div class="app-id">ID: ${app.id}</div>
+                        </div>
+
+                        <div class="license-generator">
+                            <h5>🔑 Generator kluczy licencyjnych</h5>
+                            <button class="btn" onclick="generateKey('${app.id}')">Wygeneruj nowy klucz</button>
+                            <div id="key-${app.id}" class="generated-key hidden"></div>
+
+                            ${app.licenses && app.licenses.length > 0 ? `
+                                <div style="margin-top: 15px;">
+                                    <h6>Wygenerowane klucze (${app.licenses.length}):</h6>
+                                    <div style="max-height: 150px; overflow-y: auto;">
+                                        ${app.licenses.map(license => `
+                                            <div style="background: #f8f9fa; padding: 8px; margin: 5px 0; border-radius: 4px; font-family: monospace; display: flex; justify-content: space-between; align-items: center;">
+                                                <span>${license.key}</span>
+                                                <small>${license.createdAt ? new Date(license.createdAt.toDate()).toLocaleDateString('pl-PL') + ' ' + new Date(license.createdAt.toDate()).toLocaleTimeString('pl-PL') : 'Nieznana data'}</small>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        // GENEROWANIE KLUCZY
+        window.generateKey = async function (appId) {
+            if (!currentUser || !db) return;
+
+            try {
+                const key = generateLicenseKey();
+                const keyElement = document.getElementById(`key-${appId}`);
+
+                keyElement.textContent = `Wygenerowany klucz: ${key}`;
+                keyElement.classList.remove('hidden');
+
+                // Zapisz klucz w bazie
+                await addDoc(collection(db, 'licenses'), {
+                    key: key,
+                    appId: appId,
+                    userId: currentUser.uid,
+                    createdAt: serverTimestamp()
+                });
+
+                // Odśwież listę aplikacji
+                loadApps();
+            } catch (error) {
+                console.error('Błąd generowania klucza:', error);
+            }
+        };
+
+        // OBSŁUGA KLAWIATURY
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (!authSection.classList.contains('hidden')) {
+                    authBtn.click();
+                }
+            }
+        });
+
+        // INICJALIZACJA APLIKACJI
+        window.addEventListener('load', () => {
+            if (!loadSavedConfig()) {
+                configSection.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
