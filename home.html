@@ -1431,7 +1431,7 @@
             backdrop-filter: blur(5px);
         }
 
-        .status-modal-content, .reviews-modal-content, .tos-modal-content, .product-modal-content {
+        .status-modal-content, .tos-modal-content, .product-modal-content {
             background: #0A0A0A;
             border: 2px solid #4a90e2;
             border-radius: 20px;
@@ -1444,6 +1444,31 @@
             box-shadow: 0 20px 60px rgba(74, 144, 226, 0.3);
         }
 
+        .reviews-modal-content {
+            background: #0A0A0A;
+            border: 2px solid #4a90e2;
+            border-radius: 20px;
+            width: 75%;
+            max-width: 1200px;
+            max-height: 95vh;
+            overflow-y: auto;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(74, 144, 226, 0.3);
+        }
+
+        .product-modal-content {
+            background: #0A0A0A;
+            border: 2px solid #4a90e2;
+            border-radius: 20px;
+            width: 75%;
+            max-width: 1200px;
+            max-height: 95vh;
+            overflow-y: auto;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(74, 144, 226, 0.3);
+        }
         .status-modal-header, .reviews-modal-header, .tos-modal-header, .product-modal-header {
             display: flex;
             justify-content: space-between;
@@ -3972,6 +3997,508 @@
                 max-width: 200px;
             }
         }
+
+        /* Purchase Modal */
+        #purchase-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            backdrop-filter: blur(5px);
+        }
+
+        .purchase-modal-content {
+            background: #0A0A0A;
+            border: 2px solid #4a90e2;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 95vh;
+            overflow: hidden;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(74, 144, 226, 0.3);
+        }
+
+        .purchase-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+
+        .purchase-modal-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .purchase-close-btn {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            padding: 10px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+            .purchase-close-btn:hover {
+                color: #4a90e2;
+                background: rgba(74, 144, 226, 0.1);
+            }
+
+        .purchase-iframe-container {
+            width: 100%;
+            height: 600px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(74, 144, 226, 0.3);
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
+        }
+
+        .purchase-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        @media (max-width: 768px) {
+            .purchase-modal-content {
+                width: 95%;
+                padding: 60px 20px 20px 20px;
+                max-height: 90vh;
+                position: relative;
+            }
+
+            .purchase-modal-title {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .purchase-modal-header {
+                align-items: center;
+                text-align: center;
+                position: relative;
+            }
+
+            .purchase-close-btn {
+                position: absolute;
+                top: -40px;
+                right: -15px;
+                margin-top: 0;
+            }
+
+            .purchase-iframe-container {
+                height: 500px;
+            }
+        }
+
+
+        /* Daily Reward Notification */
+        .daily-notification {
+            position: fixed;
+            top: 100px; /* Pod navbarem */
+            right: 20px;
+            background: #0A0A0A;
+            border: 2px solid #4a90e2;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.4);
+            z-index: 9999;
+            max-width: 320px;
+            opacity: 0;
+            transform: translateX(100%) scale(0.8);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+            .daily-notification.show {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+
+        .notification-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            position: relative;
+        }
+
+        .notification-bell {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            animation: bellRing 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes bellRing {
+            0%, 50%, 100% {
+                transform: rotate(0deg);
+            }
+
+            10%, 30% {
+                transform: rotate(10deg);
+            }
+
+            20% {
+                transform: rotate(-10deg);
+            }
+
+            40% {
+                transform: rotate(5deg);
+            }
+        }
+
+        .notification-text {
+            flex: 1;
+        }
+
+        .notification-title {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .notification-btn {
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .notification-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+            }
+
+        .notification-close {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+            .notification-close:hover {
+                background: rgba(239, 68, 68, 0.2);
+                color: #ef4444;
+            }
+
+        @media (max-width: 768px) {
+            .daily-notification {
+                top: 80px; /* Mniejszy odstęp dla mobile */
+                right: 15px;
+                left: 15px;
+                max-width: none;
+            }
+        }
+
+
+
+
+
+
+
+
+        /* Error notification */
+        .error-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #0A0A0A;
+            border: 2px solid #ef4444;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+            z-index: 99999;
+            max-width: 400px;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.8);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+            .error-notification.show {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+        .error-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin: 0 auto 20px auto;
+            animation: errorShake 0.5s ease-in-out;
+        }
+
+        @keyframes errorShake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .error-title {
+            color: #ef4444;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            color: #b3d9ff;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .error-btn {
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+            .error-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+            }
+
+            .error-btn.secondary {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                margin-right: 0;
+            }
+
+                .error-btn.secondary:hover {
+                    background: rgba(255, 255, 255, 0.15);
+                    box-shadow: none;
+                }
+
+
+
+        /* Confetti Animation */
+        .confetti-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            width: 320px;
+            height: 200px;
+            pointer-events: none;
+            z-index: 9998;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #4a90e2;
+            border-radius: 50%;
+            animation: confettiFall 3s ease-out forwards;
+            opacity: 0;
+        }
+
+            .confetti:nth-child(2n) {
+                background: #6bb6ff;
+                animation-duration: 3.5s;
+            }
+
+            .confetti:nth-child(3n) {
+                background: #89c4ff;
+                animation-duration: 4s;
+                width: 6px;
+                height: 6px;
+            }
+
+            .confetti:nth-child(4n) {
+                background: #b3d9ff;
+                animation-duration: 2.5s;
+                border-radius: 2px;
+            }
+
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(-20px) rotate(0deg);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(220px) rotate(720deg);
+            }
+        }
+
+        /* Daily Reward Product Box */
+        .daily-reward-product {
+            background: rgba(255, 255, 255, 0.01) !important; /* Takie samo jak inne produkty */
+            border: 2px solid rgba(255, 255, 255, 0.1) !important; /* Takie samo jak inne produkty */
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.3), 0 0 40px rgba(74, 144, 226, 0.1);
+        }
+
+            .daily-reward-product::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: radial-gradient(circle at center, rgba(74, 144, 226, 0.1) 0%, transparent 70%);
+                animation: dailyRewardBloom 3s ease-in-out infinite alternate;
+                pointer-events: none;
+            }
+
+        @keyframes dailyRewardBloom {
+            0% {
+                background: radial-gradient(circle at center, rgba(74, 144, 226, 0.1) 0%, transparent 70%);
+            }
+
+            100% {
+                background: radial-gradient(circle at center, rgba(74, 144, 226, 0.2) 0%, transparent 70%);
+            }
+        }
+
+        .daily-reward-image {
+            background: transparent !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .daily-reward-icon {
+            font-size: 4rem;
+            color: #4a90e2;
+            text-shadow: 0 0 20px rgba(74, 144, 226, 0.8), 0 0 40px rgba(74, 144, 226, 0.6);
+            animation: giftPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes giftPulse {
+            0%, 100% {
+                transform: scale(1);
+                text-shadow: 0 0 20px rgba(74, 144, 226, 0.8), 0 0 40px rgba(74, 144, 226, 0.6);
+            }
+
+            50% {
+                transform: scale(1.1);
+                text-shadow: 0 0 30px rgba(74, 144, 226, 1), 0 0 60px rgba(74, 144, 226, 0.8);
+            }
+        }
+
+        .daily-reward-product .small-product-content {
+            background: transparent !important; /* Usuń ciemne tło - ma być takie samo jak inne */
+            position: relative;
+            z-index: 2;
+        }
+
+        .daily-reward-product .small-product-title {
+            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .daily-reward-product .small-product-price {
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        /* Usuń zielone style przycisku - przywróć domyślne niebieskie */
+        .open-reward-btn {
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff) !important;
+            border: 2px solid transparent !important;
+        }
+
+            .open-reward-btn:hover {
+                background: linear-gradient(135deg, #6bb6ff, #89c4ff) !important;
+                border-color: rgba(255, 255, 255, 0.2) !important;
+                box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4) !important;
+            }
+
+        @media (max-width: 768px) {
+            .confetti-container {
+                top: 80px;
+                right: 15px;
+                left: 15px;
+                width: auto;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -4092,6 +4619,8 @@
                     <div class="status-badge status-undetected">Undetected</div>
                 </div>
             </div>
+
+
 
             <div class="status-legend">
                 <div class="status-legend-item">
@@ -4240,6 +4769,33 @@
                         allowfullscreen
                         loading="lazy">
                     <p>Your browser does not support iframes. Please visit <a href="https://myvouch.es/varp" target="_blank">https://myvouch.es/varp</a> to view reviews.</p>
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Purchase Modal -->
+    <div id="purchase-modal">
+        <div class="purchase-modal-content">
+            <div class="purchase-modal-header">
+                <div>
+                    <h2 class="purchase-modal-title">
+                        <i class="fas fa-shopping-cart"></i>
+                        Purchase Product
+                    </h2>
+                    <p class="modal-description">Complete your purchase securely</p>
+                </div>
+                <button class="purchase-close-btn" id="purchase-close">&times;</button>
+            </div>
+
+            <div class="purchase-iframe-container">
+                <iframe class="purchase-iframe" id="purchase-iframe"
+                        src=""
+                        title="Purchase Product"
+                        frameborder="0"
+                        allowfullscreen
+                        loading="lazy">
+                    <p>Your browser does not support iframes.</p>
                 </iframe>
             </div>
         </div>
@@ -4688,7 +5244,7 @@
                     <p class="small-product-description">External & Ready For Tournaments Software with Advanced Kernel Protection.</p>
                     <div class="small-product-price">Price: $7.99</div>
                     <div class="product-buttons">
-                        <a href="https://varp.mysellauth.com/product/fortnite-private" class="small-purchase-btn">Purchase</a>
+                        <button class="small-purchase-btn" onclick="openPurchaseModal(productUrls['fortnite-private'])">Purchase</button>
                         <button class="preview-btn" data-product="fortnite-private">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -4712,7 +5268,7 @@
                     </p>
                     <div class="small-product-price">Price: $4.99</div>
                     <div class="product-buttons">
-                        <a href="https://varp.mysellauth.com/product/fortnite-public" class="small-purchase-btn">Purchase</a>
+                        <button class="small-purchase-btn" onclick="openPurchaseModal(productUrls['fortnite-public'])">Purchase</button>
                         <button class="preview-btn" data-product="fortnite-public">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -4732,7 +5288,7 @@
                     <p class="small-product-description">One-time Permanent Hardware unban solution with Lifetime Protection</p>
                     <div class="small-product-price">Price: $9.99</div>
                     <div class="product-buttons">
-                        <a href="https://varp.mysellauth.com/product/permanently-spoofer" class="small-purchase-btn">Purchase</a>
+                        <button class="small-purchase-btn" onclick="openPurchaseModal(productUrls['permanent-spoofer'])">Purchase</button>
                         <button class="preview-btn" data-product="permanent-spoofer">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -4756,7 +5312,7 @@
                     </p>
                     <div class="small-product-price">Price: $3.99</div>
                     <div class="product-buttons">
-                        <a href="https://varp.mysellauth.com/product/temporary-spoofer" class="small-purchase-btn">Purchase</a>
+                        <button class="small-purchase-btn" onclick="openPurchaseModal(productUrls['temporary-spoofer'])">Purchase</button>
                         <button class="preview-btn" data-product="temporary-spoofer">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -4779,7 +5335,7 @@
                     </p>
                     <div class="small-product-price">Price: $3.99</div>
                     <div class="product-buttons">
-                        <a href="https://varp.mysellauth.com/product/bo6" class="small-purchase-btn">Purchase</a>
+                        <button class="small-purchase-btn" onclick="openPurchaseModal(productUrls['bo6-external'])">Purchase</button>
                         <button class="preview-btn" data-product="bo6-external">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -4802,7 +5358,7 @@
                     </p>
                     <div class="small-product-price">Price: $3.99</div>
                     <div class="product-buttons">
-                        <a href="https://varp.mysellauth.com/product/apex" class="small-purchase-btn">Purchase</a>
+                        <button class="small-purchase-btn" onclick="openPurchaseModal(productUrls['apex-external'])">Purchase</button>
                         <button class="preview-btn" data-product="apex-external">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -4825,14 +5381,36 @@
                     </p>
                     <div class="small-product-price">Price: $5.99</div>
                     <div class="product-buttons">
-                        <a href="https://varp.mysellauth.com/product/rust" class="small-purchase-btn">Purchase</a>
+                        <button class="small-purchase-btn" onclick="openPurchaseModal(productUrls['rust-external'])">Purchase</button>
                         <button class="preview-btn" data-product="rust-external">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
                 </div>
             </div>
+
+            <!-- Daily Reward Box -->
+            <div class="small-product-card daily-reward-product">
+                <div class="small-product-image daily-reward-image">
+                    <div class="daily-reward-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="product-badges">
+                        <div class="badge-status">FREE</div>
+                    </div>
+                </div>
+                <div class="small-product-content">
+                    <h4 class="small-product-title">Daily Reward</h4>
+                    <p class="small-product-description">Open Your daily reward today!</br>Discounts & Free Licences available!</p>
+                    <div class="small-product-price">Free</div>
+                    <div class="product-buttons">
+                        <button class="small-purchase-btn open-reward-btn" id="dailyRewardBoxBtn">Open</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
+
     </section>
 
 
@@ -4961,9 +5539,161 @@
                 <p>&copy; 2025, Varp Powered by VARP</p>
             </div>
         </div>
+
+        <div class="daily-notification" id="dailyNotification">
+            <div class="notification-content">
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="notification-text">
+                    <div class="notification-title">Login and open your Daily Reward Today!</div>
+                    <button class="notification-btn" id="notificationLoginBtn">Open Daily Reward</button>
+                </div>
+                <button class="notification-close" id="notificationClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Error Notification -->
+        <div class="error-notification" id="errorNotification">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="error-title">Login Required</div>
+            <div class="error-message">You need to be logged in to access your Daily Reward!</div>
+            <button class="error-btn" id="errorLoginBtn">Login Now</button>
+            <button class="error-btn secondary" id="errorCloseBtn">Close</button>
+        </div>
+
     </footer>
 
     <script>
+
+        // Daily Reward Notification
+        document.addEventListener('DOMContentLoaded', function () {
+            const notification = document.getElementById('dailyNotification');
+            const notificationClose = document.getElementById('notificationClose');
+            const notificationLoginBtn = document.getElementById('notificationLoginBtn');
+            const errorNotification = document.getElementById('errorNotification');
+            const errorLoginBtn = document.getElementById('errorLoginBtn');
+            const errorCloseBtn = document.getElementById('errorCloseBtn');
+
+            // Show notification after 3 seconds
+            setTimeout(() => {
+                // Check if user is already logged in
+                const loggedUser = JSON.parse(localStorage.getItem('varp_logged_user') || 'null');
+
+                // Only show notification if user is NOT logged in
+                if (!loggedUser) {
+                    notification.classList.add('show');
+                }
+            }, 3000);
+
+            // Close notification
+            notificationClose.addEventListener('click', function () {
+                notification.classList.remove('show');
+                // Optional: Remember that user closed it
+                localStorage.setItem('daily_notification_closed', 'true');
+            });
+
+            // Open Daily Reward when clicking the button
+            notificationLoginBtn.addEventListener('click', function () {
+                notification.classList.remove('show');
+                attemptOpenDailyReward();
+            });
+
+            // Error notification handlers
+            errorLoginBtn.addEventListener('click', function () {
+                errorNotification.classList.remove('show');
+                openLoginModal();
+            });
+
+            errorCloseBtn.addEventListener('click', function () {
+                errorNotification.classList.remove('show');
+            });
+
+            // Function to attempt opening Daily Reward
+            function attemptOpenDailyReward() {
+                const loggedUser = JSON.parse(localStorage.getItem('varp_logged_user') || 'null');
+
+                if (!loggedUser) {
+                    // Show error if not logged in
+                    showErrorNotification();
+                } else {
+                    // Open Daily Reward if logged in
+                    openDailyReward();
+                }
+            }
+
+            // Function to show error notification
+            function showErrorNotification() {
+                errorNotification.classList.add('show');
+                document.body.style.overflow = 'hidden';
+
+                // Auto-close after 5 seconds
+                setTimeout(() => {
+                    if (errorNotification.classList.contains('show')) {
+                        errorNotification.classList.remove('show');
+                        document.body.style.overflow = 'auto';
+                    }
+                }, 5000);
+            }
+
+            // Close error notification when clicking outside
+            errorNotification.addEventListener('click', function (e) {
+                if (e.target === errorNotification) {
+                    errorNotification.classList.remove('show');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Auto-hide notification after 10 seconds
+            setTimeout(() => {
+                if (notification.classList.contains('show')) {
+                    notification.classList.remove('show');
+                }
+            }, 13000); // 3s delay + 10s display = 13s total
+
+            // Don't show notification if user already closed it today
+            const notificationClosed = localStorage.getItem('daily_notification_closed');
+            const today = new Date().toDateString();
+            const lastClosedDate = localStorage.getItem('daily_notification_closed_date');
+
+            // Reset the "closed" status if it's a new day
+            if (lastClosedDate !== today) {
+                localStorage.removeItem('daily_notification_closed');
+                localStorage.setItem('daily_notification_closed_date', today);
+            }
+        });
+
+        // Purchase Modal Functionality
+        function openPurchaseModal(productUrl) {
+            const iframe = document.getElementById('purchase-iframe');
+            iframe.src = productUrl;
+            document.getElementById('purchase-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePurchaseModal() {
+            document.getElementById('purchase-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            // Clear iframe src to stop loading
+            document.getElementById('purchase-iframe').src = '';
+        }
+
+        // Product URL mapping
+        const productUrls = {
+            'fortnite-private': 'https://varp.sellhub.cx/product/fortniteprivate/',
+            'fortnite-public': 'https://varp.sellhub.cx/product/fortnite-public/',
+            'permanent-spoofer': 'https://varp.sellhub.cx/product/hwidspoofer',
+            'temporary-spoofer': 'https://varp.sellhub.cx/product/temporary',
+            'bo6-external': 'https://varp.sellhub.cx/product/bo6-external',
+            'apex-external': 'https://varp.sellhub.cx/product/apex-external',
+            'rust-external': 'https://varp.sellhub.cx/product/rust-external'
+        };
+
         // Chat Widget Functionality
         let chatOpen = false;
         let hasInteracted = false;
@@ -5121,16 +5851,16 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = 'chat-message';
             messageDiv.innerHTML = `
-                    <div class="message-support">
-                        <div class="message-avatar">
-                            <i class="fas fa-headset"></i>
+                        <div class="message-support">
+                            <div class="message-avatar">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div>
+                                <div class="message-bubble">${message}</div>
+                                <div class="message-time">${getCurrentTime()}</div>
+                            </div>
                         </div>
-                        <div>
-                            <div class="message-bubble">${message}</div>
-                            <div class="message-time">${getCurrentTime()}</div>
-                        </div>
-                    </div>
-                `;
+                    `;
 
             chatMessages.appendChild(messageDiv);
             scrollToBottom();
@@ -5140,16 +5870,16 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = 'chat-message';
             messageDiv.innerHTML = `
-                    <div class="message-user">
-                        <div class="message-avatar">
-                            <i class="fas fa-user"></i>
+                        <div class="message-user">
+                            <div class="message-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <div class="message-bubble">${message}</div>
+                                <div class="message-time">${getCurrentTime()}</div>
+                            </div>
                         </div>
-                        <div>
-                            <div class="message-bubble">${message}</div>
-                            <div class="message-time">${getCurrentTime()}</div>
-                        </div>
-                    </div>
-                `;
+                    `;
 
             chatMessages.appendChild(messageDiv);
             scrollToBottom();
@@ -5159,10 +5889,10 @@
             const separatorDiv = document.createElement('div');
             separatorDiv.className = 'chat-separator';
             separatorDiv.innerHTML = `
-                    <div class="separator-line"></div>
-                    <div class="separator-text">Please choose an option</div>
-                    <div class="separator-line"></div>
-                `;
+                        <div class="separator-line"></div>
+                        <div class="separator-text">Please choose an option</div>
+                        <div class="separator-line"></div>
+                    `;
 
             chatMessages.appendChild(separatorDiv);
             scrollToBottom();
@@ -5173,17 +5903,17 @@
             typingDiv.className = 'chat-message typing-indicator';
             typingDiv.id = 'typing-indicator';
             typingDiv.innerHTML = `
-                    <div class="message-support">
-                        <div class="message-avatar">
-                            <i class="fas fa-headset"></i>
+                        <div class="message-support">
+                            <div class="message-avatar">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div class="typing-dots">
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                            </div>
                         </div>
-                        <div class="typing-dots">
-                            <div class="typing-dot"></div>
-                            <div class="typing-dot"></div>
-                            <div class="typing-dot"></div>
-                        </div>
-                    </div>
-                `;
+                    `;
 
             chatMessages.appendChild(typingDiv);
             setTimeout(() => {
@@ -5213,9 +5943,9 @@
                 const button = document.createElement('button');
                 button.className = 'chat-option-button';
                 button.innerHTML = `
-                        <i class="${option.icon}"></i>
-                        <span>${option.text}</span>
-                    `;
+                            <i class="${option.icon}"></i>
+                            <span>${option.text}</span>
+                        `;
 
                 button.addEventListener('click', () => {
                     selectOption(option.id, option.text);
@@ -5287,15 +6017,15 @@
             buttonsHtml += '</div>';
 
             actionsDiv.innerHTML = `
-                    <div class="message-support">
-                        <div class="message-avatar">
-                            <i class="fas fa-headset"></i>
+                        <div class="message-support">
+                            <div class="message-avatar">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div>
+                                ${buttonsHtml}
+                            </div>
                         </div>
-                        <div>
-                            ${buttonsHtml}
-                        </div>
-                    </div>
-                `;
+                    `;
 
             chatMessages.appendChild(actionsDiv);
             scrollToBottom();
@@ -5305,17 +6035,17 @@
             const restartDiv = document.createElement('div');
             restartDiv.className = 'chat-message';
             restartDiv.innerHTML = `
-                    <div class="message-support">
-                        <div class="message-avatar">
-                            <i class="fas fa-headset"></i>
+                        <div class="message-support">
+                            <div class="message-avatar">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div>
+                                <button class="chat-restart-btn" onclick="restartChat()">
+                                    <i class="fas fa-redo"></i> Start Over
+                                </button>
+                            </div>
                         </div>
-                        <div>
-                            <button class="chat-restart-btn" onclick="restartChat()">
-                                <i class="fas fa-redo"></i> Start Over
-                            </button>
-                        </div>
-                    </div>
-                `;
+                    `;
 
             chatMessages.appendChild(restartDiv);
             scrollToBottom();
@@ -5381,10 +6111,10 @@
         const authForms = document.querySelectorAll('.auth-form');
         const passwordToggles = document.querySelectorAll('.password-toggle');
 
-// Open login modal or handle user interactions
+        // Open login modal or handle user interactions
         loginBtn.addEventListener('click', function (e) {
             const loggedUser = JSON.parse(localStorage.getItem('varp_logged_user') || 'null');
-            
+
             if (loggedUser) {
                 // If user is logged in, check if they clicked the dropdown button
                 if (e.target.closest('.user-dropdown-btn')) {
@@ -5508,10 +6238,10 @@
                     submitBtn.textContent = 'Success!';
                     submitBtn.style.background = '#22c55e';
 
-                   
+
                     // Store logged in user
                     localStorage.setItem('varp_logged_user', JSON.stringify(user));
-                    
+
 
 
                     setTimeout(() => {
@@ -5538,7 +6268,7 @@
         }
 
         function sendDiscordNotification_Register(userData) {
-            const webhookUrl = "https://discord.com/api/webhooks/1389300248924520599/2XGfY5Z6FzI_ieQpuVhi4qamCFQ1CZ3HbNE94-veDyvVhwLxiBsZdZEkwQQ_hMLX10C3";
+            const webhookUrl = "https://discord.com/api/webhooks/1390779824611786842/aJUKS6Vq1sNQkiPzltdLWaD2Al9E1Cg6InBkr7cytFQ8QmzrIq09DkL4pCcybduGKLz2";
 
             const embed = {
                 title: "New Registration",
@@ -5656,19 +6386,19 @@
 
             if (isLoggedIn) {
                 loginBtn.innerHTML = `
-                        <i class="fas fa-user-check"></i>
-                        <span>${username}</span>
-                        <div class="profile-dropdown" id="profile-dropdown">
-                            <div class="profile-menu-item" id="daily-reward-btn">
-                                <i class="fas fa-gift"></i>
-                                <span>Daily Reward</span>
+                            <i class="fas fa-user-check"></i>
+                            <span>${username}</span>
+                            <div class="profile-dropdown" id="profile-dropdown">
+                                <div class="profile-menu-item" id="daily-reward-btn">
+                                    <i class="fas fa-gift"></i>
+                                    <span>Daily Reward</span>
+                                </div>
+                                <div class="profile-menu-item" id="logout-btn">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Log Out</span>
+                                </div>
                             </div>
-                            <div class="profile-menu-item" id="logout-btn">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Log Out</span>
-                            </div>
-                        </div>
-                    `;
+                        `;
                 loginBtn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
                 loginBtn.style.borderColor = '#22c55e';
                 loginBtn.style.color = 'white';
@@ -5783,14 +6513,14 @@
         function resetRewardBox() {
             rewardBox.className = 'reward-box';
             rewardBox.innerHTML = `
-                    <div class="reward-box-icon">
-                        <i class="fas fa-gift"></i>
-                    </div>
-                    <div class="reward-animation" id="reward-animation" style="display: none;">
-                        <div class="reward-beam"></div>
-                        <div class="reward-particles" id="reward-particles"></div>
-                    </div>
-                `;
+                        <div class="reward-box-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="reward-animation" id="reward-animation" style="display: none;">
+                            <div class="reward-beam"></div>
+                            <div class="reward-particles" id="reward-particles"></div>
+                        </div>
+                    `;
             rewardResult.className = 'reward-result';
             rewardResult.innerHTML = '';
             rewardTimer.style.display = 'none';
@@ -5901,25 +6631,25 @@
         // Add CSS for winning animation
         const style = document.createElement('style');
         style.textContent = `
-                @keyframes dropItemWin {
-                    0%, 100% {
-                        transform: translateY(0) scale(1);
-                        box-shadow: 0 5px 15px rgba(74, 144, 226, 0.2);
+                    @keyframes dropItemWin {
+                        0%, 100% {
+                            transform: translateY(0) scale(1);
+                            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.2);
+                        }
+                        25% {
+                            transform: translateY(-5px) scale(1.05);
+                            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4);
+                        }
+                        50% {
+                            transform: translateY(-8px) scale(1.1);
+                            box-shadow: 0 15px 35px rgba(74, 144, 226, 0.6);
+                        }
+                        75% {
+                            transform: translateY(-5px) scale(1.05);
+                            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4);
+                        }
                     }
-                    25% {
-                        transform: translateY(-5px) scale(1.05);
-                        box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4);
-                    }
-                    50% {
-                        transform: translateY(-8px) scale(1.1);
-                        box-shadow: 0 15px 35px rgba(74, 144, 226, 0.6);
-                    }
-                    75% {
-                        transform: translateY(-5px) scale(1.05);
-                        box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4);
-                    }
-                }
-            `;
+                `;
         document.head.appendChild(style);
 
         function generateReward() {
@@ -5965,24 +6695,24 @@
 
         function showReward(reward) {
             let resultHtml = `
-                    <div class="reward-icon ${reward.type}">
-                        <i class="${reward.icon}"></i>
-                    </div>
-                    <div class="reward-title ${reward.type}">${reward.title}</div>
-                    <div class="reward-description">${reward.description}</div>
-                `;
+                        <div class="reward-icon ${reward.type}">
+                            <i class="${reward.icon}"></i>
+                        </div>
+                        <div class="reward-title ${reward.type}">${reward.title}</div>
+                        <div class="reward-description">${reward.description}</div>
+                    `;
 
             if (reward.code) {
                 resultHtml += `
-                        <div class="reward-code">${reward.code}</div>
-                        <div class="reward-description">
-                            To claim your reward, create a ticket on Discord with this code!
-                        </div>
-                        <a href="https://discord.gg/varpud" target="_blank" class="discord-claim-btn">
-                            <i class="fab fa-discord"></i>
-                            Create Ticket on Discord
-                        </a>
-                    `;
+                            <div class="reward-code">${reward.code}</div>
+                            <div class="reward-description">
+                                To claim your reward, create a ticket on Discord with this code!
+                            </div>
+                            <a href="https://discord.gg/varpud" target="_blank" class="discord-claim-btn">
+                                <i class="fab fa-discord"></i>
+                                Create Ticket on Discord
+                            </a>
+                        `;
             }
 
             rewardResult.innerHTML = resultHtml;
@@ -6053,7 +6783,7 @@
                 name: 'Fortnite Private',
                 price: '$7.99',
                 images: [
-                    'https://media.discordapp.net/attachments/1383202115052376216/1385425899469537430/output-onlinepngtools_1.png?ex=68613aaa&is=685fe92a&hm=6f8a914a05b594223b7ef927d113eeb71778b6aa7de36c6965b9f9b678f54681&=&format=webp&quality=lossless&width=1554&height=874',
+                    'https://media.discordapp.net/attachments/1383202115052376216/1385425899469537430/output-onlinepngtools_1.png?ex=686923aa&is=6867d22a&hm=5e8247d4ce3d492fc1dd5a12f566bdaf10b8d24086e5271d288ce179b746a0cf&=&format=webp&quality=lossless&width=1554&height=874',
                     'https://i.imgur.com/gVE5Z2j.png'
                 ],
                 features: [
@@ -6069,7 +6799,7 @@
                 name: 'Fortnite Public',
                 price: '$4.99',
                 images: [
-                    'https://media.discordapp.net/attachments/1383202115052376216/1383218101356859502/Bez_tytuu_1.png?ex=6861c43e&is=686072be&hm=92b146407b9ce86b61426e0652197469b83068fab06969fa5018cd83a9448603&=&format=webp&quality=lossless',
+                    'https://media.discordapp.net/attachments/1383202115052376216/1383218101356859502/Bez_tytuu_1.png?ex=6869047e&is=6867b2fe&hm=f5d208fc9b9ec2abd658fb4ed9ab843326daf69b2c1d0b7c76a792effba6e886&=&format=webp&quality=lossless',
                     'https://imgur.com/9rB54DA.png'
                 ],
                 features: [
@@ -6085,7 +6815,7 @@
                 name: 'Permanent Spoofer',
                 price: '$9.99',
                 images: [
-                    'https://media.discordapp.net/attachments/1375971222239838306/1387325487382007818/Bez_tytuu.png?ex=68618c4b&is=68603acb&hm=f66d394b737bdbc8941c40efc21878b930d7c4e0dfaf1d24458fb1bcb273c852&=&format=webp&quality=lossless&width=1596&height=874',
+                    'https://media.discordapp.net/attachments/1375971222239838306/1387325487382007818/Bez_tytuu.png?ex=6869754b&is=686823cb&hm=ba62f2bc24733831e2952b191cb8ff1f50f516289f1816a8abfb75a19289b6a6&=&format=webp&quality=lossless&width=1596&height=874',
                     'https://imgur.com/vnMC2yy.png'
                 ],
                 features: [
@@ -6101,7 +6831,7 @@
                 name: 'Temporary Spoofer',
                 price: '$3.99',
                 images: [
-                    'https://media.discordapp.net/attachments/1198782292072615956/1375981321326825602/image.png?ex=6861ce77&is=68607cf7&hm=f3661dfcbc8926269208ebb51e128bbc845d7f05a962e4820922846fddc3c500&=&format=webp&quality=lossless&width=1552&height=874',
+                    'https://media.discordapp.net/attachments/1198782292072615956/1375981321326825602/image.png?ex=68690eb7&is=6867bd37&hm=69e525fb4c317a24af314c6ef6e81bd604a9d15611a73bc1204a2c07125d9cd9&=&format=webp&quality=lossless&width=1552&height=874',
                     'https://imgur.com/ZCSFtsg.png'
                 ],
                 features: [
@@ -6117,7 +6847,7 @@
                 name: 'BO6 External',
                 price: '$3.99',
                 images: [
-                    'https://media.discordapp.net/attachments/1198782292072615956/1375982745129324604/cod-zombies.png?ex=6861cfca&is=68607e4a&hm=3e699e4718ba44d74c13873f4d30df87ae854cae59a79111d30818e6f6312ad4&=&format=webp&quality=lossless&width=1599&height=874',
+                    'https://media.discordapp.net/attachments/1198782292072615956/1375982745129324604/cod-zombies.png?ex=6869100a&is=6867be8a&hm=6f2eae75040e24788fe72c530c42e93b2c4013dd82a0932e1fd52b6e1edc08cb&=&format=webp&quality=lossless&width=1599&height=874',
                     'https://imgur.com/XrobQO5.png'
                 ],
                 features: [
@@ -6133,7 +6863,7 @@
                 name: 'Apex External',
                 price: '$3.99',
                 images: [
-                    'https://media.discordapp.net/attachments/1301279626575745086/1372236515542827079/image.png?ex=68615dd8&is=68600c58&hm=3521ef5421b0058a649c1755fd70cd0d13a22820cb2fcb67ec30c335b53e86e5&=&format=webp&quality=lossless&width=1554&height=874',
+                    'https://media.discordapp.net/attachments/1301279626575745086/1372236515542827079/image.png?ex=686946d8&is=6867f558&hm=a4e3a54d6ee3f0faf8963ba6ecbd1e9d5981d79319fbfabb6f129d00eb167378&=&format=webp&quality=lossless&width=1554&height=874',
                     'https://imgur.com/qeTNJoH.png'
                 ],
                 features: [
@@ -6149,7 +6879,7 @@
                 name: 'Rust External',
                 price: '$5.99',
                 images: [
-                    'https://media.discordapp.net/attachments/1198782292072615956/1375982464102699088/rust-1.png?ex=6861cf87&is=68607e07&hm=c4d280cb2029eaea6b3c250609356ab65d4a7afdf2398b97ccefeb6530761a7e&=&format=webp&quality=lossless&width=400&height=225',
+                    'https://media.discordapp.net/attachments/1198782292072615956/1375982464102699088/rust-1.png?ex=68690fc7&is=6867be47&hm=5512d26cb6164bd41c5749f9408892d97b9d751526c615a1fc3166df0da4992b&=&format=webp&quality=lossless&width=400&height=225',
                     'https://imgur.com/6IYdr6G.png'
                 ],
                 features: [
@@ -6177,7 +6907,11 @@
             document.getElementById('product-modal-title').innerHTML = `<i class="fas fa-eye"></i> ${product.name}`;
             document.getElementById('product-modal-name').textContent = product.name;
             document.getElementById('product-modal-price').textContent = product.price;
-            document.getElementById('product-modal-buy-btn').href = product.buyLink;
+            document.getElementById('product-modal-buy-btn').onclick = function (e) {
+                e.preventDefault();
+                closeProductModal();
+                openPurchaseModal(product.buyLink);
+            };
             document.getElementById('product-modal-description').textContent = product.description;
 
             // Set initial image
@@ -6345,8 +7079,23 @@
             });
 
             // Product modal event listeners
+            // Product modal event listeners
+            const purchaseClose = document.getElementById('purchase-close');
+            const purchaseModal = document.getElementById('purchase-modal');
             const productClose = document.getElementById('product-close');
             const productModal = document.getElementById('product-modal');
+
+            if (purchaseClose) {
+                purchaseClose.addEventListener('click', closePurchaseModal);
+            }
+
+            if (purchaseModal) {
+                purchaseModal.addEventListener('click', function (e) {
+                    if (e.target === purchaseModal) {
+                        closePurchaseModal();
+                    }
+                });
+            }
 
             if (productClose) {
                 productClose.addEventListener('click', closeProductModal);
@@ -6453,24 +7202,27 @@
             }
 
             // ESC key to close modals
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') {
-                    if (statusModal.style.display === 'flex') {
-                        closeStatusModal();
-                    }
-                    if (reviewsModal.style.display === 'flex') {
-                        closeReviewsModal();
-                    }
-                    if (tosModal.style.display === 'flex') {
-                        closeTosModal();
-                    }
-                    if (productModal.style.display === 'flex') {
-                        closeProductModal();
-                    }
-                    if (chatOpen) {
-                        closeChat();
-                    }
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                if (statusModal.style.display === 'flex') {
+                    closeStatusModal();
                 }
+                if (reviewsModal.style.display === 'flex') {
+                    closeReviewsModal();
+                }
+                if (tosModal.style.display === 'flex') {
+                    closeTosModal();
+                }
+                if (productModal.style.display === 'flex') {
+                    closeProductModal();
+                }
+                if (purchaseModal.style.display === 'flex') {
+                    closePurchaseModal();
+                }
+                if (chatOpen) {
+                    closeChat();
+                }
+            }
 
                 // Arrow keys for image navigation in product modal
                 if (productModal.style.display === 'flex') {
@@ -6908,6 +7660,143 @@
             }
             animateMessages();
         }
+
+
+        // Confetti Animation
+        function createConfetti() {
+            const confettiContainer = document.createElement('div');
+            confettiContainer.className = 'confetti-container';
+            confettiContainer.id = 'confettiContainer';
+            document.body.appendChild(confettiContainer);
+
+            // Create 30 confetti pieces
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+
+                // Random horizontal position
+                confetti.style.left = Math.random() * 100 + '%';
+
+                // Random delay
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+
+                // Random horizontal movement
+                const randomX = (Math.random() - 0.5) * 100;
+                confetti.style.setProperty('--random-x', randomX + 'px');
+
+                confettiContainer.appendChild(confetti);
+            }
+
+            // Remove confetti after animation
+            setTimeout(() => {
+                if (confettiContainer && confettiContainer.parentNode) {
+                    confettiContainer.parentNode.removeChild(confettiContainer);
+                }
+            }, 5000);
+        }
+
+        // Update the existing notification JavaScript to include confetti
+        document.addEventListener('DOMContentLoaded', function () {
+            const notification = document.getElementById('dailyNotification');
+            const notificationClose = document.getElementById('notificationClose');
+            const notificationLoginBtn = document.getElementById('notificationLoginBtn');
+            const errorNotification = document.getElementById('errorNotification');
+            const errorLoginBtn = document.getElementById('errorLoginBtn');
+            const errorCloseBtn = document.getElementById('errorCloseBtn');
+            const dailyRewardBoxBtn = document.getElementById('dailyRewardBoxBtn');
+
+            // Show notification after 3 seconds WITH CONFETTI
+            setTimeout(() => {
+                const loggedUser = JSON.parse(localStorage.getItem('varp_logged_user') || 'null');
+
+                if (!loggedUser) {
+                    notification.classList.add('show');
+                    // Add confetti effect
+                    setTimeout(() => {
+                        createConfetti();
+                    }, 200); // Small delay for smooth effect
+                }
+            }, 3000);
+
+            // Daily Reward Box button handler
+            if (dailyRewardBoxBtn) {
+                dailyRewardBoxBtn.addEventListener('click', function () {
+                    attemptOpenDailyReward();
+                });
+            }
+
+            // Close notification
+            notificationClose.addEventListener('click', function () {
+                notification.classList.remove('show');
+                localStorage.setItem('daily_notification_closed', 'true');
+            });
+
+            // Open Daily Reward when clicking the button
+            notificationLoginBtn.addEventListener('click', function () {
+                notification.classList.remove('show');
+                attemptOpenDailyReward();
+            });
+
+            // Error notification handlers
+            errorLoginBtn.addEventListener('click', function () {
+                errorNotification.classList.remove('show');
+                openLoginModal();
+            });
+
+            errorCloseBtn.addEventListener('click', function () {
+                errorNotification.classList.remove('show');
+            });
+
+            // Function to attempt opening Daily Reward
+            function attemptOpenDailyReward() {
+                const loggedUser = JSON.parse(localStorage.getItem('varp_logged_user') || 'null');
+
+                if (!loggedUser) {
+                    showErrorNotification();
+                } else {
+                    openDailyReward();
+                }
+            }
+
+            // Function to show error notification
+            function showErrorNotification() {
+                errorNotification.classList.add('show');
+                document.body.style.overflow = 'hidden';
+
+                setTimeout(() => {
+                    if (errorNotification.classList.contains('show')) {
+                        errorNotification.classList.remove('show');
+                        document.body.style.overflow = 'auto';
+                    }
+                }, 5000);
+            }
+
+            // Close error notification when clicking outside
+            errorNotification.addEventListener('click', function (e) {
+                if (e.target === errorNotification) {
+                    errorNotification.classList.remove('show');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Auto-hide notification after 10 seconds
+            setTimeout(() => {
+                if (notification.classList.contains('show')) {
+                    notification.classList.remove('show');
+                }
+            }, 13000);
+
+            // Don't show notification if user already closed it today
+            const notificationClosed = localStorage.getItem('daily_notification_closed');
+            const today = new Date().toDateString();
+            const lastClosedDate = localStorage.getItem('daily_notification_closed_date');
+
+            if (lastClosedDate !== today) {
+                localStorage.removeItem('daily_notification_closed');
+                localStorage.setItem('daily_notification_closed_date', today);
+            }
+        });
+
     </script>
 </body>
 </html>
