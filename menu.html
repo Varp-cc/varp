@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varp Artificial Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&family=Libertinus+Math&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geologica', sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 15%, #0f0f0f 30%, #2a2a2a 45%, #1f1f1f 60%, #333333 75%, #0a0a0a 90%, #000000 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            position: relative;
+        }
+
+            body::after {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle at 20% 30%, rgba(30, 30, 30, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(40, 40, 40, 0.2) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(25, 25, 25, 0.1) 0%, transparent 50%);
+                pointer-events: none;
+                z-index: 1;
+            }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 50%, #0f0f0f 100%);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7), 0 0 100px rgba(59, 130, 246, 0.3);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            animation: slideUp 0.6s ease-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dashboard {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+            height: 600px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .dashboard-layout {
+            display: flex;
+            height: 100%;
+        }
+
+        .sidebar {
+            width: 230px;
+            background: rgba(0, 0, 0, 0.01);
+            backdrop-filter: blur(30px) saturate(300%);
+            border: 1px solid rgba(255, 255, 255, 0.005);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.01), 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.02);
+            padding: 30px 0;
+            border-radius: 16px 0 0 16px;
+            position: relative;
+        }
+
+            .sidebar::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.003) 0%, rgba(255, 255, 255, 0.001) 50%, rgba(255, 255, 255, 0.003) 100%);
+                border-radius: 16px 0 0 16px;
+                pointer-events: none;
+            }
+
+        .sidebar-header {
+            padding: 0 30px 30px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-logo {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(59, 130, 246, 0.3));
+            transition: all 0.3s ease;
+        }
+
+            .sidebar-logo:hover {
+                transform: scale(1.1);
+                filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.5));
+            }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #bbb;
+            font-size: 16px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+            .menu-item::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .menu-item:hover::before {
+                left: 100%;
+            }
+
+            .menu-item:hover {
+                background: rgba(59, 130, 246, 0.15);
+                border-color: rgba(59, 130, 246, 0.5);
+                transform: translateX(8px) scale(1.02);
+                color: #ffffff;
+                box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+
+            .menu-item.active {
+                background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0.2) 100%);
+                border-color: rgba(59, 130, 246, 0.7);
+                color: #ffffff;
+                transform: translateX(5px);
+                box-shadow: 0 8px 30px rgba(59, 130, 246, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            }
+
+                .menu-item.active::after {
+                    content: '';
+                    position: absolute;
+                    right: 0;
+                    top: 20%;
+                    height: 60%;
+                    width: 4px;
+                    background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+                    border-radius: 2px 0 0 2px;
+                    box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+                }
+
+
+
+                .menu-item.active::after {
+                    content: '';
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    height: 100%;
+                    width: 3px;
+                    background: #60a5fa;
+                    border-radius: 3px 0 0 3px;
+                    display: none;
+                }
+
+        .main-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #3b82f6 0%, #1e3a8a 100%);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            animation: scrollGlow 2s ease-in-out infinite;
+        }
+
+            .main-content::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+                box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
+            }
+
+        @keyframes scrollGlow {
+            0% {
+                box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
+            }
+
+            100% {
+                box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+            }
+        }
+
+        body::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: #0a0a0a;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #3b82f6 0%, #1e3a8a 100%);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.7);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
+
+            body::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.9);
+            }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.8;
+            fill: currentColor;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
+        }
+
+        .menu-item:hover .menu-icon {
+            opacity: 1;
+            transform: scale(1.1);
+            filter: drop-shadow(0 4px 8px rgba(59, 130, 246, 0.6));
+        }
+
+        .menu-item.active .menu-icon {
+            opacity: 1;
+            transform: scale(1.05);
+            filter: drop-shadow(0 4px 8px rgba(59, 130, 246, 0.8));
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 25px;
+            background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+            border-radius: 0 16px 16px 0;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            margin-bottom: 25px;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .setting-item {
+            margin-bottom: 18px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+            .setting-item:hover {
+                background: rgba(255, 255, 255, 0.05);
+                border-color: rgba(255, 255, 255, 0.15);
+                transform: translateY(-2px);
+            }
+
+            .setting-item:last-child {
+                border-bottom: none;
+            }
+
+        .setting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .setting-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .risk-badge {
+            background: linear-gradient(45deg, #ef4444 0%, #dc2626 100%);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .setting-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .setting-description {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .setting-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            width: 48px;
+            height: 24px;
+            background: linear-gradient(145deg, #333 0%, #222 100%);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+            .toggle-switch::before {
+                content: '';
+                position: absolute;
+                top: 2px;
+                left: 2px;
+                width: 18px;
+                height: 18px;
+                background: linear-gradient(145deg, #fff 0%, #e5e5e5 100%);
+                border-radius: 50%;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            }
+
+            .toggle-switch:hover {
+                transform: scale(1.05);
+            }
+
+            .toggle-switch.active {
+                background: linear-gradient(145deg, #1e3a8a 0%, #3b82f6 100%);
+                box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            }
+
+                .toggle-switch.active::before {
+                    left: 26px;
+                    background: linear-gradient(145deg, #fff 0%, #f0f9ff 100%);
+                }
+
+        .slider-container {
+            margin-top: 12px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #333 0%, #222 100%);
+            border-radius: 3px;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .slider::-webkit-slider-thumb {
+                appearance: none;
+                width: 18px;
+                height: 18px;
+                background: linear-gradient(145deg, #1e3a8a 0%, #3b82f6 100%);
+                border-radius: 50%;
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+                transition: all 0.3s ease;
+                border: 2px solid rgba(255, 255, 255, 0.2);
+            }
+
+                .slider::-webkit-slider-thumb:hover {
+                    transform: scale(1.2);
+                    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+                }
+
+        .dropdown {
+            position: relative;
+            margin-top: 12px;
+        }
+
+        .dropdown-btn {
+            width: 100%;
+            padding: 10px 14px;
+            background: linear-gradient(145deg, #333 0%, #222 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+            .dropdown-btn:hover {
+                background: linear-gradient(145deg, #444 0%, #333 100%);
+                border-color: rgba(255, 255, 255, 0.2);
+                transform: translateY(-1px);
+            }
+
+            .dropdown-btn:active {
+                transform: translateY(0);
+            }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: linear-gradient(145deg, #333 0%, #222 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+            margin-top: 5px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+            .dropdown-content.show {
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: all;
+            }
+
+        .dropdown-item {
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #ccc;
+            font-size: 13px;
+        }
+
+            .dropdown-item:hover {
+                background: linear-gradient(90deg, rgba(30, 58, 138, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%);
+                color: #fff;
+                transform: translateX(5px);
+            }
+
+        .keybind {
+            background: linear-gradient(145deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+
+            .keybind:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+            }
+
+            .keybind:active {
+                transform: translateY(0);
+            }
+
+            .keybind.listening {
+                background: linear-gradient(145deg, #059669 0%, #10b981 100%);
+                animation: pulse 1s infinite;
+            }
+
+        .key-input-container {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .key-input {
+            flex: 1;
+            padding: 8px 12px;
+            background: linear-gradient(145deg, #333 0%, #222 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+            .key-input:focus {
+                border-color: rgba(59, 130, 246, 0.5);
+                box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+                background: linear-gradient(145deg, #444 0%, #333 100%);
+            }
+
+            .key-input::placeholder {
+                color: #888;
+                font-style: italic;
+            }
+
+        .apply-btn {
+            padding: 8px 16px;
+            background: linear-gradient(145deg, #1e3a8a 0%, #3b82f6 100%);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+
+            .apply-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+            }
+
+            .apply-btn:active {
+                transform: translateY(0);
+            }
+
+        .scale-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .scale-btn {
+            padding: 10px 20px;
+            background: linear-gradient(145deg, #333 0%, #222 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            color: #ccc;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 70px;
+            text-align: center;
+        }
+
+            .scale-btn:hover {
+                background: linear-gradient(145deg, #444 0%, #333 100%);
+                border-color: rgba(59, 130, 246, 0.5);
+                color: #fff;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            }
+
+            .scale-btn.active {
+                background: linear-gradient(145deg, #1e3a8a 0%, #3b82f6 100%);
+                border-color: rgba(59, 130, 246, 0.7);
+                color: #fff;
+                box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5);
+            }
+
+            .scale-btn:active {
+                transform: translateY(0);
+            }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .account-info {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .account-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+            .account-field:last-child {
+                border-bottom: none;
+            }
+
+        .account-label {
+            font-size: 14px;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(145deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+            }
+
+        .logout-btn {
+            background: linear-gradient(145deg, #dc2626 0%, #ef4444 100%);
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+            .logout-btn:hover {
+                box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+            }
+
+        .content-section {
+            display: none;
+        }
+
+            .content-section.active {
+                display: block;
+            }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                max-width: 1400px
+            }
+
+            .sidebar {
+                width: 220px;
+            }
+
+            .menu-item {
+                padding: 15px 25px;
+                font-size: 15px;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- MAIN DASHBOARD D -->
+        <div class="dashboard" id="mainDashboard">
+            <div class="dashboard-layout">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <div class="sidebar-header">
+                        <img src="https://i.imgur.com/bx2wtT5.png" alt="VARP Logo" class="sidebar-logo">
+                        <div class="sidebar-title">VARP AIBOT</div>
+                    </div>
+                    <div class="menu-item active" data-section="aimSettings">
+                        <svg class="menu-icon" viewBox="0 0 24 24">
+                            <path d="M12,21c-5,0-9-4-9-9s4-9,9-9s9,4,9,9S17,21,12,21z M12,5c-3.9,0-7,3.1-7,7s3.1,7,7,7s7-3.1,7-7S15.9,5,12,5z M12,16
+				c-2.2,0-4-1.8-4-4s1.8-4,4-4s4,1.8,4,4S14.2,16,12,16z M12,10c-1.1,0-2,0.9-2,2s0.9,2,2,2s2-0.9,2-2S13.1,10,12,10z" />
+                        </svg>
+                        <span>Aim Assistant</span>
+                    </div>
+                    <div class="menu-item" data-section="userProfile">
+                        <svg class="menu-icon" viewBox="0 0 24 24">
+                            <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11.03L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11.03C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
+                        </svg>
+                        <span>Menu Settings</span>
+                    </div>
+                </div>
+
+                <!-- Main -->
+                <div class="main-content">
+                    <!--Aim Settings  -->
+                    <div class="content-section active" id="aimSettings">
+                        <div class="content-header" style="display: flex; align-items: center; justify-content: space-between;">
+                            <div class="content-title">Artificial Intelligence Configuration</div>
+                            <div style="display: flex; gap: 12px;">
+                                <button id="saveRefreshConfigBtn" style="background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%); color: #fff; border: 1px solid rgba(59,130,246,0.2); border-radius: 8px; padding: 8px 18px; font-size: 15px; font-weight: 600; box-shadow: 0 2px 8px rgba(59,130,246,0.08); cursor: pointer; transition: all 0.3s;">Save Config</button>
+
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-header">
+                                <div class="setting-name">Enable Ai-aim</div>
+                                <div class="setting-controls">
+                                    <!--  <div class="keybind" id="aimHotkey">F1</div>-->
+                                    <div class="toggle-switch" id="aimToggleSwitch"></div>
+                                </div>
+            </div>
+            <div class="setting-description">Activate intelligent aiming assistance system</div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-header">
+                <div class="setting-name">Custom Aim Key</div>
+                <div class="setting-value" id="customAimKeyDisplay">0X02</div>
+            </div>
+            <div class="setting-description">Enter hex code for custom aim key (e.g., 0x02 for right mouse button)</div>
+            <div class="key-input-container">
+                <input type="text" class="key-input" id="customAimKeyInput" placeholder="Enter hex code (e.g., 0x02)" maxlength="10">
+                <button class="apply-btn" id="applyAimKey">Apply</button>
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-header">
+                <div class="setting-name">
+                    Aim Movement Smoothness
+                    <span class="risk-badge">Risky</span>
+                </div>
+                <div class="setting-value" id="smoothnessDisplay">50</div>
+            </div>
+            <div class="setting-description">Control the smoothness of aim movement (higher values = more natural)</div>
+            <div class="slider-container">
+                <input type="range" min="1" max="100" value="50" class="slider" id="smoothnessControl">
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-header">
+                <div class="setting-name">Target Body Part</div>
+            </div>
+            <div class="setting-description">Select target body part for aiming priority</div>
+            <div class="dropdown">
+                <button class="dropdown-btn" id="targetBodyBtn">
+                    <span id="bodyPartDisplay">Head</span>
+                    <span>▼</span>
+                </button>
+                <div class="dropdown-content" id="bodyPartOptions">
+                    <div class="dropdown-item" data-value="head">Head</div>
+                    <div class="dropdown-item" data-value="chest">Chest</div>
+                    <div class="dropdown-item" data-value="legs">Legs</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-header">
+                <div class="setting-name">X Sensitivity</div>
+                <div class="setting-value" id="horizontalSensDisplay">25</div>
+            </div>
+            <div class="setting-description">Adjust horizontal mouse sensitivity for precise aiming</div>
+            <div class="slider-container">
+                <input type="range" min="1" max="50" value="25" class="slider" id="horizontalSensControl">
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-header">
+                <div class="setting-name">Y Sensitivity</div>
+                <div class="setting-value" id="verticalSensDisplay">25</div>
+            </div>
+            <div class="setting-description">Adjust vertical mouse sensitivity for precise aiming</div>
+            <div class="slider-container">
+                <input type="range" min="1" max="50" value="25" class="slider" id="verticalSensControl">
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-header">
+                <div class="setting-name">FOV</div>
+                <div class="setting-value" id="fovDisplay">250</div>
+            </div>
+            <div class="setting-description">Field of View for the aimbot (10-300)</div>
+            <div class="slider-container">
+                <input type="range" min="10" max="300" value="250" class="slider" id="fovControl">
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-header">
+                <div class="setting-name">Targeting Sensitivity</div>
+                <div class="setting-value" id="targetingSensDisplay">1.0</div>
+            </div>
+            <div class="setting-description">Adjust targeting sensitivity (1.0-100.0)</div>
+            <div class="slider-container">
+                <input type="range" min="1" max="100" step="0.1" value="1.0" class="slider" id="targetingSensControl">
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings -->
+                                    <div class="content-section" id="userProfile">
+                                        <div class="content-header">
+                                            <div class="content-title">Advanced Menu Settings</div>
+                                        </div>
+
+                                        <div class="setting-item">
+                                            <div class="setting-header">
+                                                <div class="setting-name">Menu Scale Size</div>
+                                                <div class="setting-value" id="menuScaleDisplay">1.0x</div>
+                                            </div>
+                                            <div class="setting-description">Adjust the scale size of the entire menu interface</div>
+                                            <div class="scale-controls">
+                                                <button class="scale-btn" data-scale="0.75">0.75x</button>
+                                                <button class="scale-btn active" data-scale="1.0">1.0x</button>
+                                                <button class="scale-btn" data-scale="1.25">1.25x</button>
+                                            </div>
+                                        </div>
+
+                                        <button class="btn logout-btn" id="signOutButton">Close Application</button>
+                                    </div>
+                                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDashboardControls();
+        });
+
+        function initializeDashboardControls() {
+            setupMenuNavigation();
+            setupToggleSwitches();
+            setupSliderControls();
+            setupDropdownControls();
+            setupKeybindControls();
+            setupCustomAimKey();
+            setupMenuScaling();
+            setupCloseButton();
+        }
+
+        function setupMenuNavigation() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const targetSection = item.getAttribute('data-section');
+
+                    menuItems.forEach(mi => mi.classList.remove('active'));
+                    item.classList.add('active');
+
+                    contentSections.forEach(cs => cs.classList.remove('active'));
+                    const targetElement = document.getElementById(targetSection);
+                    if (targetElement) {
+                        targetElement.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        function setupToggleSwitches() {
+            const aimToggleSwitch = document.getElementById('aimToggleSwitch');
+
+            if (aimToggleSwitch) {
+                aimToggleSwitch.addEventListener('click', () => {
+                    aimToggleSwitch.classList.toggle('active');
+                });
+            }
+        }
+
+        function setupMenuScaling() {
+            const scaleButtons = document.querySelectorAll('.scale-btn');
+            const menuScaleDisplay = document.getElementById('menuScaleDisplay');
+            const container = document.querySelector('.container');
+
+            scaleButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const scale = btn.getAttribute('data-scale');
+
+                    // updejt baton
+                    scaleButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // display
+                    menuScaleDisplay.textContent = scale + 'x';
+
+                    // scal
+                    container.style.transform = `scale(${scale})`;
+                    container.style.transformOrigin = 'center center';
+
+                    if (scale < 1.0) {
+                        container.style.marginTop = `${(1 - scale) * 100}px`;
+                        container.style.marginBottom = `${(1 - scale) * 100}px`;
+                    } else if (scale > 1.0) {
+                        container.style.marginTop = `${-(scale - 1) * 50}px`;
+                        container.style.marginBottom = `${-(scale - 1) * 50}px`;
+                    } else {
+                        container.style.marginTop = '0';
+                        container.style.marginBottom = '0';
+                    }
+
+                    btn.style.background = 'linear-gradient(145deg, #059669 0%, #10b981 100%)';
+                    setTimeout(() => {
+                        if (btn.classList.contains('active')) {
+                            btn.style.background = 'linear-gradient(145deg, #1e3a8a 0%, #3b82f6 100%)';
+                        }
+                    }, 200);
+                });
+            });
+        }
+
+        function setupSliderControls() {
+            const smoothnessControl = document.getElementById('smoothnessControl');
+            const smoothnessDisplay = document.getElementById('smoothnessDisplay');
+            if (smoothnessControl && smoothnessDisplay) {
+                smoothnessControl.addEventListener('input', (e) => {
+                    smoothnessDisplay.textContent = e.target.value;
+                });
+            }
+
+            const horizontalSensControl = document.getElementById('horizontalSensControl');
+            const horizontalSensDisplay = document.getElementById('horizontalSensDisplay');
+            if (horizontalSensControl && horizontalSensDisplay) {
+                horizontalSensControl.addEventListener('input', (e) => {
+                    horizontalSensDisplay.textContent = e.target.value;
+                });
+            }
+
+            const verticalSensControl = document.getElementById('verticalSensControl');
+            const verticalSensDisplay = document.getElementById('verticalSensDisplay');
+            if (verticalSensControl && verticalSensDisplay) {
+                verticalSensControl.addEventListener('input', (e) => {
+                    verticalSensDisplay.textContent = e.target.value;
+                });
+            }
+
+            const fovControl = document.getElementById('fovControl');
+            const fovDisplay = document.getElementById('fovDisplay');
+            if (fovControl && fovDisplay) {
+                fovControl.addEventListener('input', (e) => {
+                    fovDisplay.textContent = e.target.value;
+                });
+            }
+
+            const targetingSensControl = document.getElementById('targetingSensControl');
+            const targetingSensDisplay = document.getElementById('targetingSensDisplay');
+            if (targetingSensControl && targetingSensDisplay) {
+                targetingSensControl.addEventListener('input', (e) => {
+                    targetingSensDisplay.textContent = e.target.value;
+                });
+            }
+        }
+
+        function setupDropdownControls() {
+            const targetBodyBtn = document.getElementById('targetBodyBtn');
+            const bodyPartOptions = document.getElementById('bodyPartOptions');
+            const bodyPartDisplay = document.getElementById('bodyPartDisplay');
+
+            if (targetBodyBtn && bodyPartOptions && bodyPartDisplay) {
+                targetBodyBtn.addEventListener('click', () => {
+                    bodyPartOptions.classList.toggle('show');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!targetBodyBtn.contains(e.target) && !bodyPartOptions.contains(e.target)) {
+                        bodyPartOptions.classList.remove('show');
+                    }
+                });
+
+                document.querySelectorAll('.dropdown-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const selectedValue = e.target.getAttribute('data-value');
+                        bodyPartDisplay.textContent = e.target.textContent;
+                        bodyPartOptions.classList.remove('show');
+                    });
+                });
+            }
+        }
+
+        function setupKeybindControls() {
+            const aimHotkey = document.getElementById('aimHotkey');
+            let isListeningForKeypress = false;
+
+            if (aimHotkey) {
+                aimHotkey.addEventListener('click', () => {
+                    if (!isListeningForKeypress) {
+                        isListeningForKeypress = true;
+                        aimHotkey.textContent = 'Press key...';
+                        aimHotkey.classList.add('listening');
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (isListeningForKeypress) {
+                        e.preventDefault();
+                        aimHotkey.textContent = e.key.toUpperCase();
+                        aimHotkey.classList.remove('listening');
+                        isListeningForKeypress = false;
+                    }
+                });
+            }
+        }
+
+        function setupCloseButton() {
+            const signOutButton = document.getElementById('signOutButton');
+            if (signOutButton) {
+                signOutButton.addEventListener('click', () => {
+                    if (confirm('Are you siur you want to close the application?')) {
+                        window.close();
+                    }
+                });
+            }
+        }
+
+        function setupCustomAimKey() {
+            const customAimKeyInput = document.getElementById('customAimKeyInput');
+            const customAimKeyDisplay = document.getElementById('customAimKeyDisplay');
+            const applyAimKey = document.getElementById('applyAimKey');
+
+            if (customAimKeyInput && customAimKeyDisplay && applyAimKey) {
+                customAimKeyInput.value = customAimKeyDisplay.textContent;
+                applyAimKey.addEventListener('click', () => {
+                    const inputValue = customAimKeyInput.value.trim();
+
+                    // formancik
+                    if (inputValue.match(/^0x[0-9A-Fa-f]+$/i)) {
+                        customAimKeyDisplay.textContent = inputValue.toUpperCase();
+
+                       // git
+                        applyAimKey.style.background = 'linear-gradient(145deg, #059669 0%, #10b981 100%)';
+                        applyAimKey.textContent = 'Applied!';
+
+                        setTimeout(() => {
+                            applyAimKey.style.background = 'linear-gradient(145deg, #1e3a8a 0%, #3b82f6 100%)';
+                            applyAimKey.textContent = 'Apply';
+                        }, 1500);
+                    } else {
+                        // nie git 
+                        customAimKeyInput.style.borderColor = '#ef4444';
+                        customAimKeyInput.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.5)';
+
+                        applyAimKey.style.background = 'linear-gradient(145deg, #dc2626 0%, #ef4444 100%)';
+                        applyAimKey.textContent = 'Invalid!';
+
+                        setTimeout(() => {
+                            customAimKeyInput.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                            customAimKeyInput.style.boxShadow = 'none';
+                            applyAimKey.style.background = 'linear-gradient(145deg, #1e3a8a 0%, #3b82f6 100%)';
+                            applyAimKey.textContent = 'Apply';
+                        }, 2000);
+                    }
+                });
+
+               
+                customAimKeyInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        applyAimKey.click();
+                    }
+                });
+
+           // autohf
+                customAimKeyInput.addEventListener('input', (e) => {
+                    let value = e.target.value.toUpperCase();
+                    if (!value.startsWith('0X') && value.length > 0) {
+                        if (!value.startsWith('0')) {
+                            value = '0X' + value;
+                        } else if (value.length === 1) {
+                            value = '0X';
+                        } else if (value.charAt(1) !== 'X') {
+                            value = '0X' + value.substring(1);
+                        }
+                    }
+                    e.target.value = value;
+                });
+            }
+        }
+
+        async function saveConfig() {
+            // Compose config in the structure expected by the C++ app
+            const config = {
+                Aim: {
+                    EnableAimbot: document.getElementById('aimToggleSwitch').classList.contains('active'),
+                    Keybind: parseInt(document.getElementById('customAimKeyDisplay').textContent, 16),
+                    Smoothing: parseFloat(document.getElementById('smoothnessControl').value),
+                    AimTargetBone: (() => {
+                        const val = document.getElementById('bodyPartDisplay').textContent.toLowerCase();
+                        if (val === 'head') return 1;
+                        if (val === 'chest') return 2;
+                        if (val === 'legs') return 3;
+                        return 1;
+                    })(),
+                    XSensitivity: parseFloat(document.getElementById('horizontalSensControl').value),
+                    YSensitivity: parseFloat(document.getElementById('verticalSensControl').value),
+                    TargetingSensitivity: parseFloat(document.getElementById('targetingSensControl').value),
+                    FOV: parseInt(document.getElementById('fovControl').value)
+                }
+            };
+            try {
+                const response = await fetch('http://localhost:8000/save-config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+                if (response.ok) {
+                    console.log('Config saved successfully');
+                } else {
+                    throw new Error('Failed to save config');
+                }
+            } catch (error) {
+                console.error('Error saving config:', error);
+                throw error;
+            }
+        }
+
+        async function downloadConfig() {
+            try {
+                const response = await fetch('http://localhost:8000/load-config');
+                if (!response.ok) throw new Error('Failed to fetch config');
+                const config = await response.json();
+                const blob = new Blob([JSON.stringify(config, null, 4)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'config.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                alert('Could not download config: ' + err.message);
+            }
+        }
+
+        document.getElementById('saveRefreshConfigBtn').addEventListener('click', async () => {
+            await saveConfig();
+            await downloadConfig();
+        });
+        document.getElementById('downloadConfigBtnHeader').addEventListener('click', downloadConfig);
+    </script>
+</body>
+</html>
