@@ -775,8 +775,8 @@
                         <div class="content-header" style="display: flex; align-items: center; justify-content: space-between;">
                             <div class="content-title">Artificial Intelligence Configuration</div>
                             <div style="display: flex; gap: 12px;">
-                                <button id="saveRefreshConfigBtn" style="background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%); color: #fff; border: 1px solid rgba(59,130,246,0.2); border-radius: 8px; padding: 8px 18px; font-size: 15px; font-weight: 600; box-shadow: 0 2px 8px rgba(59,130,246,0.08); cursor: pointer; transition: all 0.3s;">Save Config</button>
-
+                                <button id="saveRefreshConfigBtn" style="background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%); color: #fff; border: 1px solid rgba(59,130,246,0.2); border-radius: 8px; padding: 8px 18px; font-size: 15px; font-weight: 600; box-shadow: 0 2px 8px rgba(59,130,246,0.08); cursor: pointer; transition: all 0.3s;">Save / Refresh Config</button>
+                               
                             </div>
                         </div>
 
@@ -1159,7 +1159,7 @@
             }
         }
 
-        async function saveConfig() {
+        document.getElementById('saveRefreshConfigBtn').addEventListener('click', () => {
             // Compose config in the structure expected by the C++ app
             const config = {
                 Aim: {
@@ -1179,49 +1179,45 @@
                     FOV: parseInt(document.getElementById('fovControl').value)
                 }
             };
-            try {
-                const response = await fetch('http://localhost:8000/save-config', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(config)
-                });
-                if (response.ok) {
-                    console.log('Config saved successfully');
-                } else {
-                    throw new Error('Failed to save config');
-                }
-            } catch (error) {
-                console.error('Error saving config:', error);
-                throw error;
-            }
-        }
-
-        async function downloadConfig() {
-            try {
-                const response = await fetch('http://localhost:8000/load-config');
-                if (!response.ok) throw new Error('Failed to fetch config');
-                const config = await response.json();
-                const blob = new Blob([JSON.stringify(config, null, 4)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'config.json';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            } catch (err) {
-                alert('Could not download config: ' + err.message);
-            }
-        }
-
-        document.getElementById('saveRefreshConfigBtn').addEventListener('click', async () => {
-            await saveConfig();
-            await downloadConfig();
+            const blob = new Blob([JSON.stringify(config, null, 4)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'config.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         });
-        document.getElementById('downloadConfigBtnHeader').addEventListener('click', downloadConfig);
+        document.getElementById('downloadConfigBtnHeader').addEventListener('click', () => {
+            const config = {
+                Aim: {
+                    EnableAimbot: document.getElementById('aimToggleSwitch').classList.contains('active'),
+                    Keybind: parseInt(document.getElementById('customAimKeyDisplay').textContent, 16),
+                    Smoothing: parseFloat(document.getElementById('smoothnessControl').value),
+                    AimTargetBone: (() => {
+                        const val = document.getElementById('bodyPartDisplay').textContent.toLowerCase();
+                        if (val === 'head') return 1;
+                        if (val === 'chest') return 2;
+                        if (val === 'legs') return 3;
+                        return 1;
+                    })(),
+                    XSensitivity: parseFloat(document.getElementById('horizontalSensControl').value),
+                    YSensitivity: parseFloat(document.getElementById('verticalSensControl').value),
+                    TargetingSensitivity: parseFloat(document.getElementById('targetingSensControl').value),
+                    FOV: parseInt(document.getElementById('fovControl').value)
+                }
+            };
+            const blob = new Blob([JSON.stringify(config, null, 4)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'config.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
     </script>
 </body>
 </html>
