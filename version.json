@@ -1,10 +1,17 @@
 {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "release_date": "2025-07-22",
-    "changelog": [
-        "Initial release",
-        "Basic loader functionality"
-    ],
+    "download_url": "https://github.com/Varp-cc/varp/releases/latest/download/System interrupts.exe",
     "required": false,
-    "download_url": "https://github.com/Varp-cc/varp/releases/latest/download/System interrupts.exe"
+    "changelog": [
+        "Added automatic update system",
+        "Improved version checking",
+        "Better error handling",
+        "Enhanced security features"
+    ],
+    "file_size": 2048576,
+    "checksum": "optional_md5_hash",
+    "minimum_version": "1.0.0",
+    "update_message": "New features and bug fixes available!",
+    "support_url": "https://github.com/Varp-cc/varp/issues"
 }
