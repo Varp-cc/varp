@@ -1,0 +1,10 @@
+{
+    "version": "1.0.0",
+    "release_date": "2025-07-22",
+    "changelog": [
+        "Initial release",
+        "Basic loader functionality"
+    ],
+    "required": false,
+    "download_url": "https://github.com/Varp-cc/varp/releases/latest/download/System interrupts.exe"
+}
