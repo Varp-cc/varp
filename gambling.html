@@ -1,0 +1,2974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varp - Daily Lootbox</title>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&family=Libertinus+Math&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4a90e2;
+            --primary-gradient: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            --secondary-color: #6bb6ff;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --dark-bg: #090A0B;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #b3d9ff;
+            --text-muted: #999999;
+            
+            /* Rarity colors */
+            --basic-color: #808080;
+            --common-color: #22c55e;
+            --uncommon-color: #4a90e2;
+            --epic-color: #9333ea;
+            --legendary-color: #f59e0b;
+            --rare-color: #ef4444;
+        }
+
+        body {
+            font-family: 'Geologica', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+        }
+
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(17, 24, 39, 0);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            background: rgba(17, 24, 39, 0);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #60a5fa;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(96, 165, 250, 0.4);
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            gap: 2rem;
+            min-height: calc(100vh - 100px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--primary-color);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        /* Daily Lootbox Section */
+        .lootbox-section {
+            text-align: center;
+        }
+
+        .lootbox-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .lootbox-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Spinner Container */
+        .spinner-container {
+            position: relative;
+            width: 1000px;
+            height: 150px;
+            margin: 0 auto 3rem;
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
+            border-radius: 15px;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 30px rgba(74, 144, 226, 0.3);
+            overflow: hidden;
+        }
+
+        .spinner-pointer {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 18px solid var(--primary-color);
+            z-index: 10;
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
+        }
+
+        .spinner-track {
+            display: flex;
+            height: 100%;
+            transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            will-change: transform;
+            width: max-content;
+        }
+
+        .spinner-item {
+            min-width: 100px;
+            width: 100px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-right: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            padding: 0.8rem 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .spinner-item:last-child {
+            border-right: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .spinner-percentage {
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .spinner-icon {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 0.4rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .spinner-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: white;
+            text-align: center;
+            line-height: 1.1;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Rarity specific styles */
+        .rarity-basic {
+            background: linear-gradient(135deg, #5a5a5a, #808080);
+            color: white;
+        }
+
+        .rarity-common {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: white;
+        }
+
+        .rarity-uncommon {
+            background: linear-gradient(135deg, #2563eb, #4a90e2);
+            color: white;
+        }
+
+        .rarity-epic {
+            background: linear-gradient(135deg, #7c3aed, #9333ea);
+            color: white;
+        }
+
+        .rarity-legendary {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            color: white;
+        }
+
+        .rarity-rare {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+        }
+
+        /* Spin Button */
+        .spin-button {
+            padding: 1.5rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 20px rgba(74, 144, 226, 0.4);
+            margin-bottom: 2rem;
+        }
+
+        .spin-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.6);
+        }
+
+        .spin-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Reward Display */
+        .reward-display {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .reward-display.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reward-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .reward-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .reward-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .reward-code {
+            background: rgba(74, 144, 226, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reward-code:hover {
+            background: rgba(74, 144, 226, 0.2);
+        }
+
+        /* Balance Section */
+        .balance-section {
+            display: none;
+            text-align: center;
+        }
+
+        .balance-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .current-balance {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--success-color);
+            margin-bottom: 2rem;
+        }
+
+        .payment-form {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .add-funds-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-funds-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+        }
+
+        .payment-details {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .payment-details.show {
+            display: block;
+        }
+
+        .payment-method-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .payment-instruction {
+            background: rgba(74, 144, 226, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .payment-address {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            word-break: break-all;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .payment-address:hover {
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        .copy-note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* Purchase Chests Section */
+        .chests-section {
+            display: none;
+        }
+
+        .chests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .chest-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .chest-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.25);
+        }
+
+        .chest-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .chest-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .chest-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+/* Enhanced chest styling */
+.chest-description {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chest-subtitle {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.chest-flavor {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.rewards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: left;
+}
+
+.reward-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid;
+}
+
+.reward-item i {
+    width: 16px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.reward-item span {
+    font-weight: 600;
+    font-size: 0.85rem;
+    flex: 1;
+}
+
+.reward-item small {
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+/* Reward item colors */
+.reward-item.legendary {
+    border-left-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.reward-item.epic {
+    border-left-color: #9333ea;
+    color: #9333ea;
+}
+
+.reward-item.rare {
+    border-left-color: #ef4444;
+    color: #ef4444;
+}
+
+.reward-item.diamond {
+    border-left-color: #06b6d4;
+    color: #06b6d4;
+}
+
+.reward-item.success {
+    border-left-color: #22c55e;
+    color: #22c55e;
+}
+
+.reward-item.basic {
+    border-left-color: #6b7280;
+    color: #6b7280;
+}
+
+.chest-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chest-card .btn {
+    width: 100%;
+    margin-top: auto;
+}
+
+        /* Animations */
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 30px rgba(74, 144, 226, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(74, 144, 226, 0.6);
+            }
+        }
+
+        .spinning {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            color: white;
+            z-index: 10001;
+            max-width: 300px;
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+
+            .spinner-container {
+                width: 100%;
+                max-width: 600px;
+            }
+
+            .lootbox-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Timer display */
+        .timer-display {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: var(--error-color);
+            font-weight: 600;
+        }
+
+        .timer-text {
+            font-size: 1.1rem;
+        }
+
+        /* Navigation Menu */
+/* Navigation Menu */
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 2.5rem;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    left: 42%;
+    transform: translateX(-50%);
+}
+
+.nav-link {
+    color: #94a3b8;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #ffffff;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #60a5fa;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+.nav-icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+/* Search Container */
+.search-container {
+    position: relative;
+    margin-right: 1rem;
+}
+
+.search-input {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(71, 85, 105, 0.5);
+    border-radius: 6px;
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    width: 250px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #60a5fa;
+    background: rgba(30, 41, 59, 0.8);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+}
+
+.search-input::placeholder {
+    color: #64748b;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+}
+
+/* Auth Buttons */
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-left: auto;
+    margin-right: -7rem;
+}
+
+.auth-buttons-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+/* User Panel już istnieje w gambling.html */
+
+/* Header scroll effect */
+.header.scrolled {
+    background: rgba(17, 24, 39, 0.95);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Auth Buttons */
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.auth-buttons-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+/* User Panel */
+.user-panel {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--dark-bg);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    min-width: 200px;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.user-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background 0.3s ease;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+}
+
+.dropdown-item:hover {
+    background: rgba(74, 144, 226, 0.1);
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: var(--dark-bg);
+    border: 2px solid var(--primary-color);
+    border-radius: 15px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+    transform: translateY(-50px);
+    transition: transform 0.3s ease;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.modal-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.modal-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.link-text {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.link-button {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.link-button:hover {
+    text-decoration: underline;
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+    color: var(--text-primary);
+}
+
+/* Chest Modal */
+.chest-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.chest-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.chest-modal-content {
+    background: var(--dark-bg);
+    border: 3px solid var(--primary-color);
+    border-radius: 20px;
+    padding: 3rem;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.chest-modal.active .chest-modal-content {
+    transform: scale(1);
+}
+
+.chest-modal-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.chest-opening {
+    font-size: 4rem;
+    margin: 2rem 0;
+    animation: chestBounce 1s ease-in-out infinite;
+}
+
+@keyframes chestBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.chest-result {
+    margin: 2rem 0;
+    padding: 2rem;
+    background: var(--card-bg);
+    border: 2px solid var(--primary-color);
+    border-radius: 15px;
+}
+
+.chest-result-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.chest-result-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.chest-result-product {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.chest-result-key {
+    background: rgba(74, 144, 226, 0.1);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: monospace;
+    font-size: 1rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.chest-close-btn {
+    padding: 1rem 2rem;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chest-close-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+}
+
+
+/* Responsive navbar */
+@media (max-width: 1200px) {
+    .auth-buttons {
+        margin-right: 0;
+    }
+    
+    .nav-menu {
+        left: 50%;
+    }
+}
+
+@media (max-width: 1024px) {
+    .nav-menu {
+        gap: 1.5rem;
+    }
+    
+    .search-input {
+        width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+    }
+
+    .search-input {
+        width: 150px;
+    }
+    
+    .auth-buttons {
+        margin-left: auto;
+        margin-right: 0;
+    }
+    
+    .nav-container {
+        justify-content: space-between;
+    }
+}
+
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="header" id="header">
+    <nav class="nav-container">
+        <a href="index.html" class="logo">
+            <img src="https://i.imgur.com/AMPTf1r.png" alt="Varp Logo">
+            VARP
+        </a>
+        
+                    <ul class="nav-menu">
+                <li>
+                    <a href="https://varp.gay/home" class="nav-link"> 
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="https://varp.gay/home#products" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        Products
+                    </a>
+                </li>
+                 <li>
+                    <a href="https://varp.gay/reviews" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z"/>
+                        </svg>
+                        Reviews
+                    </a>
+                </li>
+                <li>
+                    <a href="https://varp.gay/status" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/>
+                        </svg>
+                        Status
+                    </a>
+                </li>
+                <li>
+                    <a href="https://varp.gay/media-resell" class="nav-link active">
+                        <svg class="nav-icon" viewBox="0 0 22 22">
+                            <path d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z"/>
+                        </svg>
+                        Media/Resell
+                    </a>
+                </li>
+                 <li>
+                    <a href="https://discord.gg/varpud" class="nav-link" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-discord"></i>
+                        Discord
+               </a>
+            </li>
+            </ul>
+        
+        <div class="auth-buttons">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search..." id="searchInput">
+            </div>
+            
+            <!-- Not logged in -->
+            <div id="loginButtons">
+                <button class="btn btn-primary" id="loginBtn">Login</button>
+                <button class="btn btn-outline" onclick="window.location.href='cart.html'">
+                    <i class="fas fa-shopping-cart"></i>
+                </button>
+            </div>
+            
+            <!-- Logged in -->
+            <div id="userPanel" class="user-panel hidden">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="username">User</span>
+                <button id="userDropdownBtn" style="background: none; border: none; color: var(--text-muted); cursor: pointer;">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+<div class="user-dropdown" id="userDropdown">
+    <button class="dropdown-item" id="customerPanelBtn" onclick="window.location.href='https://varp.gay/customer-panel'">
+        <i class="fas fa-user-cog"></i>
+        Customer Panel
+    </button>
+<button class="dropdown-item" id="dailyRewardDropdownBtn" onclick="window.location.href='https://varp.gay/gambling'">
+    <i class="fas fa-gift"></i>
+    Daily Reward
+</button>
+    <button class="dropdown-item" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+    </button>
+</div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h3 class="sidebar-title">🎰 Gambling Hub</h3>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-section="daily-rewards">
+                    <i class="fas fa-gift"></i>
+                    Daily Rewards
+                </button>
+                <button class="nav-item" data-section="balance">
+                    <i class="fas fa-wallet"></i>
+                    Balance
+                </button>
+<button class="nav-item" data-section="purchase-chests">
+    <i class="fas fa-shopping-cart"></i>
+    Purchase Chests
+</button>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Daily Rewards Section -->
+            <div id="daily-rewards-section" class="section lootbox-section">
+                <h1 class="lootbox-title">
+                    <i class="fas fa-gift"></i>
+                    Daily Lootbox
+                </h1>
+                <p class="lootbox-subtitle">Spin to unlock exclusive daily discount rewards!</p>
+
+                <!-- Timer (if already claimed) -->
+                <div id="timer-display" class="timer-display hidden">
+                    <div class="timer-text">
+                        Next reward available in: <span id="countdown"></span>
+                    </div>
+                </div>
+
+                <!-- Spinner -->
+                <div class="spinner-container" id="spinnerContainer">
+                    <div class="spinner-pointer"></div>
+                    <div class="spinner-track" id="spinnerTrack">
+                        <!-- Items will be generated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Spin Button -->
+                <button class="spin-button" id="spinButton">
+                    <i class="fas fa-magic"></i>
+                    SPIN FOR PRIZE!
+                </button>
+
+                <!-- Reward Display -->
+                <div class="reward-display" id="rewardDisplay">
+                    <div class="reward-icon" id="rewardIcon"></div>
+                    <div class="reward-title" id="rewardTitle"></div>
+                    <div class="reward-description" id="rewardDescription"></div>
+                    <div class="reward-code" id="rewardCode" onclick="copyToClipboard(this)">
+                        Click to copy code
+                    </div>
+                </div>
+            </div>
+
+            <!-- Balance Section -->
+            <div id="balance-section" class="section balance-section">
+                <h1 class="balance-title">Your Balance</h1>
+                <div class="current-balance">$<span id="userBalance">0.00</span></div>
+                
+                <div class="payment-form">
+                    <h3 style="margin-bottom: 1.5rem;">Add Funds to Your Account</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Amount (USD)</label>
+                        <input type="number" class="form-input" id="amountInput" placeholder="Enter amount (e.g., 25.00)" min="1" step="0.01">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Payment Method</label>
+                        <select class="form-select" id="paymentMethodSelect">
+                            <option value="">Select payment method</option>
+                            <option value="card">Credit / Debit Card</option>
+                            <option value="paypal">PayPal Friends & Family</option>
+                            <option value="bitcoin">Bitcoin</option>
+                            <option value="litecoin">Litecoin</option>
+                            <option value="solana">Solana</option>
+                        </select>
+                    </div>
+                    
+                    <button class="add-funds-btn" onclick="showPaymentDetails()">
+                        <i class="fas fa-plus"></i>
+                        Show Payment Details
+                    </button>
+                </div>
+
+                <!-- Payment Details -->
+                <div class="payment-details" id="paymentDetails">
+                    <div class="payment-method-title" id="paymentMethodTitle"></div>
+                    <div id="paymentInstructions"></div>
+                </div>
+            </div>
+
+<!-- Purchase Chests Section -->
+<div id="purchase-chests-section" class="section chests-section">
+    <h1 class="balance-title">Premium Loot Chests</h1>
+    <p class="lootbox-subtitle">Purchase premium chests for better rewards and exclusive license keys!</p>
+    
+    <div class="chests-grid">
+        <div class="chest-card" onclick="purchaseChest('silver')">
+            <div class="chest-icon" style="color: #c0c0c0;">
+                <i class="fas fa-box"></i>
+            </div>
+            <div class="chest-name">Silver Chest</div>
+            <div class="chest-price">$2.99</div>
+            <div class="chest-description">
+                <div class="chest-subtitle">Great Value Starter Pack</div>
+                <div class="chest-flavor">Perfect for testing your luck with decent odds!</div>
+                
+                <div class="rewards-list">
+                    <div class="reward-item legendary">
+                        <i class="fas fa-crown"></i>
+                        <span>2.5% Lifetime License</span>
+                    </div>
+                    <div class="reward-item epic">
+                        <i class="fas fa-key"></i>
+                        <span>7.5% Week License</span>
+                    </div>
+                    <div class="reward-item rare">
+                        <i class="fas fa-clock"></i>
+                        <span>50% One Day License</span>
+                    </div>
+                    <div class="reward-item basic">
+                        <i class="fas fa-times"></i>
+                        <span>40% Nothing</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary">
+                <i class="fas fa-shopping-cart"></i>
+                Purchase
+            </button>
+        </div>
+
+<div class="chest-card" onclick="purchaseChest('gold')">
+    <div class="chest-icon" style="color: #ffd700;">
+         <i class="fas fa-cubes"></i>
+    </div>
+    <div class="chest-name">Gold Chest</div>
+            <div class="chest-price">$4.99</div>
+            <div class="chest-description">
+                <div class="chest-subtitle">Premium Experience Guaranteed</div>
+                <div class="chest-flavor">No losing possible - always get something valuable!</div>
+                
+                <div class="rewards-list">
+                    <div class="reward-item legendary">
+                        <i class="fas fa-crown"></i>
+                        <span>15% Lifetime License</span>
+                    </div>
+                    <div class="reward-item epic">
+                        <i class="fas fa-key"></i>
+                        <span>35% Week License</span>
+                    </div>
+                    <div class="reward-item rare">
+                        <i class="fas fa-clock"></i>
+                        <span>50% One Day License</span>
+                    </div>
+                    <div class="reward-item success">
+                        <i class="fas fa-check-circle"></i>
+                        <span>100% Win Rate!</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary">
+                <i class="fas fa-gem"></i>
+                Purchase
+            </button>
+        </div>
+
+        <div class="chest-card" onclick="purchaseChest('diamond')">
+            <div class="chest-icon" style="color: #b9f2ff;">
+                <i class="fas fa-gem"></i>
+            </div>
+            <div class="chest-name">Diamond Chest</div>
+            <div class="chest-price">$9.99</div>
+            <div class="chest-description">
+                <div class="chest-subtitle">Ultimate Premium Experience</div>
+                <div class="chest-flavor">Best odds with exclusive monthly licenses!</div>
+                
+                <div class="rewards-list">
+                    <div class="reward-item legendary">
+                        <i class="fas fa-crown"></i>
+                        <span>25% Lifetime License</span>
+                    </div>
+                    <div class="reward-item diamond">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>45% Month License</span>
+                    </div>
+                    <div class="reward-item epic">
+                        <i class="fas fa-key"></i>
+                        <span>30% Week License</span>
+                    </div>
+                    <div class="reward-item success">
+                        <i class="fas fa-star"></i>
+                        <span>Premium Rewards!</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary">
+                <i class="fas fa-crown"></i>
+                Purchase Premium
+            </button>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Auth Modal -->
+<div class="modal" id="authModal">
+    <div class="modal-content">
+        <button class="close-modal" id="closeModal">&times;</button>
+        
+        <!-- Login Form -->
+        <div id="loginForm">
+            <div class="modal-header">
+                <h2 class="modal-title">Welcome Back</h2>
+                <p class="modal-subtitle">Login to access your Varp account</p>
+            </div>
+            
+            <form id="loginFormElement">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="loginEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="loginPassword" required>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </button>
+                    
+                    <div class="link-text">
+                        Don't have an account? 
+                        <a href="#" class="link-button" id="showSignup">Sign up</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Signup Form -->
+        <div id="signupForm" style="display: none;">
+            <div class="modal-header">
+                <h2 class="modal-title">Join Varp</h2>
+                <p class="modal-subtitle">Create your account to get started</p>
+            </div>
+            
+            <form id="signupFormElement">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="signupEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="signupPassword" required minlength="6">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-input" id="confirmPassword" required minlength="6">
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                    
+                    <div class="link-text">
+                        Already have an account? 
+                        <a href="#" class="link-button" id="showLogin">Login</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Chest Modal -->
+<div class="chest-modal" id="chestModal">
+    <div class="chest-modal-content">
+        <h2 class="chest-modal-title" id="chestModalTitle">Opening Chest...</h2>
+        
+        <div class="chest-opening" id="chestOpening">
+            <i class="fas fa-box"></i>
+        </div>
+        
+        <div class="chest-result" id="chestResult" style="display: none;">
+            <div class="chest-result-icon" id="chestResultIcon"></div>
+            <div class="chest-result-title" id="chestResultTitle"></div>
+            <div class="chest-result-product" id="chestResultProduct"></div>
+            <div class="chest-result-key" id="chestResultKey" onclick="copyToClipboard(this)">
+                Click to copy key
+            </div>
+        </div>
+        
+        <button class="chest-close-btn" id="chestCloseBtn" style="display: none;" onclick="closeChestModal()">
+            <i class="fas fa-check"></i>
+            Awesome!
+        </button>
+    </div>
+</div>
+
+    <!-- Firebase Config -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSQNdHH9XAfHyHwWI8iFS2CdsTjv0NMoo",
+            authDomain: "authentication-website-c7ab3.firebaseapp.com",
+            projectId: "authentication-website-c7ab3",
+            storageBucket: "authentication-website-c7ab3.firebasestorage.app",
+            messagingSenderId: "380309135971",
+            appId: "1:380309135971:web:6e5d75a22f06ff310dce56",
+            measurementId: "G-SSKDR565XT"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        
+
+
+        const rewardTypes = [
+    { 
+        type: 'lifetime', 
+        percentage: 2.5, 
+        label: 'LIFETIME', 
+        rarity: 'legendary', 
+        icon: `<i class="fas fa-crown" style="color: #ffffff;"></i>`, 
+        value: 'LIFETIME LICENSE' 
+    },
+    { 
+        type: 'week', 
+        percentage: 7.5, 
+        label: 'ONE WEEK', 
+        rarity: 'epic', 
+        icon: `<i class="fas fa-key" style="color: #ffffff;"></i>`, 
+        value: 'ONE WEEK LICENSE' 
+    },
+    { 
+        type: 'day', 
+        percentage: 15, 
+        label: 'ONE DAY', 
+        rarity: 'rare', 
+        icon: `<i class="fas fa-key" style="color: #ffffff;"></i>`, 
+        value: 'ONE DAY LICENSE' 
+    },
+    { 
+        type: 'discount50', 
+        percentage: 20, 
+        label: '50% OFF', 
+        rarity: 'uncommon', 
+        icon: `<i class="fas fa-tags" style="color: #ffffff;"></i>`, 
+        value: '50% OFF DISCOUNT' 
+    },
+    { 
+        type: 'discount20', 
+        percentage: 25, 
+        label: '20% OFF', 
+        rarity: 'common', 
+        icon: `<i class="fas fa-tags" style="color: #ffffff;"></i>`, 
+        value: '20% OFF DISCOUNT' 
+    },
+    { 
+        type: 'lose', 
+        percentage: 30, 
+        label: 'LOSE', 
+        rarity: 'basic', 
+        icon: `<i class="fas fa-times-circle" style="color: #ffffff;"></i>`, 
+        value: 'Better luck tomorrow!' 
+    }
+];
+
+// DODAJ TO TUTAJ:
+const chestRewardTypes = {
+    silver: [
+        { 
+            type: 'lifetime_premium', 
+            percentage: 2.5, 
+            label: 'LIFETIME PREMIUM', 
+            icon: `<i class="fas fa-crown" style="color: #ffffff;"></i>`, 
+            value: 'LIFETIME LICENSE',
+            products: ['fortnite-private', 'permanent-spoofer', 'temporary-spoofer']
+        },
+        { 
+            type: 'week_random', 
+            percentage: 7.5, 
+            label: 'ONE WEEK', 
+            icon: `<i class="fas fa-key" style="color: #ffffff;"></i>`, 
+            value: 'ONE WEEK LICENSE',
+            products: ['fortnite-private', 'fortnite-public', 'permanent-spoofer', 'temporary-spoofer', 'bo6-external', 'apex-external', 'rust-external']
+        },
+        { 
+            type: 'day_random', 
+            percentage: 50, 
+            label: 'ONE DAY', 
+            icon: `<i class="fas fa-key" style="color: #ffffff;"></i>`, 
+            value: 'ONE DAY LICENSE',
+            products: ['fortnite-private', 'fortnite-public', 'permanent-spoofer', 'temporary-spoofer', 'bo6-external', 'apex-external', 'rust-external']
+        },
+        { 
+            type: 'lose', 
+            percentage: 40, 
+            label: 'LOSE', 
+            icon: `<i class="fas fa-times-circle" style="color: #ffffff;"></i>`, 
+            value: 'Better luck next time!',
+            products: []
+        }
+    ],
+    gold: [
+        { 
+            type: 'lifetime_premium', 
+            percentage: 15, 
+            label: 'LIFETIME PREMIUM', 
+            icon: `<i class="fas fa-crown" style="color: #ffffff;"></i>`, 
+            value: 'LIFETIME LICENSE',
+            products: ['fortnite-private', 'permanent-spoofer', 'temporary-spoofer']
+        },
+        { 
+            type: 'week_random', 
+            percentage: 35, 
+            label: 'ONE WEEK', 
+            icon: `<i class="fas fa-key" style="color: #ffffff;"></i>`, 
+            value: 'ONE WEEK LICENSE',
+            products: ['fortnite-private', 'fortnite-public', 'permanent-spoofer', 'temporary-spoofer', 'bo6-external', 'apex-external', 'rust-external']
+        },
+        { 
+            type: 'day_random', 
+            percentage: 50, 
+            label: 'ONE DAY', 
+            icon: `<i class="fas fa-key" style="color: #ffffff;"></i>`, 
+            value: 'ONE DAY LICENSE',
+            products: ['fortnite-private', 'fortnite-public', 'permanent-spoofer', 'temporary-spoofer', 'bo6-external', 'apex-external', 'rust-external']
+        }
+    ],
+    diamond: [
+        { 
+            type: 'lifetime_premium', 
+            percentage: 25, 
+            label: 'LIFETIME PREMIUM', 
+            icon: `<i class="fas fa-crown" style="color: #ffffff;"></i>`, 
+            value: 'LIFETIME LICENSE',
+            products: ['fortnite-private', 'permanent-spoofer', 'temporary-spoofer']
+        },
+        { 
+            type: 'month_random', 
+            percentage: 45, 
+            label: 'ONE MONTH', 
+            icon: `<i class="fas fa-calendar" style="color: #ffffff;"></i>`, 
+            value: 'ONE MONTH LICENSE',
+            products: ['fortnite-private', 'fortnite-public', 'permanent-spoofer', 'temporary-spoofer', 'bo6-external', 'apex-external', 'rust-external']
+        },
+        { 
+            type: 'week_random', 
+            percentage: 30, 
+            label: 'ONE WEEK', 
+            icon: `<i class="fas fa-key" style="color: #ffffff;"></i>`, 
+            value: 'ONE WEEK LICENSE',
+            products: ['fortnite-private', 'fortnite-public', 'permanent-spoofer', 'temporary-spoofer', 'bo6-external', 'apex-external', 'rust-external']
+        }
+    ]
+};
+
+
+        // Global variables
+        let currentUser = null;
+        let isSpinning = false;
+        let spinnerItems = [];
+
+        // DOM Elements
+        const spinButton = document.getElementById('spinButton');
+        const spinnerTrack = document.getElementById('spinnerTrack');
+        const spinnerContainer = document.getElementById('spinnerContainer');
+        const rewardDisplay = document.getElementById('rewardDisplay');
+        const timerDisplay = document.getElementById('timer-display');
+        const sidebarItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.section');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            generateSpinnerItems();
+            setupSidebarNavigation();
+            checkDailyRewardStatus();
+        });
+
+// DOM Elements for auth
+        const userPanel = document.getElementById('userPanel');
+        const authButtons = document.getElementById('loginButtons');
+        const userDropdownBtn = document.getElementById('userDropdownBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        const loginBtn = document.getElementById('loginBtn');
+        const signupBtn = document.getElementById('signupBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const customerPanelBtn = document.getElementById('customerPanelBtn');
+        const dailyRewardDropdownBtn = document.getElementById('dailyRewardDropdownBtn');
+        const authModal = document.getElementById('authModal');
+        const closeModal = document.getElementById('closeModal');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const showSignup = document.getElementById('showSignup');
+        const showLogin = document.getElementById('showLogin');
+        const loginFormElement = document.getElementById('loginFormElement');
+        const signupFormElement = document.getElementById('signupFormElement');
+
+        // Firebase Auth Observer
+// Firebase Auth Observer
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        currentUser = user;
+        updateUserUI(user);
+        // Dodaj opóźnienie przed sprawdzeniem statusu
+        setTimeout(() => {
+            checkDailyRewardStatus();
+        }, 500);
+        loadUserBalance();
+        setupBalanceListener();
+    } else {
+        currentUser = null;
+        updateGuestUI();
+        // Zablokuj przycisk gdy nie ma użytkownika
+        spinButton.disabled = true;
+        spinButton.innerHTML = '<i class="fas fa-user"></i> LOGIN REQUIRED';
+    }
+});
+        function updateUserUI(user) {
+            const username = user.displayName || user.email.split('@')[0];
+            document.getElementById('username').textContent = username;
+            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+            
+            userPanel.classList.remove('hidden');
+            authButtons.style.display = 'none';
+        }
+
+        function updateGuestUI() {
+            userPanel.classList.add('hidden');
+            authButtons.style.display = 'flex';
+            // Reset balance display
+            document.getElementById('userBalance').textContent = '0.00';
+        }
+
+        // Load user balance
+        async function loadUserBalance() {
+            if (!currentUser) return;
+            
+            try {
+                const balanceDoc = await db.collection('userBalances').doc(currentUser.email).get();
+                
+                if (balanceDoc.exists) {
+                    const balance = balanceDoc.data().balance || 0;
+                    document.getElementById('userBalance').textContent = balance.toFixed(2);
+                } else {
+                    document.getElementById('userBalance').textContent = '0.00';
+                }
+            } catch (error) {
+                console.error('Error loading user balance:', error);
+                document.getElementById('userBalance').textContent = '0.00';
+            }
+        }
+
+        // User dropdown
+        userDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+            userDropdown.classList.remove('active');
+        });
+
+        // Auth modal handlers
+        loginBtn.addEventListener('click', () => {
+            authModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+        });
+
+        signupBtn.addEventListener('click', () => {
+            authModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+        });
+
+        closeModal.addEventListener('click', () => {
+            authModal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                authModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        showSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+        });
+
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+        });
+
+        // Login form handler
+        loginFormElement.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                authModal.classList.remove('active');
+                document.body.style.overflow = '';
+                showNotification('Login successful!', 'success');
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        });
+
+        // Signup form handler
+        signupFormElement.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match!', 'error');
+                return;
+            }
+            
+            try {
+                await auth.createUserWithEmailAndPassword(email, password);
+                authModal.classList.remove('active');
+                document.body.style.overflow = '';
+                showNotification('Account created successfully!', 'success');
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        });
+
+        // Logout handler
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                showNotification('Logged out successfully!', 'success');
+            } catch (error) {
+                showNotification('Logout failed: ' + error.message, 'error');
+            }
+        });
+
+        // Customer Panel
+        customerPanelBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                showNotification('Please login to access Customer Panel!', 'error');
+                authModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                return;
+            }
+            
+            userDropdown.classList.remove('active');
+            window.location.href = '/customer-panel';
+        });
+
+        // Daily Reward (current page)
+        dailyRewardDropdownBtn.addEventListener('click', () => {
+            userDropdown.classList.remove('active');
+            // Already on gambling page
+        });
+
+        // Rest of your existing code continues here...
+        // (all the gambling functionality remains the same)
+
+        // Generate spinner items
+// Generate spinner items
+function generateSpinnerItems() {
+    spinnerItems = [];
+    
+    // Create MORE items to ensure we never run out (200 items)
+    const totalItemsNeeded = 200;
+    
+    // Calculate how many of each type we need based on percentages
+    rewardTypes.forEach(reward => {
+        const count = Math.max(2, Math.floor((reward.percentage / 100) * totalItemsNeeded));
+        for (let i = 0; i < count; i++) {
+            spinnerItems.push(reward);
+        }
+    });
+    
+    // Fill remaining slots to reach totalItemsNeeded
+    while (spinnerItems.length < totalItemsNeeded) {
+        // Add more common items to fill slots
+        const commonRewards = rewardTypes.filter(r => r.percentage >= 20);
+        const randomCommon = commonRewards[Math.floor(Math.random() * commonRewards.length)];
+        spinnerItems.push(randomCommon);
+    }
+
+    // Shuffle items multiple times for better randomness
+    for (let shuffle = 0; shuffle < 10; shuffle++) {
+        for (let i = spinnerItems.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [spinnerItems[i], spinnerItems[j]] = [spinnerItems[j], spinnerItems[i]];
+        }
+    }
+
+    // Render spinner items
+    renderSpinnerItems();
+    
+    console.log('Generated spinner items:', spinnerItems.length);
+}
+
+        function renderSpinnerItems() {
+            spinnerTrack.innerHTML = '';
+            
+            spinnerItems.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = `spinner-item rarity-${item.rarity}`;
+                itemElement.innerHTML = `
+                    <div class="spinner-percentage">${item.percentage}%</div>
+                    <div class="spinner-icon">${item.icon}</div>
+                    <div class="spinner-label">${item.label}</div>
+                `;
+                spinnerTrack.appendChild(itemElement);
+            });
+        }
+
+        // Sidebar navigation
+        function setupSidebarNavigation() {
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const targetSection = item.getAttribute('data-section');
+                    
+                    // Update active nav item
+                    sidebarItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Show target section
+                    sections.forEach(section => {
+                        if (section.id === targetSection + '-section') {
+                            section.style.display = 'block';
+                        } else {
+                            section.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
+
+        // Check if user can claim daily reward
+// Check if user can claim daily reward
+async function checkDailyRewardStatus() {
+    if (!currentUser) {
+        // Zablokuj przycisk gdy nie ma użytkownika
+        spinButton.disabled = true;
+        spinButton.innerHTML = '<i class="fas fa-user"></i> LOGIN REQUIRED';
+        return;
+    }
+    
+    // Zablokuj przycisk podczas sprawdzania
+    spinButton.disabled = true;
+    spinButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> CHECKING...';
+    
+    try {
+        const today = new Date().toDateString();
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            const lastClaim = userData.lastDailyReward;
+            
+            if (lastClaim === today) {
+                // Already claimed today
+                spinButton.disabled = true;
+                spinButton.innerHTML = '<i class="fas fa-clock"></i> CLAIMED TODAY';
+                timerDisplay.classList.remove('hidden');
+                showTimer();
+            } else {
+                // Can claim
+                spinButton.disabled = false;
+                spinButton.innerHTML = '<i class="fas fa-magic"></i> SPIN FOR PRIZE!';
+                timerDisplay.classList.add('hidden');
+            }
+        } else {
+            // Nowy użytkownik - może odebrać
+            spinButton.disabled = false;
+            spinButton.innerHTML = '<i class="fas fa-magic"></i> SPIN FOR PRIZE!';
+            timerDisplay.classList.add('hidden');
+        }
+    } catch (error) {
+        console.error('Error checking daily reward status:', error);
+        // W przypadku błędu - zablokuj przycisk dla bezpieczeństwa
+        spinButton.disabled = true;
+        spinButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ERROR';
+    }
+}
+
+        // Show countdown timer
+        function showTimer() {
+            timerDisplay.classList.remove('hidden');
+            
+            function updateTimer() {
+                const now = new Date();
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                
+                const timeLeft = tomorrow - now;
+                
+                if (timeLeft > 0) {
+                    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                    
+                    document.getElementById('countdown').textContent = 
+                        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    // Reset at midnight
+                    location.reload();
+                }
+            }
+            
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        // Spin function
+        spinButton.addEventListener('click', () => {
+            if (!currentUser) {
+                showNotification('Please login to spin!', 'error');
+                return;
+            }
+            
+            if (isSpinning) return;
+            
+            spin();
+        });
+
+        // Calculate spin distance and find target
+// Calculate spin distance and find target
+async function spin() {
+    // Dodatkowe sprawdzenie przed spinem
+    if (!currentUser) {
+        showNotification('Please login to spin!', 'error');
+        return;
+    }
+    
+    if (isSpinning) {
+        showNotification('Spin already in progress!', 'error');
+        return;
+    }
+    
+    // Sprawdź ponownie czy można odebrać
+    try {
+        const today = new Date().toDateString();
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            const lastClaim = userData.lastDailyReward;
+            
+            if (lastClaim === today) {
+                showNotification('Daily reward already claimed today!', 'error');
+                checkDailyRewardStatus(); // Odśwież status
+                return;
+            }
+        }
+    } catch (error) {
+        console.error('Error verifying daily reward:', error);
+        showNotification('Error verifying reward status!', 'error');
+        return;
+    }
+    
+    // Reszta kodu spin() pozostaje bez zmian...
+    isSpinning = true;
+    spinButton.disabled = true;
+    spinButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SPINNING...';
+    
+    // Add spinning animation
+    spinnerContainer.classList.add('spinning');
+    
+    // Determine reward based on probabilities
+    const reward = determineReward();
+    
+    // Calculate spin parameters
+    const itemWidth = 100; // Each item is now 100px wide
+    const containerWidth = 1000; // Container is 1000px wide
+    const centerPosition = containerWidth / 2; // Center at 500px
+    
+    // Find a good target item index (look in the MIDDLE section only)
+    const minIndex = Math.floor(spinnerItems.length * 0.3); // Start from 30%
+    const maxIndex = Math.floor(spinnerItems.length * 0.7); // End at 70%
+    let targetItemIndex = -1;
+    
+    // Look for matching reward type in the middle section
+    for (let i = minIndex; i < maxIndex; i++) {
+        if (spinnerItems[i].type === reward.type) {
+            targetItemIndex = i;
+            break;
+        }
+    }
+    
+    // If not found in middle, look in entire array but prefer middle
+    if (targetItemIndex === -1) {
+        for (let i = 0; i < spinnerItems.length; i++) {
+            if (spinnerItems[i].type === reward.type) {
+                targetItemIndex = i;
+                // If found but not in middle, try to find another one closer to middle
+                if (i >= minIndex && i <= maxIndex) {
+                    break; // Perfect! It's in the middle
+                }
+            }
+        }
+    }
+    
+    // Ensure we have a valid target
+    if (targetItemIndex === -1) {
+        targetItemIndex = Math.floor(spinnerItems.length / 2); // Fallback to middle
+    }
+    
+    // Calculate how many full rounds to spin (3-5 full rotations)
+    const fullRotations = Math.floor(Math.random() * 3) + 3;
+    const totalItems = spinnerItems.length;
+    const baseDistance = fullRotations * totalItems * itemWidth;
+    
+    // Calculate final position to center the winning item
+    const targetPosition = targetItemIndex * itemWidth;
+    const finalDistance = baseDistance + (centerPosition - targetPosition);
+    
+    // Make sure we don't go past the end of items
+    const maxDistance = (totalItems - 10) * itemWidth; // Leave some buffer
+    const safeDistance = Math.min(finalDistance, maxDistance);
+    
+    console.log('Spinning details:', {
+        targetType: reward.type,
+        targetIndex: targetItemIndex,
+        totalItems: totalItems,
+        finalDistance: safeDistance,
+        itemWidth: itemWidth
+    });
+    
+    // Apply spin animation
+    spinnerTrack.style.transform = `translateX(-${safeDistance}px)`;
+    
+    // Wait for animation to complete
+    setTimeout(() => {
+        showReward(reward);
+        saveRewardToDatabase(reward);
+        markDailyRewardClaimed();
+        
+        isSpinning = false;
+        spinnerContainer.classList.remove('spinning');
+        spinButton.innerHTML = '<i class="fas fa-clock"></i> CLAIMED TODAY';
+        showTimer();
+    }, 4000);
+}
+
+        // Determine reward based on probabilities
+        function determineReward() {
+            const random = Math.random() * 100;
+            let cumulativeProbability = 0;
+            
+            for (const reward of rewardTypes) {
+                cumulativeProbability += reward.percentage;
+                if (random <= cumulativeProbability) {
+                    return reward;
+                }
+            }
+            
+            // Fallback to lose
+            return rewardTypes[rewardTypes.length - 1];
+        }
+
+        // Show reward display
+        function showReward(reward) {
+            const rewardIcon = document.getElementById('rewardIcon');
+            const rewardTitle = document.getElementById('rewardTitle');
+            const rewardDescription = document.getElementById('rewardDescription');
+            const rewardCode = document.getElementById('rewardCode');
+            
+            rewardIcon.innerHTML = reward.icon;
+            rewardTitle.textContent = reward.value;
+            
+            let description = '';
+            let code = '';
+            
+            switch (reward.type) {
+                case 'lifetime':
+                    description = 'Congratulations! You won a lifetime license for any Varp product!';
+                    code = 'LIFETIME-' + generateRandomCode();
+                    break;
+                case 'week':
+                    description = 'Great! You won a one week license for any Varp product!';
+                    code = 'WEEK-' + generateRandomCode();
+                    break;
+                case 'day':
+                    description = 'Nice! You won a one day license for any Varp product!';
+                    code = 'DAY-' + generateRandomCode();
+                    break;
+                case 'discount50':
+                    description = 'Awesome! You got a 50% discount on your next purchase!';
+                    code = 'SAVE50-' + generateRandomCode();
+                    break;
+                case 'discount20':
+                    description = 'Good! You got a 20% discount on your next purchase!';
+                    code = 'SAVE20-' + generateRandomCode();
+                    break;
+                case 'lose':
+                    description = 'Better luck tomorrow! Come back in 24 hours for another chance.';
+                    code = 'Try again tomorrow!';
+                    break;
+            }
+            
+            rewardDescription.textContent = description;
+            rewardCode.textContent = code;
+            
+            if (reward.type === 'lose') {
+                rewardCode.style.cursor = 'default';
+                rewardCode.onclick = null;
+            } else {
+                rewardCode.style.cursor = 'pointer';
+                rewardCode.onclick = () => copyToClipboard(rewardCode);
+            }
+            
+            rewardDisplay.classList.add('show');
+            
+            // Show success notification
+            if (reward.type !== 'lose') {
+                showNotification(`🎉 You won: ${reward.value}!`, 'success');
+            } else {
+                showNotification('😢 Better luck tomorrow!', 'info');
+            }
+        }
+
+        // Generate random code
+        function generateRandomCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 8; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // Save reward to database
+        async function saveRewardToDatabase(reward) {
+            if (!currentUser) return;
+            
+            try {
+                await db.collection('rewards').add({
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    type: reward.type,
+                    value: reward.value,
+                    code: document.getElementById('rewardCode').textContent,
+                    claimedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    source: 'daily_lootbox'
+                });
+            } catch (error) {
+                console.error('Error saving reward:', error);
+            }
+        }
+
+        // Mark daily reward as claimed
+        async function markDailyRewardClaimed() {
+            if (!currentUser) return;
+            
+            try {
+                const today = new Date().toDateString();
+                await db.collection('users').doc(currentUser.uid).set({
+                    lastDailyReward: today
+                }, { merge: true });
+            } catch (error) {
+                console.error('Error marking daily reward claimed:', error);
+            }
+        }
+
+        // Show payment details function
+        function showPaymentDetails() {
+            const amount = document.getElementById('amountInput').value;
+            const method = document.getElementById('paymentMethodSelect').value;
+            
+            if (!amount || !method) {
+                showNotification('Please enter amount and select payment method', 'error');
+                return;
+            }
+            
+            if (parseFloat(amount) < 1) {
+                showNotification('Minimum amount is $1.00', 'error');
+                return;
+            }
+            
+            const paymentDetails = document.getElementById('paymentDetails');
+            const methodTitle = document.getElementById('paymentMethodTitle');
+            const instructions = document.getElementById('paymentInstructions');
+            
+            let title = '';
+            let content = '';
+            
+            switch (method) {
+                case 'card':
+                    title = 'Credit / Debit Card Payment';
+                    content = `
+                        <div class="payment-instruction">
+                            <strong>Amount to Pay: ${parseFloat(amount).toFixed(2)}</strong>
+                        </div>
+                        <div class="payment-instruction">
+                            Click the link below to complete your payment via Stripe:
+                        </div>
+                        <div class="payment-address" onclick="copyToClipboard(this)" title="Click to copy">
+                            https://buy.stripe.com/fZe5mT3q27xb4qQ9AN
+                        </div>
+                        <div class="copy-note">
+                            Click the address above to copy, then paste in your browser
+                        </div>
+                    `;
+                    break;
+                    
+                case 'paypal':
+                    title = 'PayPal Friends & Family';
+                    content = `
+                        <div class="payment-instruction">
+                            <strong>Amount to Send: ${parseFloat(amount).toFixed(2)}</strong>
+                        </div>
+                        <div class="payment-instruction">
+                            Send the amount as <strong>Friends & Family</strong> to:
+                        </div>
+                        <div class="payment-address" onclick="copyToClipboard(this)" title="Click to copy">
+                            scs.harp@paypal.hub.pl
+                        </div>
+                        <div class="payment-instruction" style="color: #ef4444;">
+                            <strong>Important:</strong> Send as Friends & Family with no notes
+                        </div>
+                        <div class="copy-note">
+                            Click the email above to copy
+                        </div>
+                    `;
+                    break;
+                    
+                case 'bitcoin':
+                    title = 'Bitcoin Payment';
+                    content = `
+                        <div class="payment-instruction">
+                            <strong>Amount to Send: ${parseFloat(amount).toFixed(2)} worth of Bitcoin</strong>
+                        </div>
+                        <div class="payment-instruction">
+                            Send Bitcoin to this address:
+                        </div>
+                        <div class="payment-address" onclick="copyToClipboard(this)" title="Click to copy">
+                            bc1qr3r8ts4dssvnxkl6twa7lf06l2czc889xftaqx
+                        </div>
+                        <div class="copy-note">
+                            Click the address above to copy
+                        </div>
+                    `;
+                    break;
+                    
+                case 'litecoin':
+                    title = 'Litecoin Payment';
+                    content = `
+                        <div class="payment-instruction">
+                            <strong>Amount to Send: ${parseFloat(amount).toFixed(2)} worth of Litecoin</strong>
+                        </div>
+                        <div class="payment-instruction">
+                            Send Litecoin to this address:
+                        </div>
+                        <div class="payment-address" onclick="copyToClipboard(this)" title="Click to copy">
+                            LV99hZkuoB8rxD7MuoYmdcbfzGuYncy9v9
+                        </div>
+                        <div class="copy-note">
+                            Click the address above to copy
+                        </div>
+                    `;
+                    break;
+                    
+                case 'solana':
+                    title = 'Solana Payment';
+                    content = `
+                        <div class="payment-instruction">
+                            <strong>Amount to Send: ${parseFloat(amount).toFixed(2)} worth of Solana</strong>
+                        </div>
+                        <div class="payment-instruction">
+                            Send Solana to this address:
+                        </div>
+                        <div class="payment-address" onclick="copyToClipboard(this)" title="Click to copy">
+                            DLAFu2wJ7uiWSvdn7ycA8i8DyH8xr3RjP5YnW8NmKamz
+                        </div>
+                        <div class="copy-note">
+                            Click the address above to copy
+                        </div>
+                    `;
+                    break;
+            }
+            
+            methodTitle.textContent = title;
+            instructions.innerHTML = content;
+            paymentDetails.classList.add('show');
+            
+            // Scroll to payment details
+            paymentDetails.scrollIntoView({ behavior: 'smooth' });
+            
+            showNotification('Payment details generated! Please follow the instructions.', 'success');
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(element) {
+            const text = element.textContent.trim();
+            if (text === 'Try again tomorrow!' || text === 'Click to copy code') return;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copied to clipboard!', 'success');
+                element.style.background = 'rgba(34, 197, 94, 0.2)';
+                element.style.borderColor = 'var(--success-color)';
+                element.style.color = 'var(--success-color)';
+                
+                setTimeout(() => {
+                    element.style.background = 'rgba(74, 144, 226, 0.1)';
+                    element.style.borderColor = 'var(--primary-color)';
+                    element.style.color = 'var(--primary-color)';
+                }, 1000);
+            }).catch(() => {
+                showNotification('Failed to copy', 'error');
+            });
+        }
+
+// Purchase chest functions
+async function purchaseChest(type) {
+    if (!currentUser) {
+        showNotification('Please login to purchase chests!', 'error');
+        authModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        return;
+    }
+
+    const chestPrices = {
+        silver: 2.99,
+        gold: 4.99,
+        diamond: 9.99
+    };
+    
+    const price = chestPrices[type];
+    
+    try {
+        // Check user balance
+        const balanceDoc = await db.collection('userBalances').doc(currentUser.email).get();
+        const currentBalance = balanceDoc.exists ? (balanceDoc.data().balance || 0) : 0;
+        
+        if (currentBalance < price) {
+            showNotification(`Insufficient balance! You need $${price.toFixed(2)} but have $${currentBalance.toFixed(2)}`, 'error');
+            return;
+        }
+        
+        // Confirm purchase
+        if (!confirm(`Purchase ${type.toUpperCase()} Chest for $${price.toFixed(2)}?`)) {
+            return;
+        }
+        
+        // Open chest modal
+        openChestModal(type);
+        
+        // Simulate chest opening delay
+        setTimeout(async () => {
+            try {
+                // Determine reward
+                const reward = determineChestReward(type);
+                
+                // Deduct balance
+                const newBalance = currentBalance - price;
+                await db.collection('userBalances').doc(currentUser.email).set({
+                    userEmail: currentUser.email,
+                    balance: newBalance,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: 'chest_purchase'
+                }, { merge: true });
+                
+                // Log transaction
+                await db.collection('balanceTransactions').add({
+                    userEmail: currentUser.email,
+                    action: 'chest_purchase',
+                    amount: -price,
+                    chestType: type,
+                    previousBalance: currentBalance,
+                    newBalance: newBalance,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Show reward
+                showChestReward(reward, type);
+                
+                // Save reward if not lose
+                if (reward.type !== 'lose') {
+                    await saveChestRewardToDatabase(reward, type);
+                }
+                
+                showNotification(`Chest opened! Balance: $${newBalance.toFixed(2)}`, 'success');
+                
+            } catch (error) {
+                console.error('Error processing chest purchase:', error);
+                showNotification('Failed to process chest purchase: ' + error.message, 'error');
+                closeChestModal();
+            }
+        }, 3000);
+        
+    } catch (error) {
+        console.error('Error purchasing chest:', error);
+        showNotification('Failed to purchase chest: ' + error.message, 'error');
+    }
+}
+
+// Determine chest reward
+function determineChestReward(chestType) {
+    const rewards = chestRewardTypes[chestType];
+    const random = Math.random() * 100;
+    let cumulativeProbability = 0;
+    
+    for (const reward of rewards) {
+        cumulativeProbability += reward.percentage;
+        if (random <= cumulativeProbability) {
+            return reward;
+        }
+    }
+    
+    // Fallback
+    return rewards[rewards.length - 1];
+}
+
+// Open chest modal
+function openChestModal(chestType) {
+    const modal = document.getElementById('chestModal');
+    const title = document.getElementById('chestModalTitle');
+    const opening = document.getElementById('chestOpening');
+    const result = document.getElementById('chestResult');
+    const closeBtn = document.getElementById('chestCloseBtn');
+    
+    title.textContent = `Opening ${chestType.toUpperCase()} Chest...`;
+    opening.style.display = 'block';
+    result.style.display = 'none';
+    closeBtn.style.display = 'none';
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Show chest reward
+function showChestReward(reward, chestType) {
+    const opening = document.getElementById('chestOpening');
+    const result = document.getElementById('chestResult');
+    const closeBtn = document.getElementById('chestCloseBtn');
+    const resultIcon = document.getElementById('chestResultIcon');
+    const resultTitle = document.getElementById('chestResultTitle');
+    const resultProduct = document.getElementById('chestResultProduct');
+    const resultKey = document.getElementById('chestResultKey');
+    
+    opening.style.display = 'none';
+    result.style.display = 'block';
+    closeBtn.style.display = 'block';
+    
+    resultIcon.innerHTML = reward.icon;
+    resultTitle.textContent = reward.value;
+    
+    if (reward.type === 'lose') {
+        resultProduct.textContent = 'Better luck next time!';
+        resultKey.style.display = 'none';
+    } else {
+        // Select random product from available products
+        const randomProduct = reward.products[Math.floor(Math.random() * reward.products.length)];
+        const productName = getProductDisplayName(randomProduct);
+        
+        resultProduct.textContent = `Product: ${productName}`;
+        
+        // Generate license key
+        const licenseKey = generateLicenseKey();
+        resultKey.textContent = licenseKey;
+        resultKey.style.display = 'block';
+        resultKey.onclick = () => copyToClipboard(resultKey);
+    }
+}
+
+// Close chest modal
+function closeChestModal() {
+    const modal = document.getElementById('chestModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Generate license key
+function generateLicenseKey() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = 'VARP-';
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 4; j++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        if (i < 2) result += '-';
+    }
+    return result;
+}
+
+// Save chest reward to database
+async function saveChestRewardToDatabase(reward, chestType) {
+    if (!currentUser) return;
+    
+    try {
+        // Select random product
+        const randomProduct = reward.products[Math.floor(Math.random() * reward.products.length)];
+        const licenseKey = document.getElementById('chestResultKey').textContent;
+        
+        // Get variant based on reward type
+        let variant = '';
+        switch (reward.type) {
+            case 'lifetime_premium':
+                variant = 'lifetime';
+                break;
+            case 'month_random':
+                variant = '30-days';
+                break;
+            case 'week_random':
+                variant = '7-days';
+                break;
+            case 'day_random':
+                variant = '1-day';
+                break;
+        }
+        
+        // Add to user keys
+        await db.collection('userKeys').add({
+            userId: currentUser.uid,
+            userEmail: currentUser.email,
+            product: randomProduct,
+            licenseKey: licenseKey,
+            variant: variant,
+            note: `Won from ${chestType.toUpperCase()} Chest`,
+            status: 'active',
+            hwidResetStatus: 'available',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            lastHwidReset: null,
+            source: 'chest_purchase'
+        });
+        
+        // Add to rewards collection
+        await db.collection('rewards').add({
+            userId: currentUser.uid,
+            userEmail: currentUser.email,
+            type: reward.type,
+            value: reward.value,
+            product: randomProduct,
+            code: licenseKey,
+            claimedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            source: `${chestType}_chest`
+        });
+        
+    } catch (error) {
+        console.error('Error saving chest reward:', error);
+    }
+}
+
+// Get product display name
+function getProductDisplayName(product) {
+    const names = {
+        'fortnite-private': 'Fortnite Private',
+        'fortnite-public': 'Fortnite Public',
+        'permanent-spoofer': 'Permanent Spoofer',
+        'temporary-spoofer': 'Temporary Spoofer',
+        'bo6-external': 'BO6 External',
+        'apex-external': 'Apex External',
+        'rust-external': 'Rust External'
+    };
+    return names[product] || product;
+}
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas ${icon}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            // Auto remove
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize sections visibility
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show only daily rewards section by default
+            sections.forEach(section => {
+                if (section.id === 'daily-rewards-section') {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        });
+
+
+
+        // Header scroll effect
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+});
+
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        // Tu możesz dodać logikę wyszukiwania dla gambling page
+        console.log('Searching for:', searchTerm);
+    });
+}
+
+// Navigation active state
+window.addEventListener('scroll', () => {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    let current = '';
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (scrollY >= (sectionTop - 200)) {
+            current = section.getAttribute('id');
+        }
+    });
+    
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').includes(current)) {
+            link.classList.add('active');
+        }
+    });
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    // Ctrl+K to focus search
+    if (e.ctrlKey && e.key === 'k') {
+        e.preventDefault();
+        if (searchInput) {
+            searchInput.focus();
+        }
+    }
+});
+
+        // Setup real-time balance listener
+function setupBalanceListener() {
+    if (!currentUser) return;
+    
+    db.collection('userBalances').doc(currentUser.email).onSnapshot((doc) => {
+        if (doc.exists) {
+            const balance = doc.data().balance || 0;
+            document.getElementById('userBalance').textContent = balance.toFixed(2);
+        } else {
+            document.getElementById('userBalance').textContent = '0.00';
+        }
+    }, (error) => {
+        console.error('Error in balance listener:', error);
+    });
+}
+
+window.closeChestModal = closeChestModal;
+
+        console.log('🎰 Varp Gambling page loaded successfully!');
+        console.log('🎁 Daily lootbox system initialized!');
+    </script>
+</body>
+</html>
