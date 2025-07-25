@@ -1,0 +1,3252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varp - Premium Digital Products</title>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&family=Libertinus+Math&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4a90e2;
+            --primary-gradient: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            --secondary-color: #6bb6ff;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --dark-bg: #090A0B;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #b3d9ff;
+            --text-muted: #999999;
+        }
+
+        body {
+            font-family: 'Geologica', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+        }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(#090A0B) 0%, transparent 70%),
+                radial-gradient(circle at 80% 20%, rgba(#090A0B) 0%, transparent 70%),
+                radial-gradient(circle at 40% 80%, rgba(#090A0B) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            background: rgba(17, 24, 39, 0);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left: 42%;
+            transform: translateX(-50%);
+        }
+
+        .nav-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #ffffff;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #60a5fa;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-left: auto;
+            margin-right: -7rem;
+        }
+
+        .search-container {
+            position: relative;
+            margin-right: 1rem;
+        }
+
+        .search-input {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 6px;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #64748b;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #60a5fa;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(96, 165, 250, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #60a5fa;
+            border: 2px solid #60a5fa;
+        }
+
+        .btn-outline:hover {
+            background: #60a5fa;
+            color: white;
+        }
+
+        /* Hero Section with Banner */
+        .hero {
+            padding: 0;
+            text-align: center;
+            background: #1e293b;
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('https://imagedelivery.net/HL_Fwm__tlvUGLZF2p74xw/63e46d59-2b6c-42f6-9cd8-42ce2c6b7a00/public');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            
+        }
+
+        .hero-buttons .btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+
+        /* Products Section */
+        .products-section {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 35px rgba(74, 144, 226, 0.25);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .product-badges {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .badge {
+            padding: 3px 6px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .badge-popular {
+            background: var(--primary-gradient);
+        }
+
+        .badge-status {
+            background: var(--success-color);
+        }
+
+        .badge-updating {
+            background: var(--warning-color);
+        }
+
+        .badge-spoofer {
+            background: #666;
+        }
+
+        .product-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .product-description {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .product-price {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .product-buttons {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .btn-small {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 48px;
+        }
+
+        .btn-preview {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-preview:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Daily Reward Box */
+        .daily-reward-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .daily-reward-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(74, 144, 226, 0.15) 0%, transparent 70%);
+            animation: dailyGlow 3s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes dailyGlow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .daily-reward-image {
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .daily-reward-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            animation: giftPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes giftPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10000;
+        }
+
+        .chat-trigger {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(74, 144, 226, 0.4);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .chat-trigger:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.6);
+        }
+
+        .chat-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(74, 144, 226, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .chat-window.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .chat-header {
+            background: var(--primary-gradient);
+            padding: 1rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-content {
+            height: calc(100% - 80px);
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-bubble {
+            background: var(--card-bg);
+            padding: 0.75rem;
+            border-radius: 12px;
+            max-width: 80%;
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-message.user .message-bubble {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+            transform: translateY(-20px) scale(0.95);
+            transition: all 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--primary-color);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .user-panel {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            min-width: 200px;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .user-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            border-top: 2px solid var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Showcase Section Styles */
+        .showcase-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .showcase-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .showcase-header {
+            margin-bottom: 3rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .showcase-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .showcase-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(410px, 1fr));
+            gap: 2rem;
+        }
+
+        .showcase-item-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .showcase-item-link.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .showcase-item {
+            width: 100%;
+            height: 250px;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .iframe-wrapper {
+            overflow: hidden;
+            border-radius: 15px;
+            position: relative;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+        }
+
+        .streamable-iframe {
+            width: 120%;
+            height: 120%;
+            transform: translate(-50%, -50%) scale(1.3);
+            transform-origin: center;
+            border: none;
+            pointer-events: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+
+        .showcase-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 13px;
+        }
+
+        .showcase-item-link:hover .showcase-item {
+            transform: translateY(-10px) scale(1.015);
+            box-shadow: 0 20px 35px rgba(74, 144, 226, 0.25);
+        }
+
+        .showcase-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0) 70%, rgb(0, 0, 0) 93%);
+            border-radius: 0 0 13px 13px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1rem;
+            pointer-events: none;
+        }
+
+        .indicator-badge {
+            position: absolute;
+            left: 15px;
+            bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+
+        .indicator-dot {
+            position: relative;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .indicator-dot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: transparent;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.4);
+            animation: pulse-ring 2s infinite;
+        }
+
+        .indicator-label {
+            font-family: 'Geologica', sans-serif;
+            font-weight: 600;
+            font-size: 11px;
+            color: white;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .showcase-actions {
+            margin-top: 1rem;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-gradient);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            text-decoration: none;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+            background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+        }
+
+        .cta-button svg {
+            stroke: currentColor;
+            stroke-width: 2;
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover svg {
+            transform: translateX(4px);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(74, 144, 226, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 144, 226, 0); }
+        }
+
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0px rgba(74, 144, 226, 0.4); }
+            100% { box-shadow: 0 0 0 6px rgba(74, 144, 226, 0); }
+        }
+
+        /* Comparison Section Styles */
+        .comparison-section {
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 0rem 0;
+            max-width: 950px;
+            margin: 6rem auto;
+        }
+        
+        .section-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .badge-container {
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+        
+        .badge-glow {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background-color: var(--primary-color);
+            opacity: 0.1;
+            filter: blur(10px);
+        }
+        
+        .comparison-section .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            white-space: nowrap;
+            border-radius: 0.375rem;
+            border: 1px solid transparent;
+            padding: 0.125rem 0.5rem;
+            font-size: 0.75rem;
+            transition: background-color 0.2s ease;
+            background-color: rgba(74, 144, 226, 0.05);
+            color: var(--primary-color);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .comparison-section .badge svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .comparison-section .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .section-description {
+            max-width: 36rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .comparison-labels {
+            display: flex;
+            width: 100%;
+            flex-direction: row;
+            align-items: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .comparison-label {
+            width: 50%;
+            text-align: center;
+        }
+        
+        .comparison-container {
+            padding: 0 1rem;
+        }
+        
+        .comparison-card {
+            border-radius: 1rem;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            background-color: var(--card-bg);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 0.5rem;
+            opacity: 0;
+            transform: scale(0.98);
+            transition: opacity 0.8s ease-out 0.4s, transform 0.8s ease-out 0.4s;
+        }
+        
+        .comparison-section.visible .comparison-card {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .image-comparison {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            cursor: col-resize;
+            aspect-ratio: 16/9;
+        }
+        
+        .divider {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(to bottom, 
+                transparent 5%, 
+                var(--primary-color) 20%, 
+                var(--primary-color) 80%, 
+                transparent 95%);
+            z-index: 40;
+            left: 50%;
+            opacity: 0;
+            transition: opacity 0.6s ease 0.8s;
+        }
+        
+        .comparison-section.visible .divider {
+            opacity: 1;
+        }
+        
+        .divider-glow-left {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            height: 100%;
+            width: 36px;
+            transform: translateY(-50%);
+            background: linear-gradient(to right, rgba(74, 144, 226, 0.4), transparent);
+            opacity: 0;
+            mask-image: radial-gradient(100px at left, white, transparent);
+            -webkit-mask-image: radial-gradient(100px at left, white, transparent);
+            z-index: 20;
+            transition: opacity 0.6s ease 1s;
+        }
+        
+        .comparison-section.visible .divider-glow-left {
+            opacity: 0.5;
+        }
+        
+        .divider-glow-accent {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            height: 50%;
+            width: 10px;
+            transform: translateY(-50%);
+            background: linear-gradient(to right, rgba(0, 255, 255, 0.4), transparent);
+            opacity: 0;
+            mask-image: radial-gradient(50px at left, white, transparent);
+            -webkit-mask-image: radial-gradient(50px at left, white, transparent);
+            z-index: 10;
+            transition: opacity 0.6s ease 1.2s;
+        }
+        
+        .comparison-section.visible .divider-glow-accent {
+            opacity: 1;
+        }
+        
+        .divider-handle {
+            position: absolute;
+            top: 50%;
+            right: -12px;
+            height: 20px;
+            width: 20px;
+            transform: translateY(-50%) scale(0);
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 -1px 0 0 rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.4s;
+        }
+        
+        .comparison-section.visible .divider-handle {
+            transform: translateY(-50%) scale(1);
+        }
+        
+        .divider-handle svg {
+            height: 16px;
+            width: 16px;
+            color: black;
+        }
+        
+        .comparison-slider {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .before-image-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 50%; 
+            overflow: hidden;
+            z-index: 20;
+        }
+        
+        .before-image, .after-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            object-fit: contain; 
+            max-width: none;
+            opacity: 0;
+            transition: opacity 0.8s ease 0.6s;
+        }
+        
+        .comparison-section.visible .before-image,
+        .comparison-section.visible .after-image {
+            opacity: 1;
+        }
+        
+        .before-image {
+            width: calc(100vw); 
+            object-position: left center;
+        }
+        
+        .after-image {
+            z-index: 10;
+            object-position: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-window {
+                width: calc(100vw - 40px);
+                right: 20px;
+                bottom: 100px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .showcase-section {
+                padding: 3rem 1rem;
+            }
+
+            .showcase-title {
+                font-size: 1.5rem;
+            }
+
+            .showcase-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .showcase-item {
+                height: 200px;
+            }
+
+            .comparison-section .section-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Hide elements initially */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Success animation */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInScale 0.3s ease-out;
+        }
+
+
+.footer {
+    background: #0A0A0A;
+    border-top: 3px solid #4a90e2;
+    position: relative;
+    z-index: 10;
+    margin-top: -1px;
+
+    box-shadow: 0 -3px 15px rgba(74, 144, 226, 0.4);
+    animation: glow-footer-line 3s ease-in-out infinite;
+}
+
+@keyframes glow-footer-line {
+    0%, 100% {
+        border-top-color: #4a90e2;
+        box-shadow: 0 -3px 15px rgba(74, 144, 226, 0.4);
+    }
+    50% {
+        border-top-color: #6bb6ff;
+        box-shadow: 0 -3px 25px rgba(107, 182, 255, 1);
+    }
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 40px 40px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+.footer-section h3 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-links li a {
+    color: #999;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-links li a:hover {
+    color: #4a90e2;
+}
+
+.newsletter p {
+    color: #999;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.newsletter-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.newsletter-input:focus {
+    outline: none;
+    border-color: #4a90e2;
+    background: rgba(74, 144, 226, 0.05);
+}
+
+.newsletter-input::placeholder {
+    color: #666;
+}
+
+.newsletter-btn {
+    background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.newsletter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
+    background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+}
+
+.footer-bottom {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 40px;
+    border-top: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-country {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footer-country label {
+    color: #999;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.country-selector {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: white;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.country-selector:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+
+.payment-methods {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.payment-icon {
+    width: 40px;
+    height: 24px;
+    border-radius: 4px;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    object-fit: cover;
+}
+
+.payment-icon:hover {
+    opacity: 1;
+}
+
+.footer-copyright {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 40px 20px 30px 20px;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .newsletter-form {
+        flex-direction: column;
+    }
+
+    .payment-methods {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* FAQ Section */
+.faq-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.faq-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.faq-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.faq-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    white-space: nowrap;
+    border-radius: 0.375rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    background-color: rgba(74, 144, 226, 0.05);
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    border: 1px solid rgba(74, 144, 226, 0.2);
+}
+
+.faq-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #ffffff, #b3d9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.faq-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.faq-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 3rem;
+}
+
+.faq-item {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.faq-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.faq-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 25px rgba(74, 144, 226, 0.15);
+}
+
+.faq-question {
+    padding: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: left;
+    width: 100%;
+    transition: background 0.3s ease;
+}
+
+.faq-question:hover {
+    background: rgba(74, 144, 226, 0.00);
+}
+
+.faq-question-text {
+    flex: 1;
+    margin-right: 1rem;
+}
+
+.faq-icon {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-icon {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+     background: transparent;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 200px;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.faq-answer-text {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Responsive FAQ */
+@media (max-width: 768px) {
+    .faq-title {
+        font-size: 2rem;
+    }
+    
+    .faq-section {
+        padding: 3rem 1rem;
+        max-width: 100%;
+    }
+    
+    .faq-question {
+        padding: 1rem;
+    }
+    
+    .faq-item.active .faq-answer {
+        padding: 0 1rem 1rem 1rem;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="https://i.imgur.com/AMPTf1r.png" alt="Varp Logo">
+                VARP
+            </a>
+            
+            <ul class="nav-menu">
+                <li>
+                    <a href="#home" class="nav-link active"> 
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="#products" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        Products
+                    </a>
+                </li>
+                 <li>
+                    <a href="https://varp.gay/reviews" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z"/>
+                        </svg>
+                        Reviews
+                    </a>
+                </li>
+                <li>
+                    <a href="https://varp.gay/status" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/>
+                        </svg>
+                        Status
+                    </a>
+                </li>
+                <li>
+                    <a href="https://varp.gay/media-resell" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 22 22">
+                            <path d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z"/>
+                        </svg>
+                        Media/Resell
+                    </a>
+                </li>
+                 <li>
+                    <a href="https://discord.gg/varpud" class="nav-link" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-discord"></i>
+                        Discord
+               </a>
+            </li>
+            </ul>
+            
+            <div class="auth-buttons">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search for products..." id="searchInput">
+                </div>
+                
+                <!-- Not logged in -->
+<!-- Not logged in -->
+<div id="loginButtons">
+    <button class="btn btn-primary" id="loginBtn">Login</button>
+    <button class="btn btn-outline" onclick="window.location.href='cart.html'">
+        <i class="fas fa-shopping-cart"></i>
+    </button>
+</div>
+                
+                <!-- Logged in -->
+                <div id="userPanel" class="user-panel hidden">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="username">User</span>
+                    <button id="userDropdownBtn" style="background: none; border: none; color: var(--text-muted); cursor: pointer;">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+<div class="user-dropdown" id="userDropdown">
+    <button class="dropdown-item" id="customerPanelBtn">
+        <i class="fas fa-user-cog"></i>
+        Customer Panel
+    </button>
+    <button class="dropdown-item" id="dailyRewardDropdownBtn">
+        <i class="fas fa-gift"></i>
+        Daily Reward
+    </button>
+    <button class="dropdown-item" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+    </button>
+</div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">Varp Softwares</h1>
+            <p class="hero-subtitle">Market-leading, undetected cheats since 2023. Dominate Every Match with Premium Performance.</p>
+            <div class="hero-buttons">
+                <a href="#products" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart"></i>
+                    View Products
+                </a>
+                <a href="#discord" class="btn btn-outline">
+                    <i class="fab fa-discord"></i>
+                    Discord
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section" id="products">
+        <h2 class="section-title">All Products</h2>
+        <p class="section-subtitle">Premium Applications tailored for every skill level. From beginners to elite competitors, find the perfect package to dominate your battlefield.</p>
+        
+        <div class="products-grid" id="productsGrid">
+            <!-- Fortnite Private -->
+            <div class="product-card" data-search="fortnite private external tournament">
+                <div class="product-image" style="background-image: url('https://i.imgur.com/gVE5Z2j.png');">
+                    <div class="product-badges">
+                        <div class="badge badge-status">Undetected</div>
+                    </div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">Fortnite Private</h3>
+                    <p class="product-description">External & Ready For Tournaments Software with Advanced Kernel Protection.</p>
+                    <div class="product-price">Price: $7.99</div>
+                    <div class="product-buttons">
+                       <button class="btn btn-primary btn-small purchase-btn" data-product="fortnite-private" onclick="window.location.href='https://varp.mysellauth.com/product/fortnite-private'">Purchase</button>
+                        <button class="btn-preview" data-product="fortnite-private">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fortnite Public -->
+            <div class="product-card" data-search="fortnite public external popular">
+                <div class="product-image" style="background-image: url('https://imgur.com/9rB54DA.png');">
+                    <div class="product-badges">
+                        <div class="badge badge-popular">Most Popular</div>
+                        <div class="badge badge-status">Undetected</div>
+                        <div class="badge badge-spoofer">In-Build Spoofer</div>
+                    </div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">Fortnite Public</h3>
+                    <p class="product-description">External & Undtected Public Software Version with many Features.</p>
+                    <div class="product-price">Price: $4.99</div>
+                    <div class="product-buttons">
+                        <button class="btn btn-primary btn-small purchase-btn" data-product="fortnite-private" onclick="window.location.href='https://varp.mysellauth.com/product/fortnite-public'">Purchase</button>
+                        <button class="btn-preview" data-product="fortnite-public">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Permanent Spoofer -->
+            <div class="product-card" data-search="permanent spoofer hardware unban">
+                <div class="product-image" style="background-image: url('https://imgur.com/vnMC2yy.png');">
+                    <div class="product-badges">
+                        <div class="badge badge-status">Undetected</div>
+                    </div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">Permanent Spoofer</h3>
+                    <p class="product-description">One-time Permanent Hardware unban solution with Lifetime Protection</p>
+                    <div class="product-price">Price: $9.99</div>
+                    <div class="product-buttons">
+                       <button class="btn btn-primary btn-small purchase-btn" data-product="fortnite-private" onclick="window.location.href='https://varp.mysellauth.com/product/permanently-spoofer'">Purchase</button>
+                        <button class="btn-preview" data-product="permanent-spoofer">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Temporary Spoofer -->
+            <div class="product-card" data-search="temporary spoofer hardware popular">
+                <div class="product-image" style="background-image: url('https://imgur.com/ZCSFtsg.png');">
+                    <div class="product-badges">
+                        <div class="badge badge-popular">Most Popular</div>
+                        <div class="badge badge-status">Undetected</div>
+                    </div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">Temporary Spoofer</h3>
+                    <p class="product-description">Reusable solution to Temporary ub devices. Serials will Restore after each PC Restart.</p>
+                    <div class="product-price">Price: $3.99</div>
+                    <div class="product-buttons">
+                        <button class="btn btn-primary btn-small purchase-btn" data-product="fortnite-private" onclick="window.location.href='https://varp.mysellauth.com/product/temporary-spoofer'">Purchase</button>
+                        <button class="btn-preview" data-product="temporary-spoofer">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BO6 External -->
+            <div class="product-card" data-search="bo6 cod external call duty">
+                <div class="product-image" style="background-image: url('https://imgur.com/XrobQO5.png');">
+                    <div class="product-badges">
+                        <div class="badge badge-status">Undetected</div>
+                        <div class="badge badge-spoofer">In-Build Spoofer</div>
+                    </div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">BO6 External</h3>
+                    <p class="product-description">External Software for Call of Duty Lovers with Beautiful Aim Prediction.</p>
+                    <div class="product-price">Price: $3.99</div>
+                    <div class="product-buttons">
+                        <button class="btn btn-primary btn-small purchase-btn" data-product="fortnite-private" onclick="window.location.href='https://varp.mysellauth.com/product/bo6'">Purchase</button>
+                        <button class="btn-preview" data-product="bo6-external">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Apex External -->
+            <div class="product-card" data-search="apex legends external">
+                <div class="product-image" style="background-image: url('https://imgur.com/qeTNJoH.png');">
+                    <div class="product-badges">
+                        <div class="badge badge-status">Undetected</div>
+                        <div class="badge badge-spoofer">In-Build Spoofer</div>
+                    </div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">Apex External</h3>
+                    <p class="product-description">Achieve Victory with The Best Apex External Software with over 80+ Features.</p>
+                    <div class="product-price">Price: $3.99</div>
+                    <div class="product-buttons">
+                        <button class="btn btn-primary btn-small purchase-btn" data-product="fortnite-private" onclick="window.location.href='https://varp.mysellauth.com/product/apex'">Purchase</button>
+                        <button class="btn-preview" data-product="apex-external">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rust External -->
+            <div class="product-card" data-search="rust external">
+                <div class="product-image" style="background-image: url('https://imgur.com/6IYdr6G.png');">
+                    <div class="product-badges">
+                        <div class="badge badge-status">Undetected</div>
+                        <div class="badge badge-spoofer">In-Build Spoofer</div>
+                    </div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">Rust External</h3>
+                    <p class="product-description">External & Undetected Software with Temp Spoofer Included, unbeatable in Rust!</p>
+                    <div class="product-price">Price: $5.99</div>
+                    <div class="product-buttons">
+                        <button class="btn btn-primary btn-small purchase-btn" data-product="fortnite-private" onclick="window.location.href='https://varp.mysellauth.com/product/rust'">Purchase</button>
+                        <button class="btn-preview" data-product="rust-external">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Reward Box -->
+            <div class="product-card daily-reward-card" data-search="daily reward free gift">
+                <div class="product-image daily-reward-image">
+                    <div class="daily-reward-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="product-badges">
+                        <div class="badge badge-status">FREE</div>
+                    </div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">Daily Reward</h3>
+                    <p class="product-description">Open Your daily reward today! Discounts & Free Licences available!</p>
+                    <div class="product-price">Free</div>
+                    <div class="product-buttons">
+                        <button class="btn btn-primary btn-small" id="dailyRewardBtn">Open</button>
+                        <button class="btn-preview" style="visibility: hidden;">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Software in Action Section -->
+    <section class="showcase-section" id="showcase-section">
+        <div class="showcase-header">
+            <h2 class="showcase-title">OUR SOFTWARE IN ACTION</h2>
+            <p class="showcase-subtitle">Live gameplay showcasing our Software for Different Games</p>
+        </div>
+
+        <div class="showcase-grid">
+            <!-- VIDEO 1 - COD External -->
+            <div class="showcase-item-link">
+                <div class="showcase-item iframe-wrapper">
+                    <iframe src="https://streamable.com/e/e9uer0?autoplay=1&loop=1&muted=1" frameborder="0" allowfullscreen allow="autoplay" class="streamable-iframe"></iframe>
+                    <div class="showcase-overlay">
+                        <div class="indicator-badge">
+                            <div class="indicator-dot"></div>
+                            <span class="indicator-label">BO6 EXTERNAL FOOTAGE</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="showcase-actions">
+                    <button class="cta-button" onclick="handlePurchase('bo6-external')">
+                        BUY NOW
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <path d="M5 12h14M13 6l6 6-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIDEO 2 - LCX Fortnite -->
+            <div class="showcase-item-link">
+                <div class="showcase-item iframe-wrapper">
+                    <iframe src="https://streamable.com/e/kr1z21?autoplay=1&loop=1&muted=1" frameborder="0" allowfullscreen allow="autoplay" class="streamable-iframe"></iframe>
+                    <div class="showcase-overlay">
+                        <div class="indicator-badge">
+                            <div class="indicator-dot"></div>
+                            <span class="indicator-label">FORTNITE PRIVATE FOOTAGE</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="showcase-actions">
+                    <button class="cta-button" onclick="handlePurchase('fortnite-public')">
+                        BUY NOW
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <path d="M5 12h14M13 6l6 6-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How does our software work Section -->
+    <section class="comparison-section" id="comparison-section">
+        <div class="section-header">
+            <div class="badge-container">
+                <div class="badge-glow"></div>
+                <div class="badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 8.5v10a2 2 0 0 1-2 2h-7.5"></path>
+                        <path d="M6 13v-3a2 2 0 0 1 2-2h12"></path>
+                        <path d="M18 3v4"></path>
+                        <path d="M22 3v4"></path>
+                        <path d="M10 20v-9"></path>
+                        <path d="M2 20v-9a2 2 0 0 1 2-2h4"></path>
+                    </svg>
+                    Working
+                </div>
+            </div>
+            <h2 class="section-title">How does our software work?</h2>
+            <p class="section-description">Hover over the image to see the difference between a cheat and a non-cheat version</p>
+        </div>
+        
+        <div class="comparison-labels">
+            <div class="comparison-label">Without our Software</div>
+            <div class="comparison-label">With our Software Injected</div>
+        </div>
+        
+        <div class="comparison-container">
+            <div class="comparison-card">
+                <div class="image-comparison" id="image-comparison">
+                    <!-- After image (bottom layer) -->
+                    <img src="https://i.imgur.com/qFUDLD2.png" alt="With our software" class="after-image" draggable="false">
+                    
+                    <!-- Before image (top layer with clip) -->
+                    <div class="before-image-wrapper" id="before-wrapper">
+                        <img src="https://i.imgur.com/PRjR09h.png" alt="Without our software" class="before-image" draggable="false" id="before-image">
+                    </div>
+                    
+                    <div class="divider" id="divider">
+                        <div class="divider-glow-left"></div>
+                        <div class="divider-glow-accent"></div>
+                        <div class="divider-handle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button class="chat-trigger" id="chatTrigger">
+            <i class="fas fa-comments"></i>
+        </button>
+        
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="chat-avatar">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div>
+                    <h4>Varp Support</h4>
+                    <p style="font-size: 0.8rem; opacity: 0.9;">Online - Usually respond within minutes</p>
+                </div>
+            </div>
+            
+            <div class="chat-content" id="chatContent">
+                <div class="chat-message">
+                    <div class="chat-avatar">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="message-bubble">
+                        Hello! How can I help you today? 👋
+                    </div>
+                </div>
+                
+                <div class="chat-message">
+                    <div class="chat-avatar">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="message-bubble">
+                        Feel free to ask about our products, payment issues, or any technical support you need!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login/Register Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 class="modal-title">Welcome to Varp</h2>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="register">Register</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <span class="btn-text">Login</span>
+                    <div class="loading hidden"></div>
+                </button>
+            </form>
+            
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form hidden">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-input" placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-input" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <span class="btn-text">Register</span>
+                    <div class="loading hidden"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Panel Modal -->
+    <div class="modal" id="customerPanelModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <button class="modal-close" id="customerPanelClose">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 class="modal-title">Customer Panel</h2>
+            
+            <div id="customerPanelContent">
+                <div style="text-align: center; padding: 2rem;">
+                    <i class="fas fa-user-circle" style="font-size: 4rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                    <h3>Welcome to your Customer Panel</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">Manage your purchases, licenses, and account settings.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                        <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-shopping-bag" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem;"></i>
+                            <h4>My Purchases</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">View your order history</p>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-key" style="font-size: 2rem; color: var(--success-color); margin-bottom: 0.5rem;"></i>
+                            <h4>License Keys</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Manage your licenses</p>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-headset" style="font-size: 2rem; color: var(--warning-color); margin-bottom: 0.5rem;"></i>
+                            <h4>Support</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Get help and support</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- FAQ Section -->
+<section class="faq-section" id="faq-section">
+    <div class="faq-header">
+        <div class="faq-badge">
+            <i class="fas fa-question-circle"></i>
+            FAQ
+        </div>
+        <h2 class="faq-title">Frequently Asked Questions</h2>
+        <p class="faq-subtitle">Get answers to the most common questions about our products and services</p>
+    </div>
+
+    <div class="faq-container">
+        <div class="faq-item">
+            <button class="faq-question">
+                <span class="faq-question-text">How do I download my product after purchase?</span>
+                <i class="fas fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-text">
+                    After completing your purchase, you'll receive an email with your license key and download link within minutes. Check your spam folder if you don't see it immediately.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span class="faq-question-text">Are your products undetected?</span>
+                <i class="fas fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-text">
+                    Yes, all our products are regularly updated to maintain undetected status. We monitor detection rates 24/7 and provide instant updates when needed.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span class="faq-question-text">What payment methods do you accept?</span>
+                <i class="fas fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-text">
+                    We accept Visa, Mastercard, PayPal, Bitcoin, Ethereum, Litecoin, and Google Pay. All payments are processed securely through our encrypted payment system.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span class="faq-question-text">Can I get a refund?</span>
+                <i class="fas fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-text">
+                    Due to the digital nature of our products, refunds are only available in case of technical issues that cannot be resolved. Please contact support for assistance.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span class="faq-question-text">How often are products updated?</span>
+                <i class="fas fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-text">
+                    Our products are updated regularly, typically within hours of any game updates. Critical security updates are pushed immediately to maintain undetected status.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span class="faq-question-text">Do you provide customer support?</span>
+                <i class="fas fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-text">
+                    Yes! We offer 24/7 customer support through Discord and our chat widget. Our team typically responds within minutes during business hours.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+
+    <footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Varp Menu</h3>
+            <ul class="footer-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="https://discord.gg/varpud" target="_blank">Contact</a></li>
+                <li><a href="#" id="footer-status-link">Status</a></li>
+                <li><a href="https://discord.gg/varpud" target="_blank">Discord</a></li>
+                <li><a href="https://discord.gg/varpud" target="_blank">Features</a></li>
+                <li><a href="https://discord.gg/varpud" target="_blank">Terms</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section newsletter">
+            <h3>Subscribe to our emails</h3>
+            <p>Subscribe to our emails for the latest offers, news and promotions</p>
+            <div class="newsletter-form">
+                <input type="email" placeholder="Email" class="newsletter-input">
+                <button class="newsletter-btn">Sign up</button>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div class="footer-bottom">
+        <div class="footer-country">
+            <label for="country-select">Country/region</label>
+            <select id="country-select" class="country-selector">
+                <option value="us">United States (USD $)</option>
+                <option value="eu">Europe (EUR €)</option>
+                <option value="uk">United Kingdom (GBP £)</option>
+            </select>
+        </div>
+
+        <div class="payment-methods">
+            <img src="https://imgur.com/kxG4AUt.png" alt="Visa" class="payment-icon">
+            <img src="https://imgur.com/UZFJNzW.png" alt="Mastercard" class="payment-icon">
+            <img src="https://imgur.com/NUj4vtj.png" alt="PayPal" class="payment-icon">
+            <img src="https://imgur.com/pDACTZJ.png" alt="Bitcoin" class="payment-icon">
+            <img src="https://imgur.com/9FmcCx6.png" alt="Ethereum" class="payment-icon">
+            <img src="https://imgur.com/R0MYZ1u.png" alt="Litecoin" class="payment-icon">
+            <img src="https://imgur.com/S8vn0CR.png" alt="Google Pay" class="payment-icon">
+        </div>
+
+        <div class="footer-copyright">
+            <p>&copy; 2025, Varp Powered by VARP</p>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- Firebase Configuration & JavaScript -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSQNdHH9XAfHyHwWI8iFS2CdsTjv0NMoo",
+            authDomain: "authentication-website-c7ab3.firebaseapp.com",
+            projectId: "authentication-website-c7ab3",
+            storageBucket: "authentication-website-c7ab3.firebasestorage.app",
+            messagingSenderId: "380309135971",
+            appId: "1:380309135971:web:6e5d75a22f06ff310dce56",
+            measurementId: "G-SSKDR565XT"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // DOM Elements
+        const header = document.getElementById('header');
+        const loginBtn = document.getElementById('loginBtn');
+        const authModal = document.getElementById('authModal');
+        const modalClose = document.getElementById('modalClose');
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const chatTrigger = document.getElementById('chatTrigger');
+        const chatWindow = document.getElementById('chatWindow');
+        const searchInput = document.getElementById('searchInput');
+        const productsGrid = document.getElementById('productsGrid');
+        const userPanel = document.getElementById('userPanel');
+        const loginButtons = document.getElementById('loginButtons');
+        const userDropdownBtn = document.getElementById('userDropdownBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const customerPanelBtn = document.getElementById('customerPanelBtn');
+        const customerPanelModal = document.getElementById('customerPanelModal');
+        const customerPanelClose = document.getElementById('customerPanelClose');
+        const dailyRewardBtn = document.getElementById('dailyRewardBtn');
+
+        // State
+        let currentUser = null;
+        let chatOpen = false;
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Auth tab switching
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                
+                // Update tabs
+                authTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update forms
+                if (tabName === 'login') {
+                    loginForm.classList.remove('hidden');
+                    registerForm.classList.add('hidden');
+                } else {
+                    loginForm.classList.add('hidden');
+                    registerForm.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Modal controls
+        loginBtn.addEventListener('click', () => {
+            authModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        modalClose.addEventListener('click', closeAuthModal);
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) closeAuthModal();
+        });
+
+        function closeAuthModal() {
+            authModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Customer Panel Modal
+customerPanelBtn.addEventListener('click', () => {
+    if (!currentUser) {
+        alert('Please login to access Customer Panel!');
+        authModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        return;
+    }
+    
+    userDropdown.classList.remove('active');
+    window.location.href = '/customer-panel';
+});
+
+        customerPanelClose.addEventListener('click', closeCustomerPanel);
+        customerPanelModal.addEventListener('click', (e) => {
+            if (e.target === customerPanelModal) closeCustomerPanel();
+        });
+
+        function closeCustomerPanel() {
+            customerPanelModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // User dropdown
+        userDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+            userDropdown.classList.remove('active');
+        });
+
+        // Chat widget
+        chatTrigger.addEventListener('click', () => {
+            chatOpen = !chatOpen;
+            chatWindow.classList.toggle('active', chatOpen);
+        });
+
+        // Close chat when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.chat-widget') && chatOpen) {
+                chatOpen = false;
+                chatWindow.classList.remove('active');
+            }
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const productCards = document.querySelectorAll('.product-card');
+            
+            productCards.forEach(card => {
+                const searchData = card.getAttribute('data-search') || '';
+                const title = card.querySelector('.product-title').textContent.toLowerCase();
+                const description = card.querySelector('.product-description').textContent.toLowerCase();
+                
+                const isMatch = searchData.includes(searchTerm) || 
+                               title.includes(searchTerm) || 
+                               description.includes(searchTerm);
+                
+                card.style.display = isMatch ? 'block' : 'none';
+            });
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Firebase Auth State Observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                updateUIForLoggedInUser(user);
+            } else {
+                currentUser = null;
+                updateUIForLoggedOutUser();
+            }
+        });
+
+        function updateUIForLoggedInUser(user) {
+            loginButtons.classList.add('hidden');
+            userPanel.classList.remove('hidden');
+            
+            const username = user.displayName || user.email.split('@')[0];
+            document.getElementById('username').textContent = username;
+            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+            
+            closeAuthModal();
+        }
+
+        function updateUIForLoggedOutUser() {
+            loginButtons.classList.remove('hidden');
+            userPanel.classList.add('hidden');
+        }
+
+        // Login Form Handler
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const email = formData.get('email') || e.target.querySelector('input[type="email"]').value;
+            const password = formData.get('password') || e.target.querySelector('input[type="password"]').value;
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            
+            try {
+                btnText.classList.add('hidden');
+                loading.classList.remove('hidden');
+                submitBtn.disabled = true;
+                
+                await auth.signInWithEmailAndPassword(email, password);
+                
+                // Success will be handled by onAuthStateChanged
+                e.target.reset();
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed: ' + error.message);
+            } finally {
+                btnText.classList.remove('hidden');
+                loading.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Register Form Handler
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const inputs = e.target.querySelectorAll('input');
+            const username = inputs[0].value;
+            const email = inputs[1].value;
+            const password = inputs[2].value;
+            const confirmPassword = inputs[3].value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long!');
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            
+            try {
+                btnText.classList.add('hidden');
+                loading.classList.remove('hidden');
+                submitBtn.disabled = true;
+                
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                // Update user profile with username
+                await userCredential.user.updateProfile({
+                    displayName: username
+                });
+                
+                // Store additional user data in Firestore
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    username: username,
+                    email: email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    purchases: []
+                });
+                
+                e.target.reset();
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Registration failed: ' + error.message);
+            } finally {
+                btnText.classList.remove('hidden');
+                loading.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Logout Handler
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                userDropdown.classList.remove('active');
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed: ' + error.message);
+            }
+        });
+
+        // Daily Reward Handler
+        dailyRewardBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert('Please login to claim daily rewards!');
+                authModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                return;
+            }
+            
+            // Check if user already claimed today
+            const today = new Date().toDateString();
+            const lastClaim = localStorage.getItem(`dailyReward_${currentUser.uid}`);
+            
+            if (lastClaim === today) {
+                alert('You have already claimed your daily reward today! Come back tomorrow.');
+                return;
+            }
+            
+            // Simulate reward claim
+            const rewards = [
+                { type: 'discount', value: '10% OFF', message: 'You got a 10% discount code!' },
+                { type: 'discount', value: '15% OFF', message: 'You got a 15% discount code!' },
+                { type: 'discount', value: '20% OFF', message: 'You got a 20% discount code!' },
+                { type: 'license', value: 'FREE LICENSE', message: 'You got a free license key!' },
+                { type: 'nothing', value: 'Better luck tomorrow!', message: 'No reward this time, try again tomorrow!' }
+            ];
+            
+            const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
+            
+            localStorage.setItem(`dailyReward_${currentUser.uid}`, today);
+            
+            alert(`🎉 ${randomReward.message}\nCode: ${randomReward.value}`);
+            
+            // Store reward in Firestore
+            db.collection('rewards').add({
+                userId: currentUser.uid,
+                type: randomReward.type,
+                value: randomReward.value,
+                claimedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        });
+
+        // Product purchase handlers
+        document.querySelectorAll('.purchase-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const productId = e.target.getAttribute('data-product');
+                handlePurchase(productId);
+            });
+        });
+
+
+
+        // Product preview handlers
+        document.querySelectorAll('.btn-preview').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const productId = e.target.getAttribute('data-product');
+                showProductPreview(productId);
+            });
+        });
+
+        function showProductPreview(productId) {
+            const productData = {
+                'fortnite-private': {
+                    title: 'Fortnite Private',
+                    features: ['System Supported: Windows 10 & 11', 'Processors Supported: Intel & AMD', 'Fully Undetected From EAC / BE', 'External & Ready For Tournaments'],
+                    description: 'Our premium Fortnite Private cheat is specifically designed for competitive players and tournament environments.'
+                },
+                'fortnite-public': {
+                    title: 'Fortnite Public',
+                    features: ['System Supported: Windows 10 & 11[2004 - 24h2]', 'Processors Supported: Intel & AMD', 'Fully Undetected From EAC / BE', 'External & Ready For Tournaments'],
+                    description: 'The Fortnite Public version offers excellent value for casual players looking to enhance their gaming experience.'
+                },
+                'permanent-spoofer': {
+                    title: 'Permanent Spoofer',
+                    features: ['Supported Across: Windows 10 & 11', 'Permanently Solution for Legit Players', 'CPU / GPU Compatibility: All Components', 'Fixes Fortnite Tournament Hardware Kick'],
+                    description: 'Our Permanent Spoofer provides a one-time solution for legit players.'
+                },
+                'temporary-spoofer': {
+                    title: 'Temporary Spoofer',
+                    features: ['Every Motherboards Supported', 'Every Windows Version Supported', 'Processors Supported: Intel & AMD', 'S.M.A.R.T. Spoofing technology!'],
+                    description: 'The Temporary Spoofer offers a cost-effective solution for temporary hardware unbanning.'
+                },
+                'bo6-external': {
+                    title: 'BO6 External',
+                    features: ['Windows 10 - 11[2004 - 24h2]Supported', 'Processors Supported: Intel & AMD', 'Temporary Spoofer Included', 'Always Unbanned after Shadowban'],
+                    description: 'Dominate Call of Duty Black Ops 6 with our external cheat software.'
+                },
+                'apex-external': {
+                    title: 'Apex External',
+                    features: ['Windows 10 - 11[2004 - 24h2]Supported', 'Processors Supported: Intel & AMD', 'Stream - Proof Included', 'Temporary Spoofer Included'],
+                    description: 'Achieve victory in Apex Legends with our feature-rich external software.'
+                },
+                'rust-external': {
+                    title: 'Rust External',
+                    features: ['Windows 10 - 11[2004 - 24h2]Supported', 'Processors Supported: Intel & AMD', 'Fully Undetected From EAC / BE', 'Temporary Spoofer Included'],
+                    description: 'Become unbeatable in Rust with our specialized external cheat software.'
+                }
+            };
+            
+            const product = productData[productId];
+            if (product) {
+                let featuresHtml = product.features.map(feature => `<li>${feature}</li>`).join('');
+                
+                alert(`${product.title}\n\nFeatures:\n${product.features.join('\n')}\n\nDescription:\n${product.description}`);
+            }
+        }
+
+        // Navigation active state
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // ESC to close modals
+            if (e.key === 'Escape') {
+                if (authModal.classList.contains('active')) {
+                    closeAuthModal();
+                }
+                if (customerPanelModal.classList.contains('active')) {
+                    closeCustomerPanel();
+                }
+                if (chatOpen) {
+                    chatOpen = false;
+                    chatWindow.classList.remove('active');
+                }
+            }
+            
+            // Ctrl+K to focus search
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+
+        // Add some animation on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate product cards
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+
+        // Enhanced chat functionality
+        function addChatMessage(message, isUser = false) {
+            const chatContent = document.getElementById('chatContent');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isUser ? 'user' : ''}`;
+            
+            if (!isUser) {
+                messageDiv.innerHTML = `
+                    <div class="chat-avatar">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="message-bubble">${message}</div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-bubble">${message}</div>
+                    <div class="chat-avatar" style="background: var(--primary-gradient);">
+                        <i class="fas fa-user"></i>
+                    </div>
+                `;
+            }
+            
+            chatContent.appendChild(messageDiv);
+            chatContent.scrollTop = chatContent.scrollHeight;
+        }
+
+        // Simulate chat responses
+        const chatResponses = [
+            "Thanks for reaching out! How can I help you today?",
+            "I'm here to assist with any questions about our products.",
+            "For payment issues, please check your email for the license key.",
+            "Our products are regularly updated to maintain undetected status.",
+            "Join our Discord for faster support and community discussions!",
+            "All purchases include instant delivery via email.",
+            "HWID resets are available once per week - contact support.",
+            "Our spoofers work on all major Windows versions."
+        ];
+
+        // Add click handler for chat area to simulate interaction
+        document.getElementById('chatContent').addEventListener('click', () => {
+            if (chatOpen && Math.random() > 0.7) { // 30% chance of auto response
+                setTimeout(() => {
+                    const randomResponse = chatResponses[Math.floor(Math.random() * chatResponses.length)];
+                    addChatMessage(randomResponse);
+                }, 1000 + Math.random() * 2000);
+            }
+        });
+
+        // Product filtering with animations
+        function filterProducts(searchTerm) {
+            const cards = document.querySelectorAll('.product-card');
+            
+            cards.forEach(card => {
+                const searchData = card.getAttribute('data-search') || '';
+                const title = card.querySelector('.product-title').textContent.toLowerCase();
+                const description = card.querySelector('.product-description').textContent.toLowerCase();
+                
+                const isMatch = searchData.includes(searchTerm.toLowerCase()) || 
+                               title.includes(searchTerm.toLowerCase()) || 
+                               description.includes(searchTerm.toLowerCase());
+                
+                if (isMatch) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeInScale 0.3s ease-out';
+                } else {
+                    card.style.animation = 'none';
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Enhanced search with debouncing
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filterProducts(e.target.value);
+            }, 300);
+        });
+
+        // Add particle effect for daily reward
+        function createParticleEffect(element) {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = '4px';
+                particle.style.height = '4px';
+                particle.style.background = 'var(--primary-color)';
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                particle.style.zIndex = '1000';
+                
+                const rect = element.getBoundingClientRect();
+                particle.style.left = rect.left + rect.width / 2 + 'px';
+                particle.style.top = rect.top + rect.height / 2 + 'px';
+                
+                document.body.appendChild(particle);
+                
+                // Animate particle
+                const angle = (i / 20) * Math.PI * 2;
+                const velocity = 100 + Math.random() * 50;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+                
+                particle.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${vx}px, ${vy}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000 + Math.random() * 500,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }).onfinish = () => {
+                    document.body.removeChild(particle);
+                };
+            }
+        }
+
+        // Enhanced daily reward with particle effect
+        dailyRewardBtn.addEventListener('click', (e) => {
+            if (currentUser) {
+                createParticleEffect(e.target);
+            }
+        });
+
+        // Add loading states for better UX
+        function showLoadingState(button) {
+            const originalText = button.innerHTML;
+            button.innerHTML = '<div class="loading"></div>';
+            button.disabled = true;
+            
+            return () => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            };
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--dark-bg);
+                border: 2px solid var(--primary-color);
+                border-radius: 10px;
+                padding: 1rem 1.5rem;
+                color: white;
+                z-index: 10001;
+                max-width: 300px;
+                box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            
+            if (type === 'success') {
+                notification.style.borderColor = 'var(--success-color)';
+            } else if (type === 'error') {
+                notification.style.borderColor = 'var(--error-color)';
+            }
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Auto remove
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Override alert with notification system
+        const originalAlert = window.alert;
+        window.alert = (message) => {
+            showNotification(message, 'info');
+        };
+
+        // Add success notification for auth events
+        auth.onAuthStateChanged((user) => {
+            if (user && !currentUser) {
+                showNotification('Welcome back! 🎉', 'success');
+            } else if (!user && currentUser) {
+                showNotification('Logged out successfully', 'info');
+            }
+            
+            if (user) {
+                currentUser = user;
+                updateUIForLoggedInUser(user);
+            } else {
+                currentUser = null;
+                updateUIForLoggedOutUser();
+            }
+        });
+
+        // Easter egg: Konami code
+        let konamiCode = [];
+        const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // Up Up Down Down Left Right Left Right B A
+        
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.keyCode);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+            
+            if (konamiCode.join(',') === konamiSequence.join(',')) {
+                showNotification('🎮 Konami Code activated! Secret developer mode enabled!', 'success');
+                document.body.style.filter = 'hue-rotate(180deg)';
+                setTimeout(() => {
+                    document.body.style.filter = 'none';
+                }, 5000);
+                konamiCode = [];
+            }
+        });
+
+        // Performance optimization: Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all product cards for scroll animations
+        document.querySelectorAll('.product-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Showcase section functionality
+        const showcaseSection = document.getElementById('showcase-section');
+        
+        if (showcaseSection) {
+            const showcaseItems = showcaseSection.querySelectorAll('.showcase-item-link');
+            
+            const showcaseObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        showcaseObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            
+            showcaseObserver.observe(showcaseSection);
+            showcaseItems.forEach(item => showcaseObserver.observe(item));
+        }
+
+        // Comparison section functionality
+        const comparisonSection = document.getElementById('comparison-section');
+        
+        // Initialize comparison section
+        if (comparisonSection) {
+            const container = document.getElementById('image-comparison');
+            const divider = document.getElementById('divider');
+            const beforeWrapper = document.getElementById('before-wrapper');
+            const beforeImage = document.getElementById('before-image');
+            
+            // Intersection Observer for comparison section
+            const comparisonObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        comparisonObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+            
+            comparisonObserver.observe(comparisonSection);
+            
+            // Adjust before image width
+            function adjustBeforeImageWidth() {
+                if (container && beforeImage) {
+                    const containerWidth = container.offsetWidth;
+                    beforeImage.style.width = containerWidth * 2 + 'px';
+                }
+            }
+            
+            adjustBeforeImageWidth();
+            window.addEventListener('resize', adjustBeforeImageWidth);
+            
+            let position = 50;
+            updatePosition(position);
+            
+            // Drag functionality
+            if (container) {
+                container.addEventListener('mousedown', startDrag);
+                container.addEventListener('touchstart', startDrag);
+            }
+            
+            function startDrag(e) {
+                if (e.type === 'mousedown') {
+                    e.preventDefault();
+                }
+                
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('touchmove', drag);
+                document.addEventListener('mouseup', endDrag);
+                document.addEventListener('touchend', endDrag);
+            }
+            
+            function drag(e) {
+                if (!container) return;
+                
+                const containerRect = container.getBoundingClientRect();
+                const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                const x = clientX - containerRect.left;
+                position = (x / containerRect.width) * 100;
+                position = Math.max(0, Math.min(100, position));
+                updatePosition(position);
+            }
+            
+            function endDrag() {
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('touchmove', drag);
+                document.removeEventListener('mouseup', endDrag);
+                document.removeEventListener('touchend', endDrag);
+            }
+            
+            function updatePosition(position) {
+                if (divider && beforeWrapper) {
+                    divider.style.left = `${position}%`;
+                    beforeWrapper.style.width = `${position}%`;
+                }
+            }
+        }
+
+        // Footer status link handler (dodaj to do istniejących event listenerów)
+document.addEventListener('DOMContentLoaded', function() {
+    const footerStatusLink = document.getElementById('footer-status-link');
+    
+    if (footerStatusLink) {
+        footerStatusLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Jeśli masz funkcję openStatusModal(), użyj jej
+            // openStatusModal();
+            console.log('Status clicked from footer');
+        });
+    }
+});
+
+
+
+// FAQ functionality
+const faqSection = document.getElementById('faq-section');
+const faqItems = document.querySelectorAll('.faq-item');
+
+// FAQ intersection observer
+if (faqSection) {
+    const faqObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                
+                // Animate FAQ items with delay
+                faqItems.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.classList.add('visible');
+                    }, index * 100);
+                });
+                
+                faqObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+    
+    faqObserver.observe(faqSection);
+}
+
+// FAQ accordion functionality
+faqItems.forEach(item => {
+    const question = item.querySelector('.faq-question');
+    
+    question.addEventListener('click', () => {
+        const isActive = item.classList.contains('active');
+        
+        // Close all other FAQ items
+        faqItems.forEach(otherItem => {
+            if (otherItem !== item) {
+                otherItem.classList.remove('active');
+            }
+        });
+        
+        // Toggle current item
+        item.classList.toggle('active', !isActive);
+    });
+});
+
+
+// Daily Reward dropdown handler
+const dailyRewardDropdownBtn = document.getElementById('dailyRewardDropdownBtn');
+dailyRewardDropdownBtn.addEventListener('click', () => {
+    if (!currentUser) {
+        alert('Please login to claim daily rewards!');
+        authModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        return;
+    }
+    
+    userDropdown.classList.remove('active');
+    // Tutaj wywołaj funkcję daily reward
+    dailyRewardBtn.click();
+});
+
+        console.log('🚀 Varp website loaded successfully!');
+        console.log('💡 Tip: Press Ctrl+K to focus search, ESC to close modals');
+    </script>
+</body>
+</html>

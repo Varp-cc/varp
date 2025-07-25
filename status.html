@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status - Varp</title>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&family=Libertinus+Math&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4a90e2;
+            --primary-gradient: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            --secondary-color: #6bb6ff;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --dark-bg: #090A0B;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #b3d9ff;
+            --text-muted: #999999;
+        }
+
+        body {
+            font-family: 'Geologica', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+        }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(#090A0B) 0%, transparent 70%),
+                radial-gradient(circle at 80% 20%, rgba(#090A0B) 0%, transparent 70%),
+                radial-gradient(circle at 40% 80%, rgba(#090A0B) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(17, 24, 39, 0);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            background: rgba(17, 24, 39, 0);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left: 42%;
+            transform: translateX(-50%);
+        }
+
+        .nav-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #ffffff;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #60a5fa;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-left: auto;
+            margin-right: -7rem;
+        }
+
+        .search-container {
+            position: relative;
+            margin-right: 1rem;
+        }
+
+        .search-input {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 6px;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #64748b;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #60a5fa;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(96, 165, 250, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #60a5fa;
+            border: 2px solid #60a5fa;
+        }
+
+        .btn-outline:hover {
+            background: #60a5fa;
+            color: white;
+        }
+
+        .user-panel {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            min-width: 200px;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .user-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        /* Status Page Specific Styles */
+        .status-hero {
+            padding: 2rem 2rem 1rem 2rem;
+            text-align: center;
+            background: var(--dark-bg);
+            position: relative;
+        }
+
+        .status-hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            white-space: nowrap;
+            border-radius: 0.375rem;
+            padding: 0.125rem 0.5rem;
+            font-size: 0.75rem;
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+            margin-bottom: 1rem;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .status-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        /* Statistics Cards */
+        .stats-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, 
+                rgba(74, 144, 226, 0.05) 0%, 
+                rgba(107, 182, 255, 0.02) 50%, 
+                rgba(74, 144, 226, 0.05) 100%);
+            border: 2px solid rgba(74, 144, 226, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(74, 144, 226, 0.1) 0%, 
+                transparent 50%, 
+                rgba(107, 182, 255, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.15);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value.products { color: var(--primary-color); }
+        .stat-value.uptime { color: var(--success-color); }
+        .stat-value.users { color: var(--secondary-color); }
+        .stat-value.detection { color: var(--error-color); }
+
+        .stat-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+            display: flex;
+            gap: 3px;
+        }
+
+        .stat-progress-bar {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 2s ease;
+            animation: progressFill 2s ease-out 0.5s forwards;
+            display: flex;
+            gap: 3px;
+        }
+
+        .progress-segment {
+            height: 100%;
+            border-radius: 2px;
+            flex: 1;
+            opacity: 0;
+            animation: segmentAppear 0.3s ease forwards;
+        }
+
+        .progress-segment:nth-child(1) { animation-delay: 0.6s; }
+        .progress-segment:nth-child(2) { animation-delay: 0.8s; }
+        .progress-segment:nth-child(3) { animation-delay: 1.0s; }
+        .progress-segment:nth-child(4) { animation-delay: 1.2s; }
+        .progress-segment:nth-child(5) { animation-delay: 1.4s; }
+        .progress-segment:nth-child(6) { animation-delay: 1.6s; }
+        .progress-segment:nth-child(7) { animation-delay: 1.8s; }
+        .progress-segment:nth-child(8) { animation-delay: 2.0s; }
+        .progress-segment:nth-child(9) { animation-delay: 2.2s; }
+        .progress-segment:nth-child(10) { animation-delay: 2.4s; }
+
+        @keyframes segmentAppear {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .progress-segment.products {
+            background: var(--primary-gradient);
+            box-shadow: 0 0 8px rgba(74, 144, 226, 0.4);
+        }
+
+        .progress-segment.uptime {
+            background: var(--primary-gradient);
+            box-shadow: 0 0 8px rgba(74, 144, 226, 0.4);
+        }
+
+        .progress-segment.users {
+            background: var(--primary-gradient);
+            box-shadow: 0 0 8px rgba(74, 144, 226, 0.4);
+        }
+
+        .progress-segment.detection {
+            background: var(--primary-gradient);
+            box-shadow: 0 0 8px rgba(74, 144, 226, 0.4);
+        }
+
+        .stat-progress-bar.products {
+            width: 0;
+        }
+
+        .stat-progress-bar.uptime {
+            width: 0;
+        }
+
+        .stat-progress-bar.users {
+            width: 0;
+        }
+
+        .stat-progress-bar.detection {
+            width: 0;
+        }
+
+        @keyframes progressFill {
+            to {
+                width: 100%;
+            }
+        }
+
+        .stat-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-range {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Status History */
+        .status-history {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+            animation-delay: 0.5s;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .history-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .history-legend {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.operational { background: var(--success-color); }
+        .legend-dot.updating { background: var(--warning-color); }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .service-history {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.3s ease forwards;
+        }
+
+        .service-history:nth-child(1) { animation-delay: 0.6s; }
+        .service-history:nth-child(2) { animation-delay: 0.7s; }
+        .service-history:nth-child(3) { animation-delay: 0.8s; }
+
+        .service-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .history-bar {
+            display: flex;
+            height: 24px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            gap: 4px;
+        }
+
+        .history-segment {
+            height: 100%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+            opacity: 0;
+            transform: scaleX(0);
+            animation: segmentGrow 0.2s ease forwards;
+        }
+
+        .history-segment:nth-child(1) { animation-delay: 0.7s; }
+        .history-segment:nth-child(2) { animation-delay: 0.71s; }
+        .history-segment:nth-child(3) { animation-delay: 0.72s; }
+        .history-segment:nth-child(4) { animation-delay: 0.73s; }
+        .history-segment:nth-child(5) { animation-delay: 0.74s; }
+        .history-segment:nth-child(6) { animation-delay: 0.75s; }
+        .history-segment:nth-child(7) { animation-delay: 0.76s; }
+        .history-segment:nth-child(8) { animation-delay: 0.77s; }
+        .history-segment:nth-child(9) { animation-delay: 0.78s; }
+        .history-segment:nth-child(10) { animation-delay: 0.79s; }
+        .history-segment:nth-child(11) { animation-delay: 0.8s; }
+        .history-segment:nth-child(12) { animation-delay: 0.81s; }
+        .history-segment:nth-child(13) { animation-delay: 0.82s; }
+        .history-segment:nth-child(14) { animation-delay: 0.83s; }
+        .history-segment:nth-child(15) { animation-delay: 0.84s; }
+        .history-segment:nth-child(16) { animation-delay: 0.85s; }
+        .history-segment:nth-child(17) { animation-delay: 0.86s; }
+        .history-segment:nth-child(18) { animation-delay: 0.87s; }
+        .history-segment:nth-child(19) { animation-delay: 0.88s; }
+        .history-segment:nth-child(20) { animation-delay: 0.89s; }
+        .history-segment:nth-child(21) { animation-delay: 0.9s; }
+        .history-segment:nth-child(22) { animation-delay: 0.91s; }
+        .history-segment:nth-child(23) { animation-delay: 0.92s; }
+        .history-segment:nth-child(24) { animation-delay: 0.93s; }
+        .history-segment:nth-child(25) { animation-delay: 0.94s; }
+        .history-segment:nth-child(26) { animation-delay: 0.95s; }
+        .history-segment:nth-child(27) { animation-delay: 0.96s; }
+        .history-segment:nth-child(28) { animation-delay: 0.97s; }
+        .history-segment:nth-child(29) { animation-delay: 0.98s; }
+        .history-segment:nth-child(30) { animation-delay: 0.99s; }
+        .history-segment:nth-child(31) { animation-delay: 1.0s; }
+        .history-segment:nth-child(32) { animation-delay: 1.01s; }
+        .history-segment:nth-child(33) { animation-delay: 1.02s; }
+        .history-segment:nth-child(34) { animation-delay: 1.03s; }
+        .history-segment:nth-child(35) { animation-delay: 1.04s; }
+        .history-segment:nth-child(36) { animation-delay: 1.05s; }
+        .history-segment:nth-child(37) { animation-delay: 1.06s; }
+        .history-segment:nth-child(38) { animation-delay: 1.07s; }
+        .history-segment:nth-child(39) { animation-delay: 1.08s; }
+        .history-segment:nth-child(40) { animation-delay: 1.09s; }
+        .history-segment:nth-child(41) { animation-delay: 1.1s; }
+        .history-segment:nth-child(42) { animation-delay: 1.11s; }
+        .history-segment:nth-child(43) { animation-delay: 1.12s; }
+        .history-segment:nth-child(44) { animation-delay: 1.13s; }
+        .history-segment:nth-child(45) { animation-delay: 1.14s; }
+        .history-segment:nth-child(46) { animation-delay: 1.15s; }
+        .history-segment:nth-child(47) { animation-delay: 1.16s; }
+        .history-segment:nth-child(48) { animation-delay: 1.17s; }
+        .history-segment:nth-child(49) { animation-delay: 1.18s; }
+        .history-segment:nth-child(50) { animation-delay: 1.19s; }
+
+        @keyframes segmentGrow {
+            to {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+
+        .history-segment.operational { 
+            background: var(--success-color);
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
+        }
+        .history-segment.updating { 
+            background: var(--warning-color);
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+        }
+
+        .status-overview {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .status-stat {
+            text-align: center;
+        }
+
+        .status-stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success-color);
+        }
+
+        .status-stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Status Cards */
+        .status-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .status-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .status-card:nth-child(1) { animation-delay: 0.1s; }
+        .status-card:nth-child(2) { animation-delay: 0.2s; }
+        .status-card:nth-child(3) { animation-delay: 0.3s; }
+        .status-card:nth-child(4) { animation-delay: 0.4s; }
+        .status-card:nth-child(5) { animation-delay: 0.5s; }
+        .status-card:nth-child(6) { animation-delay: 0.6s; }
+        .status-card:nth-child(7) { animation-delay: 0.7s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .status-card-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .status-icon.fortnite-private {
+            background-image: url('https://i.imgur.com/gVE5Z2j.png');
+        }
+
+        .status-icon.fortnite-public {
+            background-image: url('https://imgur.com/9rB54DA.png');
+        }
+
+        .status-icon.permanent-spoofer {
+            background-image: url('https://imgur.com/vnMC2yy.png');
+        }
+
+        .status-icon.temporary-spoofer {
+            background-image: url('https://imgur.com/ZCSFtsg.png');
+        }
+
+        .status-icon.bo6-external {
+            background-image: url('https://imgur.com/XrobQO5.png');
+        }
+
+        .status-icon.apex-external {
+            background-image: url('https://imgur.com/qeTNJoH.png');
+        }
+
+        .status-icon.rust-external {
+            background-image: url('https://imgur.com/6IYdr6G.png');
+        }
+
+        .status-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .status-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .status-badge-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge-right.undetected {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .status-badge-right.updating {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .status-badge-right.detected {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.undetected {
+            background: var(--success-color);
+        }
+
+        .status-dot.updating {
+            background: var(--warning-color);
+        }
+
+        .status-dot.detected {
+            background: var(--error-color);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Last Updated */
+        .last-updated {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .last-updated-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .last-updated-time {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #0A0A0A;
+            border-top: 3px solid #4a90e2;
+            position: relative;
+            z-index: 10;
+            margin-top: 4rem;
+            box-shadow: 0 -3px 15px rgba(74, 144, 226, 0.4);
+            animation: glow-footer-line 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-footer-line {
+            0%, 100% {
+                border-top-color: #4a90e2;
+                box-shadow: 0 -3px 15px rgba(74, 144, 226, 0.4);
+            }
+            50% {
+                border-top-color: #6bb6ff;
+                box-shadow: 0 -3px 25px rgba(107, 182, 255, 1);
+            }
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px 40px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links li a {
+            color: #999;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links li a:hover {
+            color: #4a90e2;
+        }
+
+        .newsletter p {
+            color: #999;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .newsletter-input::placeholder {
+            color: #666;
+        }
+
+        .newsletter-btn {
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .newsletter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
+            background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 40px;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-country {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-country label {
+            color: #999;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .country-selector {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: white;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .country-selector:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 24px;
+            border-radius: 4px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            object-fit: cover;
+        }
+
+        .payment-icon:hover {
+            opacity: 1;
+        }
+
+        .footer-copyright {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+            transform: translateY(-20px) scale(0.95);
+            transition: all 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--primary-color);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            border-top: 2px solid var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .status-title {
+                font-size: 2rem;
+            }
+
+            .status-overview {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .status-section {
+                padding: 2rem 1rem;
+            }
+
+            .status-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .status-card-left {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 40px 20px 30px 20px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .payment-methods {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+     <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="https://i.imgur.com/AMPTf1r.png" alt="Varp Logo">
+                VARP
+            </a>
+            
+            <ul class="nav-menu">
+                <li>
+                    <a href="https://varp.gay/home" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="https://varp.gay/home#products" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        Products
+                    </a>
+                </li>
+                 <li>
+                    <a href="https://varp.gay/reviews" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z"/>
+                        </svg>
+                        Reviews
+                    </a>
+                </li>
+                <li>
+                    <a href="https://varp.gay/status" class="nav-link active">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/>
+                        </svg>
+                        Status
+                    </a>
+                </li>
+                <li>
+                    <a href="https://varp.gay/media-resell" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 22 22">
+                            <path d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z"/>
+                        </svg>
+                        Media/Resell
+                    </a>
+                </li>
+                 <li>
+                    <a href="https://discord.gg/varpud" class="nav-link" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-discord"></i>
+                        Discord
+               </a>
+            </li>
+            </ul>
+            
+            <div class="auth-buttons">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search status..." id="searchInput">
+                </div>
+                
+                <!-- Not logged in -->
+                <div id="loginButtons">
+                    <button class="btn btn-primary" id="loginBtn">Login</button>
+                    <button class="btn btn-outline" onclick="window.location.href='cart.html'">
+                        <i class="fas fa-shopping-cart"></i>
+                    </button>
+                </div>
+                
+                <!-- Logged in -->
+                <div id="userPanel" class="user-panel hidden">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="username">User</span>
+                    <button id="userDropdownBtn" style="background: none; border: none; color: var(--text-muted); cursor: pointer;">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <button class="dropdown-item" onclick="window.location.href='cart.html'">
+                            <i class="fas fa-shopping-cart"></i>
+                            Shopping Cart
+                        </button>
+                        <button class="dropdown-item" id="customerPanelBtn">
+                            <i class="fas fa-user-cog"></i>
+                            Customer Panel
+                        </button>
+                        <button class="dropdown-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Status Hero Section -->
+    <section class="status-hero">
+        <div class="status-hero-content">
+            <div class="status-badge">
+                <i class="fas fa-check-circle"></i>
+                All Systems Operational
+            </div>
+            <h1 class="status-title">Service Status</h1>
+            <p class="status-subtitle">Real-time status of all Varp products and services</p>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <!-- Products Online -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">Products Online</div>
+                </div>
+                <div class="stat-value">6/7</div>
+                <div class="stat-progress">
+                    <div class="stat-progress-bar products">
+                        <div class="progress-segment products"></div>
+                        <div class="progress-segment products"></div>
+                        <div class="progress-segment products"></div>
+                        <div class="progress-segment products"></div>
+                        <div class="progress-segment products"></div>
+                        <div class="progress-segment products"></div>
+                        <div class="progress-segment products"></div>
+                        <div class="progress-segment products"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                    </div>
+                </div>
+                <div class="stat-range">
+                    <span>85%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+
+            <!-- Average Uptime -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">Average Uptime</div>
+                </div>
+                <div class="stat-value">98.1%</div>
+                <div class="stat-progress">
+                    <div class="stat-progress-bar uptime">
+                        <div class="progress-segment uptime"></div>
+                        <div class="progress-segment uptime"></div>
+                        <div class="progress-segment uptime"></div>
+                        <div class="progress-segment uptime"></div>
+                        <div class="progress-segment uptime"></div>
+                        <div class="progress-segment uptime"></div>
+                        <div class="progress-segment uptime"></div>
+                        <div class="progress-segment uptime"></div>
+                        <div class="progress-segment uptime"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                    </div>
+                </div>
+                <div class="stat-range">
+                    <span>98%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+
+            <!-- Active Users -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">Active Users</div>
+                </div>
+                <div class="stat-value">800+</div>
+                <div class="stat-progress">
+                    <div class="stat-progress-bar users">
+                        <div class="progress-segment users"></div>
+                        <div class="progress-segment users"></div>
+                        <div class="progress-segment users"></div>
+                        <div class="progress-segment users"></div>
+                        <div class="progress-segment users"></div>
+                        <div class="progress-segment users"></div>
+                        <div class="progress-segment users"></div>
+                        <div class="progress-segment users"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                    </div>
+                </div>
+                <div class="stat-range">
+                    <span>80%</span>
+                    <span>1000</span>
+                </div>
+            </div>
+
+            <!-- Detection Status -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">Detection Status</div>
+                </div>
+                <div class="stat-value">UNDETECTED</div>
+                <div class="stat-progress">
+                    <div class="stat-progress-bar detection">
+                        <div class="progress-segment detection"></div>
+                        <div class="progress-segment detection"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                        <div class="progress-segment" style="background: rgba(255,255,255,0.1);"></div>
+                    </div>
+                </div>
+                <div class="stat-range">
+                    <span>Very Low</span>
+                    <span>Low</span>
+                    <span>Medium</span>
+                    <span>High</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status History -->
+        <div class="status-history">
+            <div class="history-header">
+                <div class="history-title">Status by service</div>
+                <div class="history-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot operational"></div>
+                        <span>Operational</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot updating"></div>
+                        <span>Updating</span>
+                    </div>
+                </div>
+            </div>
+            <div class="history-grid">
+                <div class="service-history">
+                    <div class="service-name">API Functionality</div>
+                    <div class="history-bar">
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+
+                    </div>
+                </div>
+                <div class="service-history">
+                    <div class="service-name">Firebase & Database</div>
+                    <div class="history-bar">
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment updating" style="width: 2%;"></div>
+                        <div class="history-segment updating" style="width: 2%;"></div>
+                        <div class="history-segment updating" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment updating" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                    
+                    </div>
+                </div>
+                <div class="service-history">
+                    <div class="service-name">Authentications</div>
+                    <div class="history-bar">
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment updating" style="width: 2%;"></div>
+                        <div class="history-segment updating" style="width: 2%;"></div>
+                        <div class="history-segment updating" style="width: 2%;"></div>
+                        <div class="history-segment updating" style="width: 2%;"></div>
+                        <div class="history-segment updating" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        <div class="history-segment operational" style="width: 2%;"></div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Status Cards Section -->
+    <section class="status-section">
+        <div class="status-grid">
+            <!-- Fortnite Private -->
+            <div class="status-card" data-search="fortnite private">
+                <div class="status-card-left">
+                    <div class="status-icon fortnite-private"></div>
+                    <div class="status-info">
+                        <h3>Fortnite Private</h3>
+                        <p class="status-description">External tournament-ready software with advanced protection</p>
+                    </div>
+                </div>
+                <div class="status-badge-right undetected">
+                    <div class="status-dot undetected"></div>
+                    Undetected
+                </div>
+            </div>
+
+            <!-- Fortnite Public -->
+            <div class="status-card" data-search="fortnite public">
+                <div class="status-card-left">
+                    <div class="status-icon fortnite-public"></div>
+                    <div class="status-info">
+                        <h3>Fortnite Public</h3>
+                        <p class="status-description">Most popular external software with built-in spoofer</p>
+                    </div>
+                </div>
+                <div class="status-badge-right undetected">
+                    <div class="status-dot undetected"></div>
+                    Undetected
+                </div>
+            </div>
+
+            <!-- Permanent Spoofer -->
+            <div class="status-card" data-search="permanent spoofer">
+                <div class="status-card-left">
+                    <div class="status-icon permanent-spoofer"></div>
+                    <div class="status-info">
+                        <h3>Permanent Spoofer</h3>
+                        <p class="status-description">One-time permanent hardware unban solution</p>
+                    </div>
+                </div>
+                <div class="status-badge-right undetected">
+                    <div class="status-dot undetected"></div>
+                    Undetected
+                </div>
+            </div>
+
+            <!-- Temporary Spoofer -->
+            <div class="status-card" data-search="temporary spoofer">
+                <div class="status-card-left">
+                    <div class="status-icon temporary-spoofer"></div>
+                    <div class="status-info">
+                        <h3>Temporary Spoofer</h3>
+                        <p class="status-description">Reusable temporary hardware unban solution</p>
+                    </div>
+                </div>
+                <div class="status-badge-right undetected">
+                    <div class="status-dot undetected"></div>
+                    Undetected
+                </div>
+            </div>
+
+            <!-- BO6 External -->
+            <div class="status-card" data-search="bo6 call duty">
+                <div class="status-card-left">
+                    <div class="status-icon bo6-external"></div>
+                    <div class="status-info">
+                        <h3>BO6 External</h3>
+                        <p class="status-description">Call of Duty software with beautiful aim prediction</p>
+                    </div>
+                </div>
+                <div class="status-badge-right undetected">
+                    <div class="status-dot undetected"></div>
+                    Undetected
+                </div>
+            </div>
+
+            <!-- Apex External -->
+            <div class="status-card" data-search="apex legends">
+                <div class="status-card-left">
+                    <div class="status-icon apex-external"></div>
+                    <div class="status-info">
+                        <h3>Apex External</h3>
+                        <p class="status-description">Premium Apex Legends software with 80+ features</p>
+                    </div>
+                </div>
+                <div class="status-badge-right undetected">
+                    <div class="status-dot undetected"></div>
+                    Undetected
+                </div>
+            </div>
+
+            <!-- Rust External -->
+            <div class="status-card" data-search="rust">
+                <div class="status-card-left">
+                    <div class="status-icon rust-external"></div>
+                    <div class="status-info">
+                        <h3>Rust External</h3>
+                        <p class="status-description">Rust software currently receiving updates</p>
+                    </div>
+                </div>
+                <div class="status-badge-right updating">
+                    <div class="status-dot updating"></div>
+                    Updating
+                </div>
+            </div>
+        </div>
+
+        <!-- Last Updated -->
+        <div class="last-updated">
+            <p class="last-updated-text">
+                Last updated:
+                <span class="last-updated-time" id="lastUpdated">January 25, 2025 at 3:45 PM UTC</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Login/Register Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 class="modal-title">Welcome to Varp</h2>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="register">Register</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <span class="btn-text">Login</span>
+                    <div class="loading hidden"></div>
+                </button>
+            </form>
+            
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form hidden">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-input" placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-input" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <span class="btn-text">Register</span>
+                    <div class="loading hidden"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Panel Modal -->
+    <div class="modal" id="customerPanelModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <button class="modal-close" id="customerPanelClose">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 class="modal-title">Customer Panel</h2>
+            
+            <div id="customerPanelContent">
+                <div style="text-align: center; padding: 2rem;">
+                    <i class="fas fa-user-circle" style="font-size: 4rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                    <h3>Welcome to your Customer Panel</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">Manage your purchases, licenses, and account settings.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                        <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-shopping-bag" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem;"></i>
+                            <h4>My Purchases</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">View your order history</p>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-key" style="font-size: 2rem; color: var(--success-color); margin-bottom: 0.5rem;"></i>
+                            <h4>License Keys</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Manage your licenses</p>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-headset" style="font-size: 2rem; color: var(--warning-color); margin-bottom: 0.5rem;"></i>
+                            <h4>Support</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Get help and support</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Varp Menu</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#products">Products</a></li>
+                    <li><a href="https://discord.gg/varpud" target="_blank">Contact</a></li>
+                    <li><a href="status.html">Status</a></li>
+                    <li><a href="https://discord.gg/varpud" target="_blank">Discord</a></li>
+                    <li><a href="https://discord.gg/varpud" target="_blank">Features</a></li>
+                    <li><a href="https://discord.gg/varpud" target="_blank">Terms</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section newsletter">
+                <h3>Subscribe to our emails</h3>
+                <p>Subscribe to our emails for the latest offers, news and promotions</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Email" class="newsletter-input">
+                    <button class="newsletter-btn">Sign up</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-country">
+                <label for="country-select">Country/region</label>
+                <select id="country-select" class="country-selector">
+                    <option value="us">United States (USD $)</option>
+                    <option value="eu">Europe (EUR €)</option>
+                    <option value="uk">United Kingdom (GBP £)</option>
+                </select>
+            </div>
+
+            <div class="payment-methods">
+                <img src="https://imgur.com/kxG4AUt.png" alt="Visa" class="payment-icon">
+                <img src="https://imgur.com/UZFJNzW.png" alt="Mastercard" class="payment-icon">
+                <img src="https://imgur.com/NUj4vtj.png" alt="PayPal" class="payment-icon">
+                <img src="https://imgur.com/pDACTZJ.png" alt="Bitcoin" class="payment-icon">
+                <img src="https://imgur.com/9FmcCx6.png" alt="Ethereum" class="payment-icon">
+                <img src="https://imgur.com/R0MYZ1u.png" alt="Litecoin" class="payment-icon">
+                <img src="https://imgur.com/S8vn0CR.png" alt="Google Pay" class="payment-icon">
+            </div>
+
+            <div class="footer-copyright">
+                <p>&copy; 2025, Varp Powered by VARP</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase Configuration & JavaScript -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSQNdHH9XAfHyHwWI8iFS2CdsTjv0NMoo",
+            authDomain: "authentication-website-c7ab3.firebaseapp.com",
+            projectId: "authentication-website-c7ab3",
+            storageBucket: "authentication-website-c7ab3.firebasestorage.app",
+            messagingSenderId: "380309135971",
+            appId: "1:380309135971:web:6e5d75a22f06ff310dce56",
+            measurementId: "G-SSKDR565XT"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // DOM Elements
+        const header = document.getElementById('header');
+        const loginBtn = document.getElementById('loginBtn');
+        const authModal = document.getElementById('authModal');
+        const modalClose = document.getElementById('modalClose');
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const searchInput = document.getElementById('searchInput');
+        const userPanel = document.getElementById('userPanel');
+        const loginButtons = document.getElementById('loginButtons');
+        const userDropdownBtn = document.getElementById('userDropdownBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const customerPanelBtn = document.getElementById('customerPanelBtn');
+        const customerPanelModal = document.getElementById('customerPanelModal');
+        const customerPanelClose = document.getElementById('customerPanelClose');
+
+        // State
+        let currentUser = null;
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Auth tab switching
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                
+                // Update tabs
+                authTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update forms
+                if (tabName === 'login') {
+                    loginForm.classList.remove('hidden');
+                    registerForm.classList.add('hidden');
+                } else {
+                    loginForm.classList.add('hidden');
+                    registerForm.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Modal controls
+        loginBtn.addEventListener('click', () => {
+            authModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        modalClose.addEventListener('click', closeAuthModal);
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) closeAuthModal();
+        });
+
+        function closeAuthModal() {
+            authModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Customer Panel Modal
+        customerPanelBtn.addEventListener('click', () => {
+            customerPanelModal.classList.add('active');
+            userDropdown.classList.remove('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        customerPanelClose.addEventListener('click', closeCustomerPanel);
+        customerPanelModal.addEventListener('click', (e) => {
+            if (e.target === customerPanelModal) closeCustomerPanel();
+        });
+
+        function closeCustomerPanel() {
+            customerPanelModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // User dropdown
+        userDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+            userDropdown.classList.remove('active');
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const statusCards = document.querySelectorAll('.status-card');
+            
+            statusCards.forEach(card => {
+                const searchData = card.getAttribute('data-search') || '';
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const description = card.querySelector('.status-description').textContent.toLowerCase();
+                
+                const isMatch = searchData.includes(searchTerm) || 
+                               title.includes(searchTerm) || 
+                               description.includes(searchTerm);
+                
+                card.style.display = isMatch ? 'flex' : 'none';
+            });
+        });
+
+        // Firebase Auth State Observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                updateUIForLoggedInUser(user);
+            } else {
+                currentUser = null;
+                updateUIForLoggedOutUser();
+            }
+        });
+
+        function updateUIForLoggedInUser(user) {
+            loginButtons.classList.add('hidden');
+            userPanel.classList.remove('hidden');
+            
+            const username = user.displayName || user.email.split('@')[0];
+            document.getElementById('username').textContent = username;
+            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+            
+            closeAuthModal();
+        }
+
+        function updateUIForLoggedOutUser() {
+            loginButtons.classList.remove('hidden');
+            userPanel.classList.add('hidden');
+        }
+
+        // Login Form Handler
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const email = formData.get('email') || e.target.querySelector('input[type="email"]').value;
+            const password = formData.get('password') || e.target.querySelector('input[type="password"]').value;
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            
+            try {
+                btnText.classList.add('hidden');
+                loading.classList.remove('hidden');
+                submitBtn.disabled = true;
+                
+                await auth.signInWithEmailAndPassword(email, password);
+                e.target.reset();
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed: ' + error.message);
+            } finally {
+                btnText.classList.remove('hidden');
+                loading.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Register Form Handler
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputs = e.target.querySelectorAll('input');
+            const username = inputs[0].value;
+            const email = inputs[1].value;
+            const password = inputs[2].value;
+            const confirmPassword = inputs[3].value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long!');
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            
+            try {
+                btnText.classList.add('hidden');
+                loading.classList.remove('hidden');
+                submitBtn.disabled = true;
+                
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                await userCredential.user.updateProfile({
+                    displayName: username
+                });
+                
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    username: username,
+                    email: email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    purchases: []
+                });
+                
+                e.target.reset();
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Registration failed: ' + error.message);
+            } finally {
+                btnText.classList.remove('hidden');
+                loading.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Logout Handler
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                userDropdown.classList.remove('active');
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed: ' + error.message);
+            }
+        });
+
+        // Update last updated time
+        function updateLastUpdatedTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'UTC',
+                timeZoneName: 'short'
+            });
+            document.getElementById('lastUpdated').textContent = timeString;
+        }
+
+        // Update time every minute
+        updateLastUpdatedTime();
+        setInterval(updateLastUpdatedTime, 60000);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // ESC to close modals
+            if (e.key === 'Escape') {
+                if (authModal.classList.contains('active')) {
+                    closeAuthModal();
+                }
+                if (customerPanelModal.classList.contains('active')) {
+                    closeCustomerPanel();
+                }
+            }
+            
+            // Ctrl+K to focus search
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+
+        console.log('🚀 Varp Status page loaded successfully!');
+    </script>
+</body>
+</html>

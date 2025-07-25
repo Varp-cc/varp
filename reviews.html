@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews - Varp</title>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&family=Libertinus+Math&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4a90e2;
+            --primary-gradient: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            --secondary-color: #6bb6ff;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --dark-bg: #090A0B;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #b3d9ff;
+            --text-muted: #999999;
+        }
+
+        body {
+            font-family: 'Geologica', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+        }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(9, 10, 11, 0.8) 0%, transparent 70%),
+                radial-gradient(circle at 80% 20%, rgba(9, 10, 11, 0.8) 0%, transparent 70%),
+                radial-gradient(circle at 40% 80%, rgba(9, 10, 11, 0.8) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(17, 24, 39, 0);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            background: rgba(17, 24, 39, 0);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left: 42%;
+            transform: translateX(-50%);
+        }
+
+        .nav-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #ffffff;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #60a5fa;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-left: auto;
+            margin-right: -7rem;
+        }
+
+        .search-container {
+            position: relative;
+            margin-right: 1rem;
+        }
+
+        .search-input {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 6px;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #64748b;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #60a5fa;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(96, 165, 250, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #60a5fa;
+            border: 2px solid #60a5fa;
+        }
+
+        .btn-outline:hover {
+            background: #60a5fa;
+            color: white;
+        }
+
+        .user-panel {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            min-width: 200px;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .user-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Reviews Page Styles */
+        .reviews-hero {
+            padding: 2rem 2rem 1rem 2rem;
+            text-align: center;
+            background: var(--dark-bg);
+            position: relative;
+        }
+
+        .reviews-hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .reviews-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .reviews-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .reviews-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Reviews Section */
+        .reviews-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .review-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .review-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(74, 144, 226, 0.1) 0%, 
+                transparent 50%, 
+                rgba(107, 182, 255, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .review-card:hover::before {
+            opacity: 1;
+        }
+
+        .review-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.15);
+            transform: translateY(-5px);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .review-user-info {
+            flex: 1;
+        }
+
+        .review-username {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .review-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .review-rating {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .star {
+            color: #fbbf24;
+            font-size: 1rem;
+        }
+
+        .star.empty {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .review-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .review-product {
+            display: inline-block;
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--primary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 3rem;
+        }
+
+        .pagination-btn {
+            padding: 0.75rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pagination-btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary-gradient);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .pagination-info {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0 1rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+            transform: translateY(-20px) scale(0.95);
+            transition: all 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--primary-color);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            border-top: 2px solid var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: #0A0A0A;
+            border-top: 3px solid #4a90e2;
+            position: relative;
+            z-index: 10;
+            margin-top: 4rem;
+            box-shadow: 0 -3px 15px rgba(74, 144, 226, 0.4);
+            animation: glow-footer-line 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-footer-line {
+            0%, 100% {
+                border-top-color: #4a90e2;
+                box-shadow: 0 -3px 15px rgba(74, 144, 226, 0.4);
+            }
+            50% {
+                border-top-color: #6bb6ff;
+                box-shadow: 0 -3px 25px rgba(107, 182, 255, 1);
+            }
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px 40px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links li a {
+            color: #999;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links li a:hover {
+            color: #4a90e2;
+        }
+
+        .newsletter p {
+            color: #999;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .newsletter-input::placeholder {
+            color: #666;
+        }
+
+        .newsletter-btn {
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .newsletter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
+            background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 40px;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-country {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-country label {
+            color: #999;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .country-selector {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: white;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .country-selector:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 24px;
+            border-radius: 4px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            object-fit: cover;
+        }
+
+        .payment-icon:hover {
+            opacity: 1;
+        }
+
+        .footer-copyright {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .reviews-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .reviews-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .reviews-title {
+                font-size: 2rem;
+            }
+
+            .reviews-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .reviews-section {
+                padding: 2rem 1rem;
+            }
+
+            .reviews-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 40px 20px 30px 20px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .payment-methods {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="https://i.imgur.com/AMPTf1r.png" alt="Varp Logo">
+                VARP
+            </a>
+            
+            <ul class="nav-menu">
+                <li>
+                    <a href="https://varp.gay/home" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="https://varp.gay/home#products" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        Products
+                    </a>
+                </li>
+                 <li>
+                    <a href="https://varp.gay/reviews" class="nav-link active">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z"/>
+                        </svg>
+                        Reviews
+                    </a>
+                </li>
+                <li>
+                    <a href="https://varp.gay/status" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/>
+                        </svg>
+                        Status
+                    </a>
+                </li>
+                <li>
+                    <a href="https://varp.gay/media-resell" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 22 22">
+                            <path d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z"/>
+                        </svg>
+                        Media/Resell
+                    </a>
+                </li>
+                 <li>
+                    <a href="https://discord.gg/varpud" class="nav-link" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-discord"></i>
+                        Discord
+               </a>
+            </li>
+            </ul>
+            
+            <div class="auth-buttons">
+               <div class="search-container">
+                   <i class="fas fa-search search-icon"></i>
+                   <input type="text" class="search-input" placeholder="Search reviews..." id="searchInput">
+               </div>
+               
+               <!-- Not logged in -->
+               <div id="loginButtons">
+                   <button class="btn btn-primary" id="loginBtn">Login</button>
+                   <button class="btn btn-outline" onclick="window.location.href='cart.html'">
+                       <i class="fas fa-shopping-cart"></i>
+                   </button>
+               </div>
+               
+               <!-- Logged in -->
+               <div id="userPanel" class="user-panel hidden">
+                   <div class="user-avatar" id="userAvatar">U</div>
+                   <span id="username">User</span>
+                   <button id="userDropdownBtn" style="background: none; border: none; color: var(--text-muted); cursor: pointer;">
+                       <i class="fas fa-chevron-down"></i>
+                   </button>
+                   <div class="user-dropdown" id="userDropdown">
+                       <button class="dropdown-item" onclick="window.location.href='cart.html'">
+                           <i class="fas fa-shopping-cart"></i>
+                           Shopping Cart
+                       </button>
+                       <button class="dropdown-item" id="customerPanelBtn">
+                           <i class="fas fa-user-cog"></i>
+                           Customer Panel
+                       </button>
+                       <button class="dropdown-item" id="logoutBtn">
+                           <i class="fas fa-sign-out-alt"></i>
+                           Logout
+                       </button>
+                   </div>
+               </div>
+           </div>
+       </nav>
+   </header>
+
+   <!-- Reviews Hero Section -->
+   <section class="reviews-hero">
+<div class="reviews-hero-content">
+    <h1 class="reviews-title">Customer Reviews</h1>
+    <p class="reviews-subtitle">See what our customers say about Varp products</p>
+           
+           <div class="reviews-stats">
+               <div class="stat-item">
+                   <div class="stat-number">4.8</div>
+                   <div class="stat-label">Average Rating</div>
+               </div>
+               <div class="stat-item">
+                   <div class="stat-number">74</div>
+                   <div class="stat-label">Total Reviews</div>
+               </div>
+               <div class="stat-item">
+                   <div class="stat-number">95%</div>
+                   <div class="stat-label">Satisfied Customers</div>
+               </div>
+           </div>
+       </div>
+
+           <div style="margin-bottom: 1.5rem;">
+        <p style="color: var(--text-secondary); margin-bottom: 0.75rem;">Check also our reviews on MyVouches.com!</p>
+        <a href="https://myvouch.es/varp" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-external-link-alt"></i>
+            Visit MyVouches
+        </a>
+    </div>
+   </section>
+   
+
+   <!-- Reviews Section -->
+   <section class="reviews-section">
+       <div class="reviews-grid" id="reviewsGrid">
+           <!-- Reviews will be dynamically loaded here -->
+       </div>
+
+       <!-- Pagination -->
+       <div class="pagination" id="pagination">
+           <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
+               <i class="fas fa-chevron-left"></i>
+           </button>
+           <div class="pagination-info" id="paginationInfo">
+               Page 1 of 4
+           </div>
+           <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
+               <i class="fas fa-chevron-right"></i>
+           </button>
+       </div>
+   </section>
+
+   <!-- Login/Register Modal -->
+   <div class="modal" id="authModal">
+       <div class="modal-content">
+           <button class="modal-close" id="modalClose">
+               <i class="fas fa-times"></i>
+           </button>
+           
+           <h2 class="modal-title">Welcome to Varp</h2>
+           
+           <div class="auth-tabs">
+               <button class="auth-tab active" data-tab="login">Login</button>
+               <button class="auth-tab" data-tab="register">Register</button>
+           </div>
+           
+           <!-- Login Form -->
+           <form id="loginForm" class="auth-form">
+               <div class="form-group">
+                   <label class="form-label">Email</label>
+                   <input type="email" class="form-input" placeholder="Enter your email" required>
+               </div>
+               <div class="form-group">
+                   <label class="form-label">Password</label>
+                   <input type="password" class="form-input" placeholder="Enter your password" required>
+               </div>
+               <button type="submit" class="btn btn-primary" style="width: 100%;">
+                   <span class="btn-text">Login</span>
+                   <div class="loading hidden"></div>
+               </button>
+           </form>
+           
+           <!-- Register Form -->
+           <form id="registerForm" class="auth-form hidden">
+               <div class="form-group">
+                   <label class="form-label">Username</label>
+                   <input type="text" class="form-input" placeholder="Choose a username" required>
+               </div>
+               <div class="form-group">
+                   <label class="form-label">Email</label>
+                   <input type="email" class="form-input" placeholder="Enter your email" required>
+               </div>
+               <div class="form-group">
+                   <label class="form-label">Password</label>
+                   <input type="password" class="form-input" placeholder="Create a password" required>
+               </div>
+               <div class="form-group">
+                   <label class="form-label">Confirm Password</label>
+                   <input type="password" class="form-input" placeholder="Confirm your password" required>
+               </div>
+               <button type="submit" class="btn btn-primary" style="width: 100%;">
+                   <span class="btn-text">Register</span>
+                   <div class="loading hidden"></div>
+               </button>
+           </form>
+       </div>
+   </div>
+
+   <!-- Customer Panel Modal -->
+   <div class="modal" id="customerPanelModal">
+       <div class="modal-content" style="max-width: 800px;">
+           <button class="modal-close" id="customerPanelClose">
+               <i class="fas fa-times"></i>
+           </button>
+           
+           <h2 class="modal-title">Customer Panel</h2>
+           
+           <div id="customerPanelContent">
+               <div style="text-align: center; padding: 2rem;">
+                   <i class="fas fa-user-circle" style="font-size: 4rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                   <h3>Welcome to your Customer Panel</h3>
+                   <p style="color: var(--text-secondary); margin-bottom: 2rem;">Manage your purchases, licenses, and account settings.</p>
+                   
+                   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                       <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                           <i class="fas fa-shopping-bag" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem;"></i>
+                           <h4>My Purchases</h4>
+                           <p style="color: var(--text-secondary); font-size: 0.9rem;">View your order history</p>
+                       </div>
+                       
+                       <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                           <i class="fas fa-key" style="font-size: 2rem; color: var(--success-color); margin-bottom: 0.5rem;"></i>
+                           <h4>License Keys</h4>
+                           <p style="color: var(--text-secondary); font-size: 0.9rem;">Manage your licenses</p>
+                       </div>
+                       
+                       <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                           <i class="fas fa-headset" style="font-size: 2rem; color: var(--warning-color); margin-bottom: 0.5rem;"></i>
+                           <h4>Support</h4>
+                           <p style="color: var(--text-secondary); font-size: 0.9rem;">Get help and support</p>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
+
+   <!-- Footer -->
+   <footer class="footer">
+       <div class="footer-content">
+           <div class="footer-section">
+               <h3>Varp Menu</h3>
+               <ul class="footer-links">
+                   <li><a href="index.html">Home</a></li>
+                   <li><a href="index.html#products">Products</a></li>
+                   <li><a href="https://discord.gg/varpud" target="_blank">Contact</a></li>
+                   <li><a href="status.html">Status</a></li>
+                   <li><a href="reviews.html">Reviews</a></li>
+                   <li><a href="https://discord.gg/varpud" target="_blank">Discord</a></li>
+                   <li><a href="https://discord.gg/varpud" target="_blank">Features</a></li>
+                   <li><a href="https://discord.gg/varpud" target="_blank">Terms</a></li>
+               </ul>
+           </div>
+
+           <div class="footer-section newsletter">
+               <h3>Subscribe to our emails</h3>
+               <p>Subscribe to our emails for the latest offers, news and promotions</p>
+               <div class="newsletter-form">
+                   <input type="email" placeholder="Email" class="newsletter-input">
+                   <button class="newsletter-btn">Sign up</button>
+               </div>
+           </div>
+       </div>
+
+       <div class="footer-bottom">
+           <div class="footer-country">
+               <label for="country-select">Country/region</label>
+               <select id="country-select" class="country-selector">
+                   <option value="us">United States (USD $)</option>
+                   <option value="eu">Europe (EUR €)</option>
+                   <option value="uk">United Kingdom (GBP £)</option>
+               </select>
+           </div>
+
+           <div class="payment-methods">
+               <img src="https://imgur.com/kxG4AUt.png" alt="Visa" class="payment-icon">
+               <img src="https://imgur.com/UZFJNzW.png" alt="Mastercard" class="payment-icon">
+               <img src="https://imgur.com/NUj4vtj.png" alt="PayPal" class="payment-icon">
+               <img src="https://imgur.com/pDACTZJ.png" alt="Bitcoin" class="payment-icon">
+               <img src="https://imgur.com/9FmcCx6.png" alt="Ethereum" class="payment-icon">
+               <img src="https://imgur.com/R0MYZ1u.png" alt="Litecoin" class="payment-icon">
+               <img src="https://imgur.com/S8vn0CR.png" alt="Google Pay" class="payment-icon">
+           </div>
+
+           <div class="footer-copyright">
+               <p>&copy; 2025, Varp Powered by VARP</p>
+           </div>
+       </div>
+   </footer>
+
+   <!-- Firebase Configuration & JavaScript -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSQNdHH9XAfHyHwWI8iFS2CdsTjv0NMoo",
+            authDomain: "authentication-website-c7ab3.firebaseapp.com",
+            projectId: "authentication-website-c7ab3",
+            storageBucket: "authentication-website-c7ab3.firebasestorage.app",
+            messagingSenderId: "380309135971",
+            appId: "1:380309135971:web:6e5d75a22f06ff310dce56",
+            measurementId: "G-SSKDR565XT"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+const allReviews = [
+    {username: ".avonn", date: "1 day ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "qz8k", date: "1 day ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "flyxou", date: "1 day ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "crxzy_612", date: "1 day ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Permanent Spoofer"},
+    {username: "hxvlokk", date: "2 days ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Apex External"},
+    {username: "zoom022723", date: "2 days ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "807._", date: "3 days ago", rating: 5, text: "+rep fn private so ud best cheat on the market WWW", product: "Fortnite Private"},
+    {username: "gv8h", date: "4 days ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "eliasss777", date: "4 days ago", rating: 5, text: "Automatic feedback after 7 days.", product: "BO6 External"},
+    {username: "devrobin.de", date: "5 days ago", rating: 5, text: "Best Universal cheat for any game and so much more", product: "Fortnite Private"},
+    {username: "kangaxou_55091", date: "2 weeks ago", rating: 5, text: "best cheat Fortnite ud", product: "Fortnite Private"},
+    {username: "damonccs", date: "3 weeks ago", rating: 5, text: "+rep finally after a year got my rebrand again thanks to varp and his premium and very smart supporter", product: "Fortnite Private"},
+    {username: "perm.sys", date: "3 weeks ago", rating: 5, text: "⁠temp fully ud played with it for more then a day", product: "Temporary Spoofer"},
+    {username: "are_you_sure07", date: "3 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "BO6 External"},
+    {username: "ogzenox", date: "3 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Temporary Spoofer"},
+    {username: "stopbanmeorpolice1", date: "1 month ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Apex External"},
+    {username: "vibearea", date: "1 month ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "krychu1337", date: "1 month ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "synmlynarza__", date: "1 month ago", rating: 5, text: "+ rep ive been playing on private for 1 month still no ban", product: "BO6 External"},
+    {username: "leaderkeepsgettingtermed", date: "1 month ago", rating: 5, text: "W ⁠private AND ⁠temp STILL RAGING W FRR SO UD WIL LBE BUYING AGAIN", product: "Fornite Private"},
+    {username: "GamingLegend", date: "1 month ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Temporary Spoofer"},
+    {username: "DigitalWarrior", date: "1 month ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Apex External"},
+    {username: "SkillBooster", date: "1 month ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "EliteHacker", date: "5 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "CyberGhost88", date: "5 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "BO6 External"},
+    {username: "AccuracyMaster", date: "5 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Permanent Spoofer"},
+    {username: "TriggerBot", date: "5 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Temporary Spoofer"},
+    {username: "PrecisionShot", date: "6 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Apex External"},
+    {username: "GameDominator", date: "6 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "WinStreak999", date: "6 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "ModernWarfare", date: "6 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "BO6 External"},
+    {username: "StealthHacker", date: "7 weeks ago", rating: 4, text: "good", product: "Permanent Spoofer"},
+    {username: "RapidFire", date: "7 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Temporary Spoofer"},
+    {username: "ApexPredator", date: "7 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Apex External"},
+    {username: "FragMachine", date: "7 weeks ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "TacticalAdvantage", date: "2 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "EliteOperator", date: "2 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "BO6 External"},
+    {username: "SniperElite", date: "2 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Permanent Spoofer"},
+    {username: "CompetitivePro", date: "2 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Temporary Spoofer"},
+    {username: "GameChanger", date: "2 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Apex External"},
+    {username: "VictorySeeker", date: "2 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "DigitalSniper", date: "2 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "CombatExpert", date: "2 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "BO6 External"},
+    {username: "AimAssist_Pro", date: "2 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Permanent Spoofer"},
+    {username: "FragHunter99", date: "2 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Temporary Spoofer"},
+    {username: "LegendaryGamer", date: "3 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Apex External"},
+    {username: "ProShooter2024", date: "3 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "SkillEnhancer", date: "3 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "TacticalGamer", date: "3 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "BO6 External"},
+    {username: "PrecisionAim", date: "3 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Permanent Spoofer"},
+    {username: "EliteFragger", date: "3 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Temporary Spoofer"},
+    {username: "ApexChampion", date: "3 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Apex External"},
+    {username: "GameMaster_X", date: "3 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "HeadshotPro", date: "3 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "WarfareExpert", date: "4 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "BO6 External"},
+    {username: "SteealthMode99", date: "4 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Permanent Spoofer"},
+    {username: "QuickDraw", date: "4 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Temporary Spoofer"},
+    {username: "ApexLegend", date: "4 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Apex External"},
+    {username: "VictoryRush", date: "4 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "CompetitiveGamer", date: "4 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "ModernSniper", date: "4 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "BO6 External"},
+    {username: "FragMaster", date: "4 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Permanent Spoofer"},
+    {username: "ElitePlayer", date: "4 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Temporary Spoofer"},
+    {username: "SharpShooter", date: "5 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Apex External"},
+    {username: "GameWinner", date: "5 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "DigitalElite", date: "5 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "CombatPro", date: "5 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "BO6 External"},
+    {username: "AceShooter", date: "5 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Permanent Spoofer"},
+    {username: "VictoryHunter", date: "5 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Temporary Spoofer"},
+    {username: "ApexMaster", date: "5 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Apex External"},
+    {username: "EliteFrags", date: "5 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Private"},
+    {username: "ProGaming", date: "6 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Fortnite Public"},
+    {username: "WarMachine", date: "6 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "BO6 External"},
+    {username: "FinalUser", date: "6 months ago", rating: 5, text: "Automatic feedback after 7 days.", product: "Permanent Spoofer"}
+];
+
+       // Pagination variables
+       const reviewsPerPage = 20;
+       const totalPages = Math.ceil(allReviews.length / reviewsPerPage);
+       let currentPage = 1;
+
+       // DOM Elements
+       const header = document.getElementById('header');
+       const loginBtn = document.getElementById('loginBtn');
+       const authModal = document.getElementById('authModal');
+       const modalClose = document.getElementById('modalClose');
+       const authTabs = document.querySelectorAll('.auth-tab');
+       const loginForm = document.getElementById('loginForm');
+       const registerForm = document.getElementById('registerForm');
+       const searchInput = document.getElementById('searchInput');
+       const userPanel = document.getElementById('userPanel');
+       const loginButtons = document.getElementById('loginButtons');
+       const userDropdownBtn = document.getElementById('userDropdownBtn');
+       const userDropdown = document.getElementById('userDropdown');
+       const logoutBtn = document.getElementById('logoutBtn');
+       const customerPanelBtn = document.getElementById('customerPanelBtn');
+       const customerPanelModal = document.getElementById('customerPanelModal');
+       const customerPanelClose = document.getElementById('customerPanelClose');
+       const reviewsGrid = document.getElementById('reviewsGrid');
+       const paginationInfo = document.getElementById('paginationInfo');
+       const prevBtn = document.getElementById('prevBtn');
+       const nextBtn = document.getElementById('nextBtn');
+
+       // State
+       let currentUser = null;
+       let filteredReviews = allReviews;
+
+       // Initialize page
+       document.addEventListener('DOMContentLoaded', () => {
+           loadReviews();
+           updatePagination();
+           setupEventListeners();
+       });
+
+       // Setup event listeners
+       function setupEventListeners() {
+           // Header scroll effect
+           window.addEventListener('scroll', () => {
+               if (window.scrollY > 50) {
+                   header.classList.add('scrolled');
+               } else {
+                   header.classList.remove('scrolled');
+               }
+           });
+
+           // Search functionality
+           searchInput.addEventListener('input', (e) => {
+               const searchTerm = e.target.value.toLowerCase();
+               if (searchTerm.trim() === '') {
+                   filteredReviews = allReviews;
+               } else {
+                   filteredReviews = allReviews.filter(review => 
+                       review.username.toLowerCase().includes(searchTerm) ||
+                       review.text.toLowerCase().includes(searchTerm) ||
+                       review.product.toLowerCase().includes(searchTerm)
+                   );
+               }
+               currentPage = 1;
+               loadReviews();
+               updatePagination();
+           });
+
+           // Modal controls
+           loginBtn.addEventListener('click', () => {
+               authModal.classList.add('active');
+           });
+
+           modalClose.addEventListener('click', () => {
+               authModal.classList.remove('active');
+           });
+
+           customerPanelClose.addEventListener('click', () => {
+               customerPanelModal.classList.remove('active');
+           });
+
+           customerPanelBtn.addEventListener('click', () => {
+               customerPanelModal.classList.add('active');
+               userDropdown.classList.remove('active');
+           });
+
+           // Close modals when clicking outside
+           authModal.addEventListener('click', (e) => {
+               if (e.target === authModal) {
+                   authModal.classList.remove('active');
+               }
+           });
+
+           customerPanelModal.addEventListener('click', (e) => {
+               if (e.target === customerPanelModal) {
+                   customerPanelModal.classList.remove('active');
+               }
+           });
+
+           // Auth tabs
+           authTabs.forEach(tab => {
+               tab.addEventListener('click', () => {
+                   const tabType = tab.dataset.tab;
+                   
+                   // Update active tab
+                   authTabs.forEach(t => t.classList.remove('active'));
+                   tab.classList.add('active');
+                   
+                   // Show/hide forms
+                   if (tabType === 'login') {
+                       loginForm.classList.remove('hidden');
+                       registerForm.classList.add('hidden');
+                   } else {
+                       loginForm.classList.add('hidden');
+                       registerForm.classList.remove('hidden');
+                   }
+               });
+           });
+
+           // User dropdown
+           userDropdownBtn.addEventListener('click', (e) => {
+               e.stopPropagation();
+               userDropdown.classList.toggle('active');
+           });
+
+           // Close dropdown when clicking outside
+           document.addEventListener('click', (e) => {
+               if (!userPanel.contains(e.target)) {
+                   userDropdown.classList.remove('active');
+               }
+           });
+
+           // Auth forms (simplified - no actual Firebase auth for demo)
+           loginForm.addEventListener('submit', (e) => {
+               e.preventDefault();
+               // Simulate login
+               simulateLogin();
+           });
+
+           registerForm.addEventListener('submit', (e) => {
+               e.preventDefault();
+               // Simulate registration
+               simulateLogin();
+           });
+
+           logoutBtn.addEventListener('click', () => {
+               simulateLogout();
+           });
+       }
+
+ // Firebase Auth State Observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                updateUIForLoggedInUser(user);
+            } else {
+                currentUser = null;
+                updateUIForLoggedOutUser();
+            }
+        });
+
+        function updateUIForLoggedInUser(user) {
+            loginButtons.classList.add('hidden');
+            userPanel.classList.remove('hidden');
+            
+            const username = user.displayName || user.email.split('@')[0];
+            document.getElementById('username').textContent = username;
+            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+            
+            closeAuthModal();
+        }
+
+        function updateUIForLoggedOutUser() {
+            loginButtons.classList.remove('hidden');
+            userPanel.classList.add('hidden');
+        }
+
+        // Login Form Handler
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const email = formData.get('email') || e.target.querySelector('input[type="email"]').value;
+            const password = formData.get('password') || e.target.querySelector('input[type="password"]').value;
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            
+            try {
+                btnText.classList.add('hidden');
+                loading.classList.remove('hidden');
+                submitBtn.disabled = true;
+                
+                await auth.signInWithEmailAndPassword(email, password);
+                e.target.reset();
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed: ' + error.message);
+            } finally {
+                btnText.classList.remove('hidden');
+                loading.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Register Form Handler
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputs = e.target.querySelectorAll('input');
+            const username = inputs[0].value;
+            const email = inputs[1].value;
+            const password = inputs[2].value;
+            const confirmPassword = inputs[3].value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long!');
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            
+            try {
+                btnText.classList.add('hidden');
+                loading.classList.remove('hidden');
+                submitBtn.disabled = true;
+                
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                await userCredential.user.updateProfile({
+                    displayName: username
+                });
+                
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    username: username,
+                    email: email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    purchases: []
+                });
+                
+                e.target.reset();
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Registration failed: ' + error.message);
+            } finally {
+                btnText.classList.remove('hidden');
+                loading.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Logout Handler
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                userDropdown.classList.remove('active');
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed: ' + error.message);
+            }
+        });
+
+       // Generate review card HTML
+       function createReviewCard(review, index) {
+           const stars = Array.from({length: 5}, (_, i) => 
+               `<i class="fas fa-star star ${i < review.rating ? '' : 'empty'}"></i>`
+           ).join('');
+
+           const avatar = review.username.charAt(0).toUpperCase();
+           const cardDelay = (index % reviewsPerPage) * 0.1;
+
+           return `
+               <div class="review-card" style="animation-delay: ${cardDelay}s;">
+                   <div class="review-header">
+                       <div class="review-avatar">${avatar}</div>
+                       <div class="review-user-info">
+                           <div class="review-username">${review.username}</div>
+                           <div class="review-date">${review.date}</div>
+                       </div>
+                   </div>
+                   <div class="review-rating">
+                       ${stars}
+                   </div>
+                   <div class="review-text">${review.text}</div>
+                   <div class="review-product">${review.product}</div>
+               </div>
+           `;
+       }
+
+       // Load reviews for current page
+       function loadReviews() {
+           const startIndex = (currentPage - 1) * reviewsPerPage;
+           const endIndex = startIndex + reviewsPerPage;
+           const reviewsToShow = filteredReviews.slice(startIndex, endIndex);
+
+           // Clear existing reviews
+           reviewsGrid.innerHTML = '';
+
+           // Add reviews with staggered animation
+           reviewsToShow.forEach((review, index) => {
+               const reviewHTML = createReviewCard(review, index);
+               reviewsGrid.innerHTML += reviewHTML;
+           });
+
+           // Trigger animations
+           setTimeout(() => {
+               const cards = reviewsGrid.querySelectorAll('.review-card');
+               cards.forEach((card, index) => {
+                   setTimeout(() => {
+                       card.style.opacity = '1';
+                       card.style.transform = 'translateY(0)';
+                   }, index * 100);
+               });
+           }, 50);
+       }
+
+       // Update pagination
+       function updatePagination() {
+           const totalFilteredPages = Math.ceil(filteredReviews.length / reviewsPerPage);
+           
+           // Update pagination info
+           paginationInfo.textContent = `Page ${currentPage} of ${totalFilteredPages}`;
+           
+           // Update button states
+           prevBtn.disabled = currentPage === 1;
+           nextBtn.disabled = currentPage === totalFilteredPages;
+           
+           // Update button styles
+           if (prevBtn.disabled) {
+               prevBtn.style.opacity = '0.5';
+               prevBtn.style.cursor = 'not-allowed';
+           } else {
+               prevBtn.style.opacity = '1';
+               prevBtn.style.cursor = 'pointer';
+           }
+           
+           if (nextBtn.disabled) {
+               nextBtn.style.opacity = '0.5';
+               nextBtn.style.cursor = 'not-allowed';
+           } else {
+               nextBtn.style.opacity = '1';
+               nextBtn.style.cursor = 'pointer';
+           }
+       }
+
+       // Change page function
+       function changePage(direction) {
+           const totalFilteredPages = Math.ceil(filteredReviews.length / reviewsPerPage);
+           
+           if (direction === -1 && currentPage > 1) {
+               currentPage--;
+           } else if (direction === 1 && currentPage < totalFilteredPages) {
+               currentPage++;
+           }
+           
+           loadReviews();
+           updatePagination();
+           
+           // Scroll to top of reviews section
+           document.querySelector('.reviews-section').scrollIntoView({ 
+               behavior: 'smooth' 
+           });
+       }
+
+       // Update stats based on filtered reviews
+       function updateStats() {
+           const totalReviews = filteredReviews.length;
+           const totalRating = filteredReviews.reduce((sum, review) => sum + review.rating, 0);
+           const averageRating = totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : 0;
+           const satisfiedCustomers = Math.round((filteredReviews.filter(r => r.rating >= 4).length / totalReviews) * 100);
+
+           // Update stats display
+           document.querySelector('.stat-number').textContent = averageRating;
+           document.querySelectorAll('.stat-number')[1].textContent = totalReviews;
+           document.querySelectorAll('.stat-number')[2].textContent = `${satisfiedCustomers}%`;
+       }
+
+       // Initialize stats
+       updateStats();
+
+       // Update stats when search changes
+       searchInput.addEventListener('input', () => {
+           setTimeout(updateStats, 100);
+       });
+   </script>
+</body>
+</html>
