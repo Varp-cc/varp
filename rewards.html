@@ -1,0 +1,3182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewards - Graphics Studio</title>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&family=Libertinus+Math&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4a90e2;
+            --primary-gradient: linear-gradient(135deg, #4a90e2, #6bb6ff);
+            --secondary-color: #6bb6ff;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --dark-bg: #0A0A0A;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #b3d9ff;
+            --text-muted: #999999;
+        }
+
+        body {
+            font-family: 'Geologica', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #6bb6ff, #89c4ff);
+        }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(16, 16, 16, 0.8) 0%, transparent 70%),
+                radial-gradient(circle at 80% 20%, rgba(20, 20, 20, 0.6) 0%, transparent 70%),
+                radial-gradient(circle at 40% 80%, rgba(18, 18, 18, 0.7) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            height: 60px;
+                margin-left: -5.7rem; /* Przesuwa w lewo */
+    margin-top: 0.40rem; /* Przesuwa w górę */
+        }
+
+        .logo img {
+            height: 120px !important;
+            width: auto !important;
+            margin: -10px 0;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left: 35%;
+            transform: translateX(-50%);
+        }
+
+        .nav-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #ffffff;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #60a5fa;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-left: auto;
+            margin-right: -2rem;
+        }
+
+        .cart-button {
+    position: relative;
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    border-radius: 6px;
+    color: var(--primary-color);
+    width: auto;
+    height: 40px;
+    padding: 0.75rem 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.cart-button:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--error-color);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+        .search-container {
+            position: relative;
+            margin-right: 1rem;
+        }
+
+        .search-input {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 6px;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #64748b;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #60a5fa;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(96, 165, 250, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #60a5fa;
+            border: 2px solid #60a5fa;
+        }
+
+        .btn-outline:hover {
+            background: #60a5fa;
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            gap: 2rem;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            flex-shrink: 0;
+        }
+
+        .reward-nav {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            position: sticky;
+            top: 120px;
+        }
+
+        .reward-nav h3 {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .reward-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+            border: 2px solid transparent;
+        }
+
+        .reward-nav-item:hover {
+            background: rgba(74, 144, 226, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .reward-nav-item.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .reward-nav-item i {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .reward-nav-item span {
+            font-weight: 500;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Daily Reward Spin */
+        .spin-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .spin-bar-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .spin-bar {
+            display: flex;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--primary-color);
+            height: 120px;
+            position: relative;
+        }
+
+        .spin-segment {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .spin-segment:hover {
+            transform: scale(1.05);
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .spin-segment.lose {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+        }
+
+        .spin-segment.one-day {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+        }
+
+        .spin-segment.fifty-off {
+            background: linear-gradient(135deg, #3182ce, #2b6cb0);
+        }
+
+        .spin-segment.twenty-off {
+            background: linear-gradient(135deg, #38a169, #2f855a);
+        }
+
+        .spin-percentage {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            opacity: 0.9;
+        }
+
+        .spin-reward {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* FIXED: Center indicator positioning */
+        .spin-center-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 60px;
+            background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+            border-radius: 3px;
+            z-index: 15;
+            box-shadow: 
+                0 0 15px rgba(74, 144, 226, 0.8),
+                0 0 30px rgba(74, 144, 226, 0.4);
+            animation: indicatorGlow 2s ease-in-out infinite alternate;
+        }
+
+        .spin-center-indicator::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 15px solid var(--primary-color);
+            filter: drop-shadow(0 0 5px rgba(74, 144, 226, 0.8));
+        }
+
+        .spin-center-indicator::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 15px solid var(--secondary-color);
+            filter: drop-shadow(0 0 5px rgba(107, 182, 255, 0.8));
+        }
+
+        @keyframes indicatorGlow {
+            from {
+                box-shadow: 
+                    0 0 15px rgba(74, 144, 226, 0.8),
+                    0 0 30px rgba(74, 144, 226, 0.4);
+                opacity: 0.9;
+            }
+            to {
+                box-shadow: 
+                    0 0 25px rgba(74, 144, 226, 1),
+                    0 0 50px rgba(74, 144, 226, 0.6),
+                    0 0 75px rgba(74, 144, 226, 0.3);
+                opacity: 1;
+            }
+        }
+
+        .spin-button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .spin-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+        }
+
+        .spin-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .countdown {
+            color: var(--warning-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Cases - WIDER cards */
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 3rem;
+            margin-top: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .case-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 650px;
+        }
+
+        .case-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .case-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 30px rgba(74, 144, 226, 0.3);
+        }
+
+        .case-card:hover::before {
+            opacity: 1;
+        }
+
+        .case-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .case-silver .case-icon {
+            background: linear-gradient(135deg, #9ca3af, #d1d5db);
+        }
+
+        .case-gold .case-icon {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+
+        .case-diamond .case-icon {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+        }
+
+        .case-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .case-price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .case-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .case-chances {
+            background: linear-gradient(135deg, 
+                rgba(74, 144, 226, 0.15) 0%, 
+                rgba(107, 182, 255, 0.08) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border: 2px solid rgba(74, 144, 226, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-chances::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .case-chances:hover::before {
+            opacity: 1;
+        }
+
+        .case-chances h4 {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            text-shadow: 0 2px 10px rgba(96, 165, 250, 0.3);
+            position: relative;
+        }
+
+        .case-chances h4::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+            border-radius: 2px;
+        }
+
+        .chance-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.05) 0%, 
+                rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chance-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                rgba(74, 144, 226, 0.2),
+                rgba(107, 182, 255, 0.1));
+            transition: width 0.3s ease;
+            z-index: 0;
+        }
+
+        .chance-item:hover {
+            background: linear-gradient(135deg, 
+                rgba(74, 144, 226, 0.15) 0%, 
+                rgba(255, 255, 255, 0.08) 100%);
+            transform: translateX(5px) scale(1.02);
+            border-color: rgba(74, 144, 226, 0.4);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.2);
+        }
+
+        .chance-item:hover::before {
+            width: 100%;
+        }
+
+        .chance-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .chance-percentage {
+            background: linear-gradient(135deg, #4a90e2, #6bb6ff, #89c4ff);
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            font-weight: 800;
+            min-width: 60px;
+            text-align: center;
+            font-size: 0.9rem;
+            box-shadow: 
+                0 6px 20px rgba(74, 144, 226, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .chance-percentage::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                transparent 70%);
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .chance-item:hover .chance-percentage::after {
+            opacity: 1;
+        }
+
+        .chance-reward {
+            color: #e2e8f0;
+            flex-grow: 1;
+            font-weight: 600;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chance-reward.rare {
+            color: #fbbf24;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+        }
+
+        .chance-reward.rare::before {
+            content: '⭐';
+            font-size: 1.2rem;
+            filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.5));
+        }
+
+        .chance-reward.epic {
+            color: #a855f7;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+        }
+
+        .chance-reward.epic::before {
+            content: '💎';
+            font-size: 1.2rem;
+            filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.5));
+        }
+
+        .chance-reward.legendary {
+            color: #f87171;
+            font-weight: 800;
+            text-shadow: 0 0 15px rgba(248, 113, 113, 0.5);
+            animation: legendaryGlow 3s ease-in-out infinite;
+        }
+
+        .chance-reward.legendary::before {
+            content: '👑';
+            font-size: 1.3rem;
+            filter: drop-shadow(0 0 8px rgba(248, 113, 113, 0.6));
+            animation: crownFloat 2s ease-in-out infinite;
+        }
+
+        .chance-reward.common {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .chance-reward.common::before {
+            content: '📦';
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        @keyframes legendaryGlow {
+            0%, 100% {
+                text-shadow: 0 0 15px rgba(248, 113, 113, 0.5);
+            }
+            50% {
+                text-shadow: 
+                    0 0 20px rgba(248, 113, 113, 0.8),
+                    0 0 30px rgba(248, 113, 113, 0.4);
+            }
+        }
+
+        @keyframes crownFloat {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-2px);
+            }
+        }
+
+        /* Balance */
+        .balance-info {
+            background: var(--primary-gradient);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .balance-input-section {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .balance-input-group {
+            margin-bottom: 2rem;
+        }
+
+        .balance-input-label {
+            display: block;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .balance-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--dark-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .balance-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .balance-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-method-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+        }
+
+        .payment-method-btn:hover {
+            border-color: var(--primary-color);
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        .payment-method-btn.active {
+            border-color: var(--primary-color);
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .payment-method-icon {
+            font-size: 1.2rem;
+        }
+
+        .payment-details {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 2rem;
+            display: none;
+        }
+
+        .payment-details.active {
+            display: block;
+        }
+
+        .payment-details h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .payment-details p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .payment-address {
+            background: rgba(74, 144, 226, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .payment-address:hover {
+            background: rgba(74, 144, 226, 0.2);
+        }
+
+        .payment-address::after {
+            content: '📋 Click to copy';
+            position: absolute;
+            top: -30px;
+            right: 0;
+            background: var(--dark-bg);
+            color: var(--text-muted);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .payment-address:hover::after {
+            opacity: 1;
+        }
+
+        .amount-display {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--success-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .amount-display .amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success-color);
+        }
+
+        .amount-display .label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .payment-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-mark-paid {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            z-index: 10;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        .btn-mark-paid:hover:not(:disabled) {
+            background: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+        }
+
+        .btn-mark-paid:disabled {
+            background: var(--warning-color);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            pointer-events: none;
+        }
+
+        .btn-mark-paid.pending {
+            background: var(--warning-color);
+            animation: pulse-pending 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse-pending {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+            }
+        }
+
+        .case-price::before {
+            content: '$';
+            font-weight: 700;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--card-bg);
+            border-top: 2px solid var(--border-color);
+            padding: 3rem 2rem 2rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+            transform: translateY(-20px) scale(0.95);
+            transition: all 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--primary-color);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .user-panel {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            min-width: 200px;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .user-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            border-top: 2px solid var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hide elements initially */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Add pulse animation for spin segments */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .main-content {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .spin-bar {
+                height: 80px;
+                font-size: 0.8rem;
+            }
+
+            .spin-percentage {
+                font-size: 0.8rem;
+            }
+
+            .spin-reward {
+                font-size: 0.7rem;
+            }
+
+            .cases-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                max-width: 600px;
+            }
+
+            .payment-methods-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .balance-input {
+                font-size: 1rem;
+            }
+        }
+
+        @keyframes spinWheel {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(1800deg); }
+        }
+
+        .spinning {
+            animation: spinWheel 3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+        }
+
+        .case-modal-content {
+    text-align: center;
+}
+
+.case-display {
+    margin-bottom: 2rem;
+}
+
+.case-icon-large {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+}
+
+.case-icon-large.gold {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.case-icon-large.diamond {
+    background: linear-gradient(135deg, #8b5cf6, #a855f7);
+}
+
+.case-opening {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.case-shake {
+    animation: shake 0.5s ease-in-out infinite;
+}
+
+.case-icon-animate {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: white;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px) rotate(-2deg); }
+    75% { transform: translateX(5px) rotate(2deg); }
+}
+
+@keyframes caseOpen {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(180deg); opacity: 0.5; }
+    100% { transform: scale(1.5) rotate(360deg); opacity: 0; }
+}
+
+.case-result {
+    margin-top: 2rem;
+}
+
+.result-glow {
+    background: var(--primary-gradient);
+    border-radius: 15px;
+    padding: 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.result-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: bounce 1s ease-in-out infinite;
+}
+
+.result-code {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.code-text {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.copy-code-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.copy-code-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+
+.case-purchase-btn {
+    position: relative !important;
+    z-index: 999 !important;
+    pointer-events: auto !important;
+}
+
+.case-card {
+    pointer-events: auto !important;
+}
+
+.case-chances {
+    pointer-events: none !important;
+}
+
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="https://i.imgur.com/ZD3BSRn.png" alt="Graphics Studio Logo">
+            </a>
+            <ul class="nav-menu">
+                <li>
+                    <a href="index.html" class="nav-link"> 
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html#products" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        Products
+                    </a>
+                </li>
+                <li>
+                    <a href="file:///D:/Rak/sex.html#portfolio" class="nav-link" id="portfolioNavBtn">
+                        <i class="fas fa-images"></i>
+                        Portfolio
+                    </a>
+                </li>
+                <li>
+                    <a href="/reviews" class="nav-link">
+                        <i class="fas fa-star"></i>
+                        Reviews
+                    </a>
+                </li>
+                <li>
+                    <a href="rewards.html" class="nav-link active">
+                        <i class="fas fa-gift"></i>
+                        Rewards
+                    </a>
+                </li>
+                <li>
+                    <a href="https://discord.gg/syncstudio" class="nav-link" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-discord"></i>
+                        Discord
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="auth-buttons">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search..." id="searchInput">
+                </div>
+                
+                <!-- Not logged in -->
+                <div id="loginButtons">
+                    <button class="btn btn-primary" id="loginBtn">Login</button>
+                </div>
+                
+                <!-- Logged in -->
+                <div id="userPanel" class="user-panel hidden">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="username">User</span>
+                    <button id="userDropdownBtn" style="background: none; border: none; color: var(--text-muted); cursor: pointer;">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <button class="dropdown-item" id="customerPanelBtn">
+                            <i class="fas fa-user-cog"></i>
+                            Customer Panel
+                        </button>
+                        <button class="dropdown-item" id="dailyRewardBtn">
+                            <i class="fas fa-gift"></i>
+                            Daily Reward
+                        </button>
+                        <button class="dropdown-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="reward-nav">
+                <h3><i class="fas fa-trophy"></i> Rewards Center</h3>
+                
+                <div class="reward-nav-item active" data-section="daily-reward">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Daily Reward</span>
+                </div>
+                
+                <div class="reward-nav-item" data-section="case-market">
+                    <i class="fas fa-box-open"></i>
+                    <span>Case Market</span>
+                </div>
+                
+                <div class="reward-nav-item" data-section="balance">
+                    <i class="fas fa-wallet"></i>
+                    <span>Add Balance</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Daily Reward Section -->
+            <div class="section active" id="daily-reward">
+                <h2 class="section-title">Daily Reward Spin</h2>
+                <p class="section-subtitle">Spin once every 24 hours to earn free rewards!</p>
+                
+                <div class="spin-container">
+                    <div class="spin-bar-container">
+                        <div class="spin-bar" id="spinBar">
+                            <div class="spin-center-indicator"></div>
+                            <div class="spin-segment lose">
+                                <div class="spin-percentage">30%</div>
+                                <div class="spin-reward">LOSE</div>
+                            </div>
+                            <div class="spin-segment one-day">
+                                <div class="spin-percentage">15%</div>
+                                <div class="spin-reward">ONE DAY</div>
+                            </div>
+                            <div class="spin-segment lose">
+                                <div class="spin-percentage">30%</div>
+                                <div class="spin-reward">LOSE</div>
+                            </div>
+                            <div class="spin-segment lose">
+                                <div class="spin-percentage">30%</div>
+                                <div class="spin-reward">LOSE</div>
+                            </div>
+                            <div class="spin-segment lose">
+                                <div class="spin-percentage">30%</div>
+                                <div class="spin-reward">LOSE</div>
+                            </div>
+                            <div class="spin-segment fifty-off">
+                                <div class="spin-percentage">20%</div>
+                                <div class="spin-reward">50% OFF</div>
+                            </div>
+                            <div class="spin-segment lose">
+                                <div class="spin-percentage">30%</div>
+                                <div class="spin-reward">LOSE</div>
+                            </div>
+                            <div class="spin-segment fifty-off">
+                                <div class="spin-percentage">20%</div>
+                                <div class="spin-reward">50% OFF</div>
+                            </div>
+                            <div class="spin-segment one-day">
+                                <div class="spin-percentage">15%</div>
+                                <div class="spin-reward">ONE DAY</div>
+                            </div>
+                            <div class="spin-segment twenty-off">
+                                <div class="spin-percentage">25%</div>
+                                <div class="spin-reward">20% OFF</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="spin-button" id="spinButton">
+                        <i class="fas fa-play"></i>
+                        Spin the Wheel!
+                    </button>
+                    
+                    <div class="countdown hidden" id="countdown">
+                        Next spin available in: <span id="countdownTime">23:59:59</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Market Section -->
+            <div class="section" id="case-market">
+                <h2 class="section-title">Case Market</h2>
+                <p class="section-subtitle">Purchase premium cases to unlock exclusive design rewards and bonuses!</p>
+                
+                <div class="cases-grid">
+                    <div class="case-card case-gold">
+                        <div class="case-icon">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <h3 class="case-title">Gold Case</h3>
+                        <div class="case-price">3.99</div>
+                        <p class="case-description">
+                            Premium rewards with better chances and exclusive content. Great value for regular customers.
+                        </p>
+<div class="case-chances">
+    <h4>🎁 Drop Chances</h4>
+    <div class="chance-item">
+        <span class="chance-percentage">10%</span>
+        <span class="chance-reward legendary">Coupon $9.99</span>
+    </div>
+    <div class="chance-item">
+        <span class="chance-percentage">20%</span>
+        <span class="chance-reward epic">Coupon $7.49</span>
+    </div>
+    <div class="chance-item">
+        <span class="chance-percentage">30%</span>
+        <span class="chance-reward rare">25% OFF Discount</span>
+    </div>
+    <div class="chance-item">
+        <span class="chance-percentage">40%</span>
+        <span class="chance-reward common">10% OFF Discount</span>
+    </div>
+</div>
+<button class="btn btn-primary case-purchase-btn" data-price="3.99" data-case="Gold" onclick="purchaseCase('Gold', 3.99)">
+    <i class="fas fa-shopping-cart"></i>
+    Purchase Gold Case
+</button>
+                    </div>
+
+                    <div class="case-card case-diamond">
+                        <div class="case-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h3 class="case-title">Diamond Case</h3>
+                        <div class="case-price">9.99</div>
+                        <p class="case-description">
+                            Ultra-premium content with guaranteed high-value rewards and exclusive VIP benefits.
+                        </p>
+<div class="case-chances">
+    <h4>🎁 Drop Chances</h4>
+    <div class="chance-item">
+        <span class="chance-percentage">10%</span>
+        <span class="chance-reward legendary">Coupon $24.99</span>
+    </div>
+    <div class="chance-item">
+        <span class="chance-percentage">20%</span>
+        <span class="chance-reward epic">Coupon $14.99</span>
+    </div>
+    <div class="chance-item">
+        <span class="chance-percentage">30%</span>
+        <span class="chance-reward rare">40% OFF Discount</span>
+    </div>
+    <div class="chance-item">
+        <span class="chance-percentage">40%</span>
+        <span class="chance-reward common">25% OFF Discount</span>
+    </div>
+</div>
+<button class="btn btn-primary case-purchase-btn" data-price="9.99" data-case="Diamond" onclick="purchaseCase('Diamond', 9.99)">
+    <i class="fas fa-shopping-cart"></i>
+    Purchase Diamond Case
+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Balance Section -->
+            <div class="section" id="balance">
+                <h2 class="section-title">Add Balance</h2>
+                <p class="section-subtitle">Top up your account balance using various payment methods</p>
+                
+                <div class="balance-info">
+                    <div class="balance-amount" id="currentBalance">$0.00</div>
+                    <div class="balance-label">Current Balance</div>
+                </div>
+                
+                <div class="balance-input-section">
+                    <div class="balance-input-group">
+                        <label class="balance-input-label">Enter Amount to Add:</label>
+                        <input type="number" class="balance-input" id="balanceInput" placeholder="0.00" min="1" step="0.01">
+                    </div>
+                    
+                    <label class="balance-input-label">Select Payment Method:</label>
+                    <div class="payment-methods-grid">
+                        <button class="payment-method-btn" data-method="stripe">
+                            <i class="fas fa-credit-card payment-method-icon"></i>
+                            <span>Credit/Debit Card</span>
+                        </button>
+                        <button class="payment-method-btn" data-method="paypal">
+                            <i class="fab fa-paypal payment-method-icon"></i>
+                            <span>PayPal F&F</span>
+                        </button>
+                        <button class="payment-method-btn" data-method="bitcoin">
+                            <i class="fab fa-bitcoin payment-method-icon"></i>
+                            <span>Bitcoin</span>
+                        </button>
+                        <button class="payment-method-btn" data-method="litecoin">
+                            <i class="fas fa-coins payment-method-icon"></i>
+                            <span>Litecoin</span>
+                        </button>
+                        <button class="payment-method-btn" data-method="solana">
+                            <i class="fas fa-sun payment-method-icon"></i>
+                            <span>Solana</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Payment Details -->
+                <div class="payment-details" id="stripe-details">
+                    <h3><i class="fas fa-credit-card"></i> Credit / Debit Card Payment</h3>
+                    <div class="amount-display">
+                        <div class="amount" id="stripe-amount">$0.00</div>
+                        <div class="label">Amount to pay</div>
+                    </div>
+                    <p>Pay securely with your credit or debit card through Stripe. Fast and reliable payment processing.</p>
+                    <div class="payment-actions">
+                        <button class="btn btn-primary" style="flex: 2;" onclick="openStripePayment()">
+                            <i class="fas fa-external-link-alt"></i>
+                            Pay with Card
+                        </button>
+                        <button class="btn-mark-paid" id="stripe-mark-paid" onclick="markAsPaid('stripe')">
+                            <i class="fas fa-check"></i>
+                            Mark as Paid
+                        </button>
+                    </div>
+                </div>
+
+                <div class="payment-details" id="paypal-details">
+                    <h3><i class="fab fa-paypal"></i> PayPal Friends & Family</h3>
+                    <div class="amount-display">
+                        <div class="amount" id="paypal-amount">$0.00</div>
+                        <div class="label">Amount to send</div>
+                    </div>
+                    <p>Send the specific amount to the email below as <strong>Friends & Family</strong> with <strong>no notes</strong>.</p>
+                    <div class="payment-address" onclick="copyToClipboard('scs.harp@paypal.hub.pl')">
+                        scs.harp@paypal.hub.pl
+                    </div>
+                    <div class="payment-actions">
+                        <button class="btn-mark-paid" id="paypal-mark-paid" onclick="markAsPaid('paypal')">
+                            <i class="fas fa-check"></i>
+                            Mark as Paid
+                        </button>
+                    </div>
+                </div>
+
+                <div class="payment-details" id="bitcoin-details">
+                    <h3><i class="fab fa-bitcoin"></i> Bitcoin Payment</h3>
+                    <div class="amount-display">
+                        <div class="amount" id="bitcoin-amount">$0.00</div>
+                        <div class="label">USD equivalent</div>
+                    </div>
+                    <p>Send Bitcoin to the address below. Confirmations may take 10-60 minutes.</p>
+                    <div class="payment-address" onclick="copyToClipboard('bc1qr3r8ts4dssvnxkl6twa7lf06l2czc889xftaqx')">
+                        bc1qr3r8ts4dssvnxkl6twa7lf06l2czc889xftaqx
+                    </div>
+                    <div class="payment-actions">
+                        <button class="btn-mark-paid" id="bitcoin-mark-paid" onclick="markAsPaid('bitcoin')">
+                            <i class="fas fa-check"></i>
+                            Mark as Paid
+                        </button>
+                    </div>
+                </div>
+
+                <div class="payment-details" id="litecoin-details">
+                    <h3><i class="fas fa-coins"></i> Litecoin Payment</h3>
+                    <div class="amount-display">
+                        <div class="amount" id="litecoin-amount">$0.00</div>
+                        <div class="label">USD equivalent</div>
+                    </div>
+                    <p>Send Litecoin to the address below. Faster confirmations than Bitcoin.</p>
+                    <div class="payment-address" onclick="copyToClipboard('LV99hZkuoB8rxD7MuoYmdcbfzGuYncy9v9')">
+                        LV99hZkuoB8rxD7MuoYmdcbfzGuYncy9v9
+                    </div>
+                    <div class="payment-actions">
+                        <button class="btn-mark-paid" id="litecoin-mark-paid" onclick="markAsPaid('litecoin')">
+                            <i class="fas fa-check"></i>
+                            Mark as Paid
+                        </button>
+                    </div>
+                </div>
+
+                <div class="payment-details" id="solana-details">
+                    <h3><i class="fas fa-sun"></i> Solana Payment</h3>
+                    <div class="amount-display">
+                        <div class="amount" id="solana-amount">$0.00</div>
+                        <div class="label">USD equivalent</div>
+                    </div>
+                    <p>Send Solana to the address below. Very fast and low-cost transactions.</p>
+                    <div class="payment-address" onclick="copyToClipboard('DLAFu2wJ7uiWSvdn7ycA8i8DyH8xr3RjP5YnW8NmKamz')">
+                        DLAFu2wJ7uiWSvdn7ycA8i8DyH8xr3RjP5YnW8NmKamz
+                    </div>
+                    <div class="payment-actions">
+                        <button class="btn-mark-paid" id="solana-mark-paid" onclick="markAsPaid('solana')">
+                            <i class="fas fa-check"></i>
+                            Mark as Paid
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Case Modal -->
+<div class="modal" id="caseModal">
+    <div class="modal-content" style="max-width: 600px;">
+        <button class="modal-close" id="caseModalClose">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="case-modal-content">
+            <div class="case-display">
+                <div class="case-icon-large" id="modalCaseIcon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <h2 id="modalCaseTitle">Gold Case</h2>
+                <div class="case-price" id="modalCasePrice">$9.99</div>
+            </div>
+            
+            <button class="btn btn-primary" id="modalPurchaseBtn" style="width: 100%; margin: 2rem 0;">
+                <i class="fas fa-shopping-cart"></i>
+                Purchase Case
+            </button>
+            
+            <!-- Opening Animation -->
+            <div class="case-opening hidden" id="caseOpening">
+                <div class="case-shake" id="caseShake">
+                    <div class="case-icon-animate" id="animatedCase">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                </div>
+                <div class="opening-text">Opening case...</div>
+            </div>
+            
+            <!-- Result Display -->
+            <div class="case-result hidden" id="caseResult">
+                <div class="result-glow">
+                    <div class="result-icon" id="resultIcon">🎁</div>
+                    <h3 id="resultTitle">Congratulations!</h3>
+                    <div class="result-reward" id="resultReward">You won: Premium GFX Package</div>
+                    <div class="result-code" id="resultCode">
+                        <span>Code: </span>
+                        <span class="code-text" id="codeText">GFX-PREMIUM-2024</span>
+                        <button class="copy-code-btn" onclick="copyToClipboard(document.getElementById('codeText').textContent)">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Graphics Studio</h3>
+                <p>Professional design services since 2023. We transform your vision into stunning visual masterpieces that help your brand stand out.</p>
+                <div class="footer-social">
+                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://discord.gg/graphics" target="_blank"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Services</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html#products">Logo Design</a></li>
+                    <li><a href="index.html#products">Banner Design</a></li>
+                    <li><a href="index.html#products">Product Box Design</a></li>
+                    <li><a href="index.html#products">Thumbnail Design</a></li>
+                    <li><a href="index.html#products">Complete Branding</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html#faq">FAQ</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Order Status</a></li>
+                    <li><a href="#">Refund Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: nneys.business@gmail.com</p>
+                <p>Discord: Graphics Studio</p>
+                <p>Response time: Under 2 hours</p>
+                <p>Available 24/7 for support</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2023 Graphics Studio. All rights reserved. Made with ❤️ by Varp.</p>
+        </div>
+    </footer>
+
+    <!-- Login/Register Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 class="modal-title">Welcome to Graphics Studio</h2>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="register">Register</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="Enter email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <span class="btn-text">Login</span>
+                    <div class="loading hidden"></div>
+                </button>
+            </form>
+            
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form hidden">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-input" placeholder="Choose username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="Enter email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="Create password" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-input" placeholder="Confirm password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <span class="btn-text">Register</span>
+                    <div class="loading hidden"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSQNdHH9XAfHyHwWI8iFS2CdsTjv0NMoo",
+            authDomain: "authentication-website-c7ab3.firebaseapp.com",
+            projectId: "authentication-website-c7ab3",
+            storageBucket: "authentication-website-c7ab3.firebasestorage.app",
+            messagingSenderId: "380309135971",
+            appId: "1:380309135971:web:6e5d75a22f06ff310dce56",
+            measurementId: "G-SSKDR565XT"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let userPendingPayments = {}; // Store pending payments per method
+
+        // DOM Elements
+        const header = document.getElementById('header');
+        const loginBtn = document.getElementById('loginBtn');
+        const authModal = document.getElementById('authModal');
+        const modalClose = document.getElementById('modalClose');
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const userPanel = document.getElementById('userPanel');
+        const loginButtons = document.getElementById('loginButtons');
+        const userDropdownBtn = document.getElementById('userDropdownBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Rewards specific elements
+        const rewardNavItems = document.querySelectorAll('.reward-nav-item');
+        const sections = document.querySelectorAll('.section');
+        const spinButton = document.getElementById('spinButton');
+        const spinBar = document.getElementById('spinBar');
+        const countdown = document.getElementById('countdown');
+        const countdownTime = document.getElementById('countdownTime');
+        
+        // Balance elements
+        const balanceInput = document.getElementById('balanceInput');
+        const paymentMethodBtns = document.querySelectorAll('.payment-method-btn');
+        const paymentDetails = document.querySelectorAll('.payment-details');
+
+        // Sidebar navigation
+        rewardNavItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const sectionId = item.getAttribute('data-section');
+                
+                // Update active nav item
+                rewardNavItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                // Update active section
+                sections.forEach(section => section.classList.remove('active'));
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+
+// Load user data
+async function loadUserData() {
+    if (!currentUser) return;
+
+    try {
+        // Load user profile
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            
+            // Update profile section - sprawdź czy elementy istnieją
+            const profileName = document.getElementById('profileName');
+            if (profileName) {
+                profileName.textContent = userData.username || currentUser.displayName || 'User';
+            }
+            
+            const profileEmail = document.getElementById('profileEmail');
+            if (profileEmail) {
+                profileEmail.textContent = currentUser.email;
+            }
+            
+            const profileAvatar = document.getElementById('profileAvatar');
+            if (profileAvatar) {
+                profileAvatar.textContent = (userData.username || currentUser.email).charAt(0).toUpperCase();
+            }
+            
+            const profileJoined = document.getElementById('profileJoined');
+            if (userData.createdAt && profileJoined) {
+                const joinDate = userData.createdAt.toDate();
+                profileJoined.textContent = `Member since ${joinDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}`;
+            }
+            
+            // ✅ NOWA WERSJA - update balance z Firebase
+            const realBalance = userData.balance || 0;
+
+            // Update balance w sekcji Add Balance
+            const dashboardBalance = document.getElementById('currentBalance');
+            if (dashboardBalance) {
+                dashboardBalance.textContent = `$${realBalance.toFixed(2)}`;
+            }
+        }
+
+        // Load orders - tylko jeśli funkcja istnieje
+        if (typeof loadOrders === 'function') {
+            loadOrders();
+        }
+        
+        // Load pending payments
+        loadPendingPayments();
+
+    } catch (error) {
+        console.error('Error loading user data:', error);
+        // Show error state - tylko jeśli element istnieje
+        const accountBalance = document.getElementById('accountBalance');
+        if (accountBalance) {
+            accountBalance.textContent = '$0.00 (Error)';
+        }
+    }
+}
+
+// Real-time balance listener
+function setupBalanceListener() {
+    if (!currentUser) return;
+    
+    // Listen for balance changes in real-time
+    const unsubscribe = db.collection('users').doc(currentUser.uid)
+        .onSnapshot((doc) => {
+            if (doc.exists) {
+                const userData = doc.data();
+                const realBalance = userData.balance || 0;
+      
+                
+                // Update dashboard balance if exists
+                const dashboardBalance = document.getElementById('currentBalance');
+                if (dashboardBalance) {
+                    dashboardBalance.textContent = `$${realBalance.toFixed(2)}`;
+                }
+            }
+        }, (error) => {
+            console.error('Error listening to balance changes:', error);
+        });
+    
+    // Store unsubscribe function for cleanup
+    window.balanceUnsubscribe = unsubscribe;
+}
+
+        // Payment method selection
+        paymentMethodBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const method = btn.getAttribute('data-method');
+                
+                // Update active button
+                paymentMethodBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Show corresponding payment details
+                paymentDetails.forEach(detail => detail.classList.remove('active'));
+                document.getElementById(`${method}-details`).classList.add('active');
+                
+                // Update amount display
+                updateAmountDisplay();
+                
+                // Check if this method has pending payment
+                checkPendingPaymentStatus(method);
+            });
+        });
+
+        // Balance input handler
+        balanceInput.addEventListener('input', updateAmountDisplay);
+
+        function updateAmountDisplay() {
+            const amount = parseFloat(balanceInput.value) || 0;
+            const formattedAmount = `${amount.toFixed(2)}`;
+            
+            // Update all amount displays
+            document.querySelectorAll('.amount').forEach(el => {
+                el.textContent = formattedAmount;
+            });
+        }
+
+        // Load pending payments from Firebase (per method)
+        async function loadPendingPayments() {
+            if (!currentUser) return;
+            
+            try {
+                const pendingQuery = await db.collection('pending_payments')
+                    .where('userId', '==', currentUser.uid)
+                    .where('status', '==', 'pending')
+                    .get();
+                
+                userPendingPayments = {};
+                pendingQuery.forEach(doc => {
+                    const data = doc.data();
+                    userPendingPayments[data.method] = {
+                        id: doc.id,
+                        amount: data.amount,
+                        timestamp: data.timestamp
+                    };
+                });
+                
+                // Update UI for all payment methods
+                ['stripe', 'paypal', 'bitcoin', 'litecoin', 'solana'].forEach(method => {
+                    checkPendingPaymentStatus(method);
+                });
+                
+            } catch (error) {
+                console.error('Error loading pending payments:', error);
+            }
+        }
+
+        // Check and update pending payment status per method
+        function checkPendingPaymentStatus(method) {
+            const button = document.getElementById(`${method}-mark-paid`);
+            if (!button) return;
+            
+            if (userPendingPayments[method]) {
+                // Payment is pending for this method
+                button.classList.add('pending');
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-clock"></i> Pending Verification';
+            } else {
+                // No pending payment for this method
+                button.classList.remove('pending');
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-check"></i> Mark as Paid';
+            }
+        }
+
+        // Open Stripe payment
+        window.openStripePayment = function() {
+            const amount = parseFloat(balanceInput.value);
+            if (!amount || amount < 1) {
+                alert('Please enter a valid amount (minimum $1.00)');
+                return;
+            }
+            window.open('https://buy.stripe.com/fZe5mT3q27xb4qQ9AN', '_blank');
+        }
+
+        // Daily Reward Spin functionality
+        const spinRewards = [
+            { type: 'lose', message: 'Better luck next time!' },
+            { type: 'discount', message: 'You won a ONE DAY premium!', value: '1 Day Premium' },
+            { type: 'lose', message: 'Better luck next time!' },
+            { type: 'lose', message: 'Better luck next time!' },
+            { type: 'lose', message: 'Better luck next time!' },
+            { type: 'discount', message: 'You won 50% OFF your next order!', value: '50% OFF' },
+            { type: 'lose', message: 'Better luck next time!' },
+            { type: 'discount', message: 'You won 50% OFF your next order!', value: '50% OFF' },
+            { type: 'discount', message: 'You won a ONE DAY premium!', value: '1 Day Premium' },
+            { type: 'discount', message: 'You won 20% OFF your next order!', value: '20% OFF' }
+        ];
+
+        let canSpin = true;
+        let lastSpinTime = localStorage.getItem('lastSpinTime');
+
+        // Check if user can spin
+        function checkSpinAvailability() {
+            if (!lastSpinTime) return true;
+            
+            const lastSpin = new Date(parseInt(lastSpinTime));
+            const now = new Date();
+            const timeDiff = now - lastSpin;
+            const hoursDiff = timeDiff / (1000 * 60 * 60);
+            
+            return hoursDiff >= 24;
+        }
+
+        // Update countdown timer
+        function updateCountdown() {
+            if (!lastSpinTime) {
+                countdown.classList.add('hidden');
+                return;
+            }
+            
+            const lastSpin = new Date(parseInt(lastSpinTime));
+            const nextSpin = new Date(lastSpin.getTime() + (24 * 60 * 60 * 1000));
+            const now = new Date();
+            const timeDiff = nextSpin - now;
+            
+            if (timeDiff <= 0) {
+                canSpin = true;
+                spinButton.disabled = false;
+                spinButton.innerHTML = '<i class="fas fa-play"></i> Spin the Wheel!';
+                countdown.classList.add('hidden');
+                return;
+            }
+            
+            const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+            
+            countdownTime.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            countdown.classList.remove('hidden');
+            canSpin = false;
+            spinButton.disabled = true;
+            spinButton.innerHTML = '<i class="fas fa-clock"></i> Come back tomorrow!';
+        }
+
+        // Initialize spin availability
+        function initSpinAvailability() {
+            if (checkSpinAvailability()) {
+                canSpin = true;
+                spinButton.disabled = false;
+                countdown.classList.add('hidden');
+            } else {
+                canSpin = false;
+                spinButton.disabled = true;
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+            }
+        }
+
+        // Spin bar function
+        spinButton.addEventListener('click', () => {
+            if (!canSpin || !currentUser) {
+                if (!currentUser) {
+                    alert('Please login to spin the wheel!');
+                    authModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+                return;
+            }
+            
+            canSpin = false;
+            spinButton.disabled = true;
+            spinButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Spinning...';
+            
+            // Random result
+            const randomIndex = Math.floor(Math.random() * spinRewards.length);
+            const result = spinRewards[randomIndex];
+            
+            // Add spinning animation to the entire spin bar
+            spinBar.style.animation = 'none';
+            spinBar.offsetHeight; // Trigger reflow
+            spinBar.style.animation = 'spinWheel 3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards';
+            
+            // Add spinning animation to segments
+            const segments = document.querySelectorAll('.spin-segment');
+            segments.forEach(segment => {
+                segment.style.animation = 'none';
+                segment.offsetHeight; // Trigger reflow
+                segment.style.animation = 'pulse 0.1s ease-in-out 20';
+            });
+            
+            // Show result after animation
+            setTimeout(() => {
+                alert(result.message);
+                
+                // Save reward to user data if it's a win
+                if (result.type === 'discount') {
+                    saveRewardToUser(result);
+                }
+                
+                // Set last spin time
+                lastSpinTime = Date.now().toString();
+                localStorage.setItem('lastSpinTime', lastSpinTime);
+                
+                // Update UI
+                spinButton.innerHTML = '<i class="fas fa-clock"></i> Come back tomorrow!';
+                initSpinAvailability();
+                
+            }, 3000);
+        });
+
+        // Save reward to user
+        async function saveRewardToUser(reward) {
+            if (currentUser) {
+                try {
+                    await db.collection('users').doc(currentUser.uid).update({
+                        rewards: firebase.firestore.FieldValue.arrayUnion({
+                            type: reward.type,
+                            value: reward.value,
+                            claimed: false,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error saving reward:', error);
+                }
+            }
+        }
+
+        // Copy to clipboard function
+        window.copyToClipboard = function(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopyFeedback(event.target, text);
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    fallbackCopyToClipboard(text, event.target);
+                });
+            } else {
+                fallbackCopyToClipboard(text, event.target);
+            }
+        }
+
+        function fallbackCopyToClipboard(text, element) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyFeedback(element, text);
+            } catch (err) {
+                console.error('Fallback: Could not copy text: ', err);
+                alert('Copy failed. Please copy manually: ' + text);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showCopyFeedback(element, text) {
+            const originalText = element.textContent;
+            element.textContent = 'Copied!';
+            element.style.background = 'rgba(34, 197, 94, 0.2)';
+            element.style.borderColor = '#22c55e';
+            
+            setTimeout(() => {
+                element.textContent = originalText;
+                element.style.background = 'rgba(74, 144, 226, 0.1)';
+                element.style.borderColor = 'var(--primary-color)';
+            }, 2000);
+        }
+
+        // FIXED: Mark as paid functionality with persistent state
+        window.markAsPaid = function(method) {
+            const amount = parseFloat(balanceInput.value);
+            if (!amount || amount < 1) {
+                alert('Please enter a valid amount first!');
+                return;
+            }
+            
+            if (!currentUser) {
+                alert('Please login to mark payment!');
+                authModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                return;
+            }
+            
+            // Check if already pending
+            if (userPendingPayments[method]) {
+                alert('You already have a pending payment for this method. Please wait for verification.');
+                return;
+            }
+            
+            const button = document.getElementById(`${method}-mark-paid`);
+            
+            // Change button to pending state
+            button.classList.add('pending');
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-clock"></i> Pending Verification';
+            
+            // Save payment request to Firebase
+            savePendingPayment(method, amount);
+            
+            // Show success message
+            alert(`Payment marked as pending! We'll verify your ${method} payment shortly and add ${amount.toFixed(2)} to your balance.`);
+        }
+
+        async function savePendingPayment(method, amount) {
+            if (currentUser) {
+                try {
+                    const docRef = await db.collection('pending_payments').add({
+                        userId: currentUser.uid,
+                        userEmail: currentUser.email,
+                        method: method,
+                        amount: amount,
+                        status: 'pending',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    // Store in local state
+                    userPendingPayments[method] = {
+                        id: docRef.id,
+                        amount: amount,
+                        timestamp: new Date()
+                    };
+                    
+                } catch (error) {
+                    console.error('Error saving pending payment:', error);
+                    
+                    // Revert button state on error
+                    const button = document.getElementById(`${method}-mark-paid`);
+                    button.classList.remove('pending');
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-check"></i> Mark as Paid';
+                    
+                    alert('Error saving payment. Please try again.');
+                }
+            }
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Auth tab switching
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                
+                // Update tabs
+                authTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update forms
+                if (tabName === 'login') {
+                    loginForm.classList.remove('hidden');
+                    registerForm.classList.add('hidden');
+                } else {
+                    loginForm.classList.add('hidden');
+                    registerForm.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Modal controls
+        loginBtn.addEventListener('click', () => {
+            authModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        modalClose.addEventListener('click', closeAuthModal);
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) closeAuthModal();
+        });
+
+        function closeAuthModal() {
+            authModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // User dropdown
+        userDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+            userDropdown.classList.remove('active');
+        });
+
+        // Firebase Auth State Observer
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        currentUser = user;
+        updateUIForLoggedInUser(user);
+        loadUserData();
+        setupBalanceListener(); // ✅ ADD THIS LINE
+        loadPendingPayments();
+    } else {
+        currentUser = null;
+        // Cleanup listener
+        if (window.balanceUnsubscribe) {
+            window.balanceUnsubscribe();
+        }
+        updateUIForLoggedOutUser();
+    }
+});
+
+        function updateUIForLoggedInUser(user) {
+            loginButtons.classList.add('hidden');
+            userPanel.classList.remove('hidden');
+            
+            const username = user.displayName || user.email.split('@')[0];
+            document.getElementById('username').textContent = username;
+            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+            
+            closeAuthModal();
+        }
+
+        function updateUIForLoggedOutUser() {
+            loginButtons.classList.remove('hidden');
+            userPanel.classList.add('hidden');
+        }
+
+        // Login Form Handler
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const email = formData.get('email') || e.target.querySelector('input[type="email"]').value;
+            const password = formData.get('password') || e.target.querySelector('input[type="password"]').value;
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            
+            try {
+                btnText.classList.add('hidden');
+                loading.classList.remove('hidden');
+                submitBtn.disabled = true;
+                
+                await auth.signInWithEmailAndPassword(email, password);
+                
+                e.target.reset();
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login error: ' + error.message);
+            } finally {
+                btnText.classList.remove('hidden');
+                loading.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Register Form Handler
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputs = e.target.querySelectorAll('input');
+            const username = inputs[0].value;
+            const email = inputs[1].value;
+            const password = inputs[2].value;
+            const confirmPassword = inputs[3].value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters!');
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            
+            try {
+                btnText.classList.add('hidden');
+                loading.classList.remove('hidden');
+                submitBtn.disabled = true;
+                
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                await userCredential.user.updateProfile({
+                    displayName: username
+                });
+                
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    username: username,
+                    email: email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    rewards: [],
+                    balance: 0
+                });
+                
+                e.target.reset();
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Registration error: ' + error.message);
+            } finally {
+                btnText.classList.remove('hidden');
+                loading.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Logout Handler
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                userDropdown.classList.remove('active');
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout error: ' + error.message);
+            }
+        });
+
+        // Initialize page
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded');
+    initSpinAvailability();
+    
+    // Case purchase buttons
+    const caseBtns = document.querySelectorAll('.case-purchase-btn');
+    console.log('Found case buttons:', caseBtns.length);
+    
+});
+
+// Case modal elements
+const caseModal = document.getElementById('caseModal');
+const caseModalClose = document.getElementById('caseModalClose');
+const modalPurchaseBtn = document.getElementById('modalPurchaseBtn');
+
+let currentCaseData = null;
+
+// Case purchase function
+window.purchaseCase = function(caseType, price) {
+    if (!currentUser) {
+        alert('Please login to purchase cases!');
+        authModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        return;
+    }
+    
+    currentCaseData = { type: caseType, price: price };
+    
+    // Update modal content
+    document.getElementById('modalCaseTitle').textContent = `${caseType} Case`;
+    document.getElementById('modalCasePrice').textContent = `$${price}`;
+    
+    const modalIcon = document.getElementById('modalCaseIcon');
+    modalIcon.className = `case-icon-large ${caseType.toLowerCase()}`;
+    
+    // Show modal
+    caseModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+
+
+async function openCase() {
+    const amount = currentCaseData.price;
+    
+    try {
+        // Check balance
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        const userData = userDoc.data();
+        const currentBalance = userData.balance || 0;
+        
+        if (currentBalance < amount) {
+            alert(`Insufficient balance! You need $${amount} but have $${currentBalance.toFixed(2)}`);
+            return;
+        }
+        
+        // Deduct balance
+        await db.collection('users').doc(currentUser.uid).update({
+            balance: firebase.firestore.FieldValue.increment(-amount)
+        });
+        
+        // Show opening animation
+        document.querySelector('.case-display').classList.add('hidden');
+        document.getElementById('modalPurchaseBtn').classList.add('hidden');
+        document.getElementById('caseOpening').classList.remove('hidden');
+        
+        // Animate case opening
+        setTimeout(() => {
+            document.getElementById('caseShake').style.animation = 'caseOpen 1s ease-in-out forwards';
+            
+            setTimeout(() => {
+                // Hide opening, show result
+                document.getElementById('caseOpening').classList.add('hidden');
+                showCaseResult();
+            }, 1000);
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error opening case:', error);
+        alert('Error opening case. Please try again.');
+    }
+}
+
+
+
+async function showCaseResult() {
+    const rewards = getCaseRewards(currentCaseData.type);
+    const wonReward = getRandomReward(rewards);
+    
+    let code = null;
+    
+    // ✅ POPRAWKA: Sprawdź typ nagrody
+    if (wonReward.type.includes('coupon')) {
+        // Dla kuponów z konkretną wartością
+        code = await createRealCouponCode(wonReward);
+    } else if (wonReward.type.includes('discount')) {
+        // Dla rabatów procentowych
+        code = await createRealDiscountCode(wonReward);
+    } else {
+        // Fallback dla innych nagród
+        code = generateRewardCode(wonReward.type);
+    }
+    
+    // Update result display
+    document.getElementById('resultReward').textContent = `You won: ${wonReward.name}`;
+    document.getElementById('codeText').textContent = code;
+    
+    // Save to user's account
+    saveRewardToUserAccount(wonReward, code);
+    
+    // Show result
+    document.getElementById('caseResult').classList.remove('hidden');
+}
+
+
+
+
+function getCaseRewards(caseType) {
+    const rewards = {
+        'Gold': [
+            { type: 'coupon_999', name: 'Coupon $9.99', chance: 10 },
+            { type: 'coupon_749', name: 'Coupon $7.49', chance: 20 },
+            { type: 'discount_25', name: '25% OFF Discount', chance: 30 },
+            { type: 'discount_10', name: '10% OFF Discount', chance: 40 }
+        ],
+        'Diamond': [
+            { type: 'coupon_2499', name: 'Coupon $24.99', chance: 10 },
+            { type: 'coupon_1499', name: 'Coupon $14.99', chance: 20 },
+            { type: 'discount_40', name: '40% OFF Discount', chance: 30 },
+            { type: 'discount_25', name: '25% OFF Discount', chance: 40 }
+        ]
+    };
+    return rewards[caseType] || rewards['Gold'];
+}
+
+// Random reward selection
+function getRandomReward(rewards) {
+    const random = Math.random() * 100;
+    let cumulative = 0;
+    
+    for (const reward of rewards) {
+        cumulative += reward.chance;
+        if (random <= cumulative) {
+            return reward;
+        }
+    }
+    return rewards[0];
+}
+
+function generateRewardCode(rewardType) {
+    if (rewardType.includes('discount')) {
+        // ✅ Dla discountów teraz używamy createRealDiscountCode()
+        // Ta funkcja jest tylko fallbackiem
+        return generateDiscountCode();
+    } else {
+        // Generate regular code for GFX rewards
+        const prefix = rewardType.toUpperCase().substring(0, 3);
+        const timestamp = Date.now().toString().slice(-6);
+        const random = Math.random().toString(36).substring(2, 5).toUpperCase();
+        return `${prefix}-${timestamp}-${random}`;
+    }
+}
+
+
+// Save reward to user account
+async function saveRewardToUserAccount(reward, code) {
+    if (currentUser) {
+        try {
+            await db.collection('user_rewards').add({
+                userId: currentUser.uid,
+                userEmail: currentUser.email,
+                rewardType: reward.type,
+                rewardName: reward.name,
+                code: code,
+                claimed: false,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } catch (error) {
+            console.error('Error saving reward:', error);
+        }
+    }
+}
+
+// Modal close handlers
+caseModalClose.addEventListener('click', () => {
+    caseModal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    resetCaseModal();
+});
+
+modalPurchaseBtn.addEventListener('click', openCase);
+
+function resetCaseModal() {
+    document.querySelector('.case-display').classList.remove('hidden');
+    document.getElementById('modalPurchaseBtn').classList.remove('hidden');
+    document.getElementById('caseOpening').classList.add('hidden');
+    document.getElementById('caseResult').classList.add('hidden');
+    document.getElementById('caseShake').style.animation = '';
+}
+
+
+async function createRealCouponCode(reward) {
+    try {
+        let couponCode;
+        let isUnique = false;
+        
+        while (!isUnique) {
+            couponCode = generateCouponCode();
+            
+            // ✅ ZMIEŃ: Sprawdź w kolekcji 'discounts' zamiast 'coupons'
+            const existingCode = await db.collection('discounts')
+                .where('code', '==', couponCode)
+                .get();
+            
+            if (existingCode.empty) {
+                isUnique = true;
+            }
+        }
+        
+        const couponValue = extractCouponValue(reward.name);
+        const username = currentUser.displayName || currentUser.email.split('@')[0];
+        
+        // ✅ ZMIEŃ: Zapisz do kolekcji 'discounts' z type: 'fixed'
+        await db.collection('discounts').add({
+            code: couponCode,
+            type: 'fixed',  // ✅ DODAJ: typ fixed amount
+            value: couponValue,
+            usageLimit: 1,
+            usedCount: 0,
+            expiryDate: null,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            createdBy: 'case_reward_system',
+            createdByUser: currentUser.uid,
+            createdByEmail: currentUser.email,
+            createdByUsername: username,
+            isActive: true,
+            source: 'case_reward',
+            caseType: currentCaseData.type
+        });
+        
+        console.log(`✅ Created real coupon code: ${couponCode} ($${couponValue}) for user: ${username}`);
+        
+        return couponCode;
+        
+    } catch (error) {
+        console.error('Error creating real coupon code:', error);
+        return generateCouponCode();
+    }
+}
+
+function generateCouponCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';  // ✅ USUŃ prefix 'CPN-'
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+}
+function extractCouponValue(rewardName) {
+    const match = rewardName.match(/\$(\d+\.?\d*)/);
+    return match ? parseFloat(match[1]) : 10.00;
+}
+
+
+// ✅ NOWA funkcja - tworzy prawdziwy kod rabatowy w bazie danych
+async function createRealDiscountCode(reward) {
+    try {
+        // Wygeneruj unikalny kod
+        let discountCode;
+        let isUnique = false;
+        
+        while (!isUnique) {
+            discountCode = generateDiscountCode();
+            
+            // Sprawdź czy kod już istnieje
+            const existingCode = await db.collection('discounts')
+                .where('code', '==', discountCode)
+                .get();
+            
+            if (existingCode.empty) {
+                isUnique = true;
+            }
+        }
+        
+        // Wyciągnij wartość rabatu z nazwy nagrody
+        const discountValue = extractDiscountValue(reward.name);
+        
+        // ✅ DODAJ informacje o użytkowniku
+        const username = currentUser.displayName || currentUser.email.split('@')[0];
+        
+        // Utwórz prawdziwy kod rabatowy w bazie
+        await db.collection('discounts').add({
+            code: discountCode,
+            type: 'percentage',
+            value: discountValue,
+            usageLimit: 1, // ✅ Limit użyć = 1
+            usedCount: 0,
+            expiryDate: null, // Bez daty wygaśnięcia
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            createdBy: 'case_reward_system',
+            createdByUser: currentUser.uid,
+            createdByEmail: currentUser.email,
+            createdByUsername: username, // ✅ DODANE
+            isActive: true,
+            source: 'case_reward',
+            caseType: currentCaseData.type
+        });
+        
+        console.log(`✅ Created real discount code: ${discountCode} (${discountValue}%) for user: ${username}`);
+        
+        return discountCode;
+        
+    } catch (error) {
+        console.error('Error creating real discount code:', error);
+        // Fallback - zwróć zwykły kod jeśli jest błąd
+        return generateDiscountCode();
+    }
+}
+
+// Generuj 6-znakowy kod rabatowy
+function generateDiscountCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+}
+
+// Wyciągnij wartość procentową z nazwy nagrody
+function extractDiscountValue(rewardName) {
+    const match = rewardName.match(/(\d+)%/);
+    return match ? parseInt(match[1]) : 10; // Fallback na 10%
+}
+
+
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (authModal.classList.contains('active')) {
+                    closeAuthModal();
+                }
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            initSpinAvailability();
+        });
+
+        console.log('🎁 Rewards page loaded successfully!');
+    </script>
+</body>
+</html>
